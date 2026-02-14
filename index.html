@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rainföll | Luxury Rainfall Shower - Made for Long Showers</title>
+  <meta name="description" content="Transform your daily ritual into pure luxury. Premium rainfall shower system designed for intimate moments—alone or together. No tools required.">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Rainföll | Luxury Rainfall Shower - Made for Long Showers">
+  <meta property="og:description" content="Transform your daily ritual into pure luxury. Premium rainfall shower system designed for intimate moments—alone or together.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="assets/images/products/chrome/chrome-center-water.jpg">
+
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              primary: '#727D71',
+              secondary: '#DCC9B6', 
+              tertiary: '#A39171',
+              accent1: '#6D4C3D',
+              accent2: '#ABC4AB'
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+            display: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Alpine.js -->
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="assets/css/main.css">
+
+  <!-- Preload hero video -->
+  <link rel="preload" href="assets/images/hero/hero-video.mp4" as="video" type="video/mp4">
+</head>
+
+<body class="font-sans text-gray-900 antialiased" x-data="{ mobileOpen: false, activeSection: null }">
+
+  <!-- Skip to content (accessibility) -->
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <!-- ============================================
+       1. NAVIGATION
+       ============================================ -->
+  <nav id="main-nav" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-transparent">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-20 md:h-24">
+        <!-- Logo -->
+        <a href="#" class="flex-shrink-0">
+          <img src="assets/images/logo/rainfoll-logo-white-noback.png"
+               alt="Rainföll"
+               class="h-10 md:h-12 w-auto">
+        </a>
+
+        <!-- Desktop Nav Links -->
+        <div class="hidden md:flex items-center space-x-8">
+          <a href="#transformation" 
+             @click="activeSection = 'transformation'"
+             :class="activeSection === 'transformation' ? 'nav-link text-gray-600 hover:text-gray-400' : 'nav-link text-white hover:text-gray-300'"
+             class="transition-colors text-base font-medium tracking-wide uppercase">Experience</a>
+          <a href="#how-it-works" 
+             @click="activeSection = 'how-it-works'"
+             :class="activeSection === 'how-it-works' ? 'nav-link text-gray-600 hover:text-gray-400' : 'nav-link text-white hover:text-gray-300'"
+             class="transition-colors text-base font-medium tracking-wide uppercase">How It Works</a>
+          <a href="#lifestyle" 
+             @click="activeSection = 'lifestyle'"
+             :class="activeSection === 'lifestyle' ? 'nav-link text-gray-600 hover:text-gray-400' : 'nav-link text-white hover:text-gray-300'"
+             class="transition-colors text-base font-medium tracking-wide uppercase">Lifestyle</a>
+          <a href="#finishes" 
+             @click="activeSection = 'finishes'"
+             :class="activeSection === 'finishes' ? 'nav-link text-gray-600 hover:text-gray-400' : 'nav-link text-white hover:text-gray-300'"
+             class="transition-colors text-base font-medium tracking-wide uppercase">Finishes</a>
+          <a href="#reviews" 
+             @click="activeSection = 'reviews'"
+             :class="activeSection === 'reviews' ? 'nav-link text-gray-600 hover:text-gray-400' : 'nav-link text-white hover:text-gray-300'"
+             class="transition-colors text-base font-medium tracking-wide uppercase">Reviews</a>
+          <a href="#shopify-product" class="inline-block bg-brand-secondary text-white px-6 py-2.5 rounded-full text-base font-semibold hover:bg-brand-primary transition-colors">Shop Now</a>
+        </div>
+
+        <!-- Mobile Hamburger -->
+        <button @click="mobileOpen = !mobileOpen"
+                class="md:hidden text-white p-3 rounded-lg hover:bg-white/10 transition-colors"
+                aria-label="Toggle mobile menu"
+                :aria-expanded="mobileOpen">
+          <svg x-show="!mobileOpen" class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+          </svg>
+          <svg x-show="mobileOpen" x-cloak class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Menu Panel -->
+    <div x-show="mobileOpen"
+         x-cloak
+         x-transition:enter="transition ease-out duration-200"
+         x-transition:enter-start="opacity-0 -translate-y-2"
+         x-transition:enter-end="opacity-100 translate-y-0"
+         x-transition:leave="transition ease-in duration-150"
+         x-transition:leave-start="opacity-100 translate-y-0"
+         x-transition:leave-end="opacity-0 -translate-y-2"
+         class="md:hidden bg-gray-900/95 backdrop-blur-lg border-t border-white/10">
+      <div class="px-4 py-6 space-y-4">
+        <a href="#transformation" @click="mobileOpen = false" class="block text-white hover:text-gray-300 transition-colors text-base font-medium py-2">Experience</a>
+        <a href="#how-it-works" @click="mobileOpen = false" class="block text-white hover:text-gray-300 transition-colors text-base font-medium py-2">How It Works</a>
+        <a href="#lifestyle" @click="mobileOpen = false" class="block text-white hover:text-gray-300 transition-colors text-base font-medium py-2">Lifestyle</a>
+        <a href="#finishes" @click="mobileOpen = false" class="block text-white hover:text-gray-300 transition-colors text-base font-medium py-2">Finishes</a>
+        <a href="#reviews" @click="mobileOpen = false" class="block text-white hover:text-gray-300 transition-colors text-base font-medium py-2">Reviews</a>
+        <a href="#shopify-product" @click="mobileOpen = false" class="block bg-brand-secondary text-white px-5 py-3 rounded-full text-center text-base font-semibold hover:bg-brand-primary transition-colors mt-4">Shop Now</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ============================================
+       2. HERO SECTION
+       ============================================ -->
+  <section id="hero" class="hero-video-container">
+    <!-- Background Video -->
+    <video id="hero-video"
+           autoplay muted loop playsinline
+           preload="auto"
+           poster="assets/images/products/chrome/chrome-center-water.jpg"
+           aria-label="Rainforall shower system in action, water cascading from the overhead rainfall shower head">
+      <source src="assets/images/hero/hero-video.mp4" type="video/mp4">
+    </video>
+
+    <!-- Poster fallback (hidden by default) -->
+    <img id="hero-poster"
+         src="assets/images/products/chrome/chrome-center-water.jpg"
+         alt="The Rainforall shower system"
+         class="absolute inset-0 w-full h-full object-cover hidden">
+
+    <!-- Dark overlay -->
+    <div class="hero-overlay"></div>
+
+    <!-- Hero content -->
+    <div class="hero-content flex flex-col justify-end h-full text-left px-4 sm:px-6 pb-12 md:pb-16">
+      <!-- Headline -->
+      <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-white leading-tight max-w-3xl mb-4 md:mb-6">
+        Luxury, For Everyone.
+      </h1>
+
+      <!-- Subheadline -->
+      <p class="text-base sm:text-lg md:text-xl text-gray-200 max-w-xl mb-8 md:mb-10 font-light tracking-wide">
+        Alone or together. Luxury rainfall experience without renovation.
+      </p>
+
+      <!-- CTA -->
+      <a href="#shopify-product"
+         class="cta-primary inline-block bg-brand-secondary hover:bg-brand-primary text-white px-6 sm:px-8 py-3 sm:py-3.5 rounded-full text-base sm:text-lg font-semibold shadow-lg transition-colors max-w-xs sm:max-w-md">
+        Shop Now
+      </a>
+
+      <!-- Scroll indicator -->
+      <div class="absolute bottom-8 left-1/2 -translate-x-1/2 scroll-indicator">
+        <svg class="w-6 h-6 text-white/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <main id="main-content">
+
+    <!-- ============================================
+         3. EMOTIONAL TRANSFORMATION SECTION
+         ============================================ -->
+    <section id="transformation" class="bg-brand-light py-16 md:py-24 lg:py-32">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Section Header -->
+        <div class="text-center mb-12 md:mb-16 fade-up">
+          <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
+            Your Daily Ritual, Reimagined
+          </h2>
+          <p class="text-lg md:text-xl text-gray-700 max-w-2xl mx-auto">
+            Transform the mundane into the magnificent. Every shower becomes an escape.
+          </p>
+        </div>
+
+        <!-- Transformation Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 stagger-children">
+          
+          <!-- Card 1: Morning Ritual -->
+          <div class="text-center">
+            <div class="mb-6">
+              <div class="w-20 h-20 mx-auto bg-brand-primary/10 rounded-full flex items-center justify-center">
+                <svg class="w-10 h-10 text-brand-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707"/>
+                </svg>
+              </div>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-900 mb-4">Morning Awakening</h3>
+            <p class="text-gray-600 leading-relaxed">
+              Start your day enveloped in warm rainfall. A gentle, luxurious awakening that energizes your soul and prepares you for whatever lies ahead.
+            </p>
+          </div>
+
+          <!-- Card 2: Evening Escape -->
+          <div class="text-center">
+            <div class="mb-6">
+              <div class="w-20 h-20 mx-auto bg-brand-secondary/10 rounded-full flex items-center justify-center">
+                <svg class="w-10 h-10 text-brand-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+                </svg>
+              </div>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-900 mb-4">Evening Unwind</h3>
+            <p class="text-gray-600 leading-relaxed">
+              Wash away the day's stress in your private sanctuary. Let the cascading water transport you to a state of pure tranquility and peace.
+            </p>
+          </div>
+
+          <!-- Card 3: Shared Moments -->
+          <div class="text-center">
+            <div class="mb-6">
+              <div class="w-20 h-20 mx-auto bg-brand-tertiary/10 rounded-full flex items-center justify-center">
+                <svg class="w-10 h-10 text-brand-tertiary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                </svg>
+              </div>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-900 mb-4">Intimate Connection</h3>
+            <p class="text-gray-600 leading-relaxed">
+              Share moments of pure bliss together. Dual shower heads create opportunities for connection while maintaining individual comfort and space.
+            </p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================
+         4. PRODUCT POSITIONING SLIDESHOW
+         ============================================ -->
+    <section id="positioning-slideshow" class="bg-brand-neutral py-16 md:py-24 lg:py-32"
+             x-data="{
+               currentIndex: 0,
+               images: [
+                 { src: 'assets/images/products/chrome/Chrome-Left-portrait.jpg', title: 'Left Position' },
+                 { src: 'assets/images/products/chrome/Chrome-center-with-water-portrait.jpg', title: 'Center Position' },
+                 { src: 'assets/images/products/chrome/Chrome-Right-with-water-portrait.jpg', title: 'Right Position' }
+               ],
+               nextSlide() {
+                 this.currentIndex = (this.currentIndex + 1) % this.images.length;
+               },
+               autoPlay() {
+                 setInterval(() => this.nextSlide(), 3000);
+               },
+               init() {
+                 this.autoPlay();
+               }
+             }">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Section Header -->
+        <div class="text-center mb-12 md:mb-16 fade-up">
+          <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
+            Positioned for Perfection
+          </h2>
+          <p class="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto">
+            The rainfall shower head can be placed anywhere in your shower space.
+          </p>
+        </div>
+
+        <!-- Slideshow Container -->
+        <div class="relative max-w-4xl mx-auto">
+          <!-- Main Image -->
+          <div class="relative aspect-[9/16] rounded-2xl overflow-hidden shadow-2xl">
+            <template x-for="(image, index) in images" :key="index">
+              <div x-show="currentIndex === index"
+                   x-transition:enter="transition ease-out duration-500"
+                   x-transition:enter-start="opacity-0 transform scale-105"
+                   x-transition:enter-end="opacity-100 transform scale-100"
+                   x-transition:leave="transition ease-in duration-300"
+                   x-transition:leave-start="opacity-100 transform scale-100"
+                   x-transition:leave-end="opacity-0 transform scale-95"
+                   class="absolute inset-0">
+                <img :src="image.src" 
+                     :alt="image.title"
+                     class="w-full h-full object-cover">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+                <div class="absolute bottom-6 left-6 text-white">
+                  <h3 class="text-2xl font-bold mb-2" x-text="image.title"></h3>
+                  <p class="text-gray-200">Perfect positioning for your shower space</p>
+                </div>
+              </div>
+            </template>
+          </div>
+
+          <!-- Navigation Dots -->
+          <div class="flex justify-center mt-6 gap-2">
+            <template x-for="(image, index) in images" :key="index">
+              <button @click="currentIndex = index"
+                      :class="currentIndex === index ? 'bg-white w-8' : 'bg-white/50 w-2'"
+                      class="h-2 rounded-full transition-all duration-300"
+                      :aria-label="'Go to slide ' + (index + 1)"></button>
+            </template>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================
+         4. HOW IT WORKS SECTION
+         ============================================ -->
+    <section id="how-it-works" class="bg-white py-16 md:py-24 lg:py-32">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Section Header -->
+        <div class="text-center mb-12 md:mb-20 fade-up">
+          <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
+            Luxury in Minutes
+          </h2>
+          <p class="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto">
+            No tools. No drilling. Just pure indulgence.
+          </p>
+        </div>
+
+        <!-- Steps -->
+        <div class="space-y-16 md:space-y-24">
+
+          <!-- Step 1 -->
+          <div class="flex flex-col md:flex-row items-center gap-8 md:gap-12 lg:gap-16 fade-up">
+            <!-- Image -->
+            <div class="w-full md:w-2/5">
+              <div class="rounded-2xl overflow-hidden shadow-lg aspect-[9/16]">
+                <img data-src="assets/images/products/chrome/chrome-center-dry.jpg"
+                     src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 450 800'%3E%3Crect fill='%23e2e8f0' width='450' height='800'/%3E%3C/svg%3E"
+                     alt="Step 1: Twist tension bar into place between shower walls"
+                     class="w-full h-full object-cover"
+                     loading="lazy">
+              </div>
+            </div>
+            <!-- Text -->
+            <div class="w-full md:w-3/5 relative">
+              <span class="step-number">01</span>
+              <div class="relative">
+                <span class="inline-block bg-brand-primary/10 text-brand-primary text-sm font-semibold px-3 py-1 rounded-full mb-4">Step 1</span>
+                <h3 class="text-2xl md:text-3xl font-bold text-gray-900 mb-4">Twist Tension Bar Into Place</h3>
+                <p class="text-gray-600 text-lg leading-relaxed">
+                  Extend the tension bar between your shower walls (works with spaces 56-80 inches wide) and twist until firmly secured. No drilling required.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 2 -->
+          <div class="flex flex-col md:flex-row-reverse items-center gap-8 md:gap-12 lg:gap-16 fade-up">
+            <!-- Image -->
+            <div class="w-full md:w-2/5">
+              <div class="rounded-2xl overflow-hidden shadow-lg aspect-[9/16]">
+                <img data-src="assets/images/products/chrome/chrome-left.jpg"
+                     src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 450 800'%3E%3Crect fill='%23e2e8f0' width='450' height='800'/%3E%3C/svg%3E"
+                     alt="Step 2: Close safety sheaths to secure the system"
+                     class="w-full h-full object-cover"
+                     loading="lazy">
+              </div>
+            </div>
+            <!-- Text -->
+            <div class="w-full md:w-3/5 relative">
+              <span class="step-number">02</span>
+              <div class="relative">
+                <span class="inline-block bg-blue-100 text-blue-700 text-sm font-semibold px-3 py-1 rounded-full mb-4">Step 2</span>
+                <h3 class="text-2xl md:text-3xl font-bold text-gray-900 mb-4">Close Safety Sheaths</h3>
+                <p class="text-gray-600 text-lg leading-relaxed">
+                  Slide the safety sheaths into position to lock the system securely in place. This ensures everything stays stable during use.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 3 -->
+          <div class="flex flex-col md:flex-row items-center gap-8 md:gap-12 lg:gap-16 fade-up">
+            <!-- Image -->
+            <div class="w-full md:w-2/5">
+              <div class="rounded-2xl overflow-hidden shadow-lg aspect-[9/16]">
+                <img data-src="assets/images/products/chrome/chrome-center-water.jpg"
+                     src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 450 800'%3E%3Crect fill='%23e2e8f0' width='450' height='800'/%3E%3C/svg%3E"
+                     alt="Step 3: Connect the shower hose and enjoy the rainfall experience"
+                     class="w-full h-full object-cover"
+                     loading="lazy">
+              </div>
+            </div>
+            <!-- Text -->
+            <div class="w-full md:w-3/5 relative">
+              <span class="step-number">03</span>
+              <div class="relative">
+                <span class="inline-block bg-blue-100 text-blue-700 text-sm font-semibold px-3 py-1 rounded-full mb-4">Step 3</span>
+                <h3 class="text-2xl md:text-3xl font-bold text-gray-900 mb-4">Connect Shower Hose</h3>
+                <p class="text-gray-600 text-lg leading-relaxed">
+                  Attach the hose to your existing plumbing—hand tight, no tools needed. Turn on the water and start enjoying your new luxury rainfall shower.
+                </p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Technical callout -->
+        <div class="mt-12 md:mt-16 text-center fade-up">
+          <div class="inline-flex items-center gap-2 bg-brand-primary/10 border border-brand-primary/20 rounded-full px-6 py-3">
+            <svg class="w-5 h-5 text-brand-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            <span class="text-brand-primary font-medium text-sm md:text-base">Works in showers with opposing walls 56&ndash;80 inches apart</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================
+         5. USE CASES / LIFESTYLE SECTION
+         ============================================ -->
+    <section id="lifestyle" class="bg-brand-primary py-16 md:py-24 lg:py-32">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Section Header -->
+        <div class="text-center mb-12 md:mb-16 fade-up">
+          <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4">
+            Designed for Your Life
+          </h2>
+          <p class="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto">
+            Whether you rent or own, luxury should be effortless.
+          </p>
+        </div>
+
+        <!-- Lifestyle Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 stagger-children">
+
+          <!-- Card 1: Renters -->
+          <div class="lifestyle-card relative rounded-2xl overflow-hidden h-80 md:h-96 lg:h-[28rem] group">
+            <img data-src="assets/images/products/chrome/chrome-center-water.jpg"
+                 src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 600'%3E%3Crect fill='%23374151' width='400' height='600'/%3E%3C/svg%3E"
+                 alt="Chrome finish Rainforall with water flowing, perfect for renters"
+                 class="absolute inset-0 w-full h-full object-cover object-top"
+                 loading="lazy">
+            <div class="gradient-overlay absolute inset-0"></div>
+            <div class="relative z-10 h-full flex flex-col justify-end p-6 md:p-8">
+              <h3 class="text-2xl md:text-3xl font-bold text-white mb-2">Renter's Sanctuary</h3>
+              <p class="text-gray-200 text-base md:text-lg leading-relaxed">
+                Elevate your space without compromise. Luxury that leaves no trace—perfect for the discerning renter.
+              </p>
+            </div>
+          </div>
+
+          <!-- Card 2: Tall Users -->
+          <div class="lifestyle-card relative rounded-2xl overflow-hidden h-80 md:h-96 lg:h-[28rem] group">
+            <img data-src="assets/images/products/matte/matte-center-water.jpg"
+                 src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 600'%3E%3Crect fill='%23374151' width='400' height='600'/%3E%3C/svg%3E"
+                 alt="Matte Black finish Rainforall mounted high for tall users"
+                 class="absolute inset-0 w-full h-full object-cover object-top"
+                 loading="lazy">
+            <div class="gradient-overlay absolute inset-0"></div>
+            <div class="relative z-10 h-full flex flex-col justify-end p-6 md:p-8">
+              <h3 class="text-2xl md:text-3xl font-bold text-white mb-2">Unrestricted Height</h3>
+              <p class="text-gray-200 text-base md:text-lg leading-relaxed">
+                Finally, a shower that honors your stature. Authentic rainfall from above—no more compromising your comfort.
+              </p>
+            </div>
+          </div>
+
+          <!-- Card 3: Couples -->
+          <div class="lifestyle-card relative rounded-2xl overflow-hidden h-80 md:h-96 lg:h-[28rem] group">
+            <img data-src="assets/images/products/gold/gold-center-water.jpg"
+                 src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 600'%3E%3Crect fill='%23374151' width='400' height='600'/%3E%3C/svg%3E"
+                 alt="Gold finish Rainforall with dual shower heads for couples"
+                 class="absolute inset-0 w-full h-full object-cover object-top"
+                 loading="lazy">
+            <div class="gradient-overlay absolute inset-0"></div>
+            <div class="relative z-10 h-full flex flex-col justify-end p-6 md:p-8">
+              <h3 class="text-2xl md:text-3xl font-bold text-white mb-2">Intimate Moments</h3>
+              <p class="text-gray-200 text-base md:text-lg leading-relaxed">
+                Designed for connection. Dual shower heads with full pressure—because the best rituals are meant to be shared.
+              </p>
+            </div>
+          </div>
+
+          <!-- Card 4: Luxury -->
+          <div class="lifestyle-card relative rounded-2xl overflow-hidden h-80 md:h-96 lg:h-[28rem] group">
+            <img data-src="assets/images/products/rose/rose-center-water.jpg"
+                 src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 600'%3E%3Crect fill='%23374151' width='400' height='600'/%3E%3C/svg%3E"
+                 alt="Rose Gold finish Rainforall for everyday luxury"
+                 class="absolute inset-0 w-full h-full object-cover object-top"
+                 loading="lazy">
+            <div class="gradient-overlay absolute inset-0"></div>
+            <div class="relative z-10 h-full flex flex-col justify-end p-6 md:p-8">
+              <h3 class="text-2xl md:text-3xl font-bold text-white mb-2">Daily Indulgence</h3>
+              <p class="text-gray-200 text-base md:text-lg leading-relaxed">
+                Transform the mundane into the magnificent. Hotel-quality rainfall that makes every morning feel like a retreat.
+              </p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================
+         6. PRODUCT SHOWCASE / FINISH SELECTOR
+         ============================================ -->
+    <section id="finishes" class="bg-white py-16 md:py-24 lg:py-32"
+             x-data="{
+              selected: 'chrome',
+              activeImage: 'studio',
+              imageAspectRatios: {},
+              finishes: {
+                chrome: {
+                  name: 'Chrome',
+                  color: '#c0c0c0',
+                  images: {
+                    studio: 'assets/images/products/chrome/chrome-studio.jpg',
+                    center: 'assets/images/products/chrome/chrome-center-water.jpg',
+                    left: 'assets/images/products/chrome/chrome-left.jpg',
+                    right: 'assets/images/products/chrome/chrome-right-water.jpg'
+                  }
+                },
+                gold: {
+                  name: 'Gold',
+                  color: '#b8860b',
+                  images: {
+                    studio: 'assets/images/products/gold/gold-studio.jpg',
+                    center: 'assets/images/products/gold/gold-center-water.jpg',
+                    left: 'assets/images/products/gold/gold-left.jpg',
+                    right: 'assets/images/products/gold/gold-right-water.jpg'
+                  }
+                },
+                matte: {
+                  name: 'Matte Black',
+                  color: '#2d2d2d',
+                  images: {
+                    studio: 'assets/images/products/matte/matte-studio.jpg',
+                    center: 'assets/images/products/matte/matte-center-water.jpg',
+                    left: 'assets/images/products/matte/matte-left.jpg',
+                    right: 'assets/images/products/matte/matte-right-water.jpg'
+                  }
+                },
+                rose: {
+                  name: 'Rose Gold',
+                  color: '#b76e79',
+                  images: {
+                    studio: 'assets/images/products/rose/rose-studio.jpg',
+                    center: 'assets/images/products/rose/rose-center-water.jpg',
+                    left: 'assets/images/products/rose/rose-left.jpg',
+                    right: 'assets/images/products/rose/rose-right-water.jpg'
+                  }
+                }
+              },
+              selectFinish(finish) {
+                this.selected = finish;
+                this.activeImage = 'studio';
+              },
+              checkImageAspectRatio(event, imageKey) {
+                const img = event.target;
+                const aspectRatio = img.naturalWidth / img.naturalHeight;
+                this.imageAspectRatios[imageKey] = aspectRatio < 1 ? 'portrait' : 'landscape';
+              }
+            }">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Section Header -->
+        <div class="text-center mb-10 md:mb-14 fade-up">
+          <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
+            Select Your Finish
+          </h2>
+          <p class="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto">
+            Four premium finishes to complement your sanctuary.
+          </p>
+        </div>
+
+        <!-- Finish Selector Tabs -->
+        <div class="flex justify-center mb-8 md:mb-12 fade-up">
+          <div class="inline-flex flex-wrap justify-center gap-2 md:gap-4 bg-gray-100 rounded-xl p-2">
+            <template x-for="(finish, key) in finishes" :key="key">
+              <button @click="selectFinish(key)"
+                      :class="selected === key ? 'bg-white shadow-md text-gray-900' : 'text-gray-600 hover:text-gray-900'"
+                      class="flex items-center gap-2 px-4 md:px-6 py-2.5 md:py-3 rounded-lg text-sm md:text-base font-medium transition-all duration-200"
+                      :aria-pressed="selected === key">
+                <span class="w-4 h-4 rounded-full border-2 border-gray-300 flex-shrink-0"
+                      :style="'background-color: ' + finish.color"></span>
+                <span x-text="finish.name"></span>
+              </button>
+            </template>
+          </div>
+        </div>
+
+        <!-- Gallery -->
+        <div class="flex flex-col lg:flex-row gap-6 md:gap-8 fade-up">
+          <!-- Main Image -->
+          <div class="lg:w-2/3">
+            <div class="rounded-2xl overflow-hidden shadow-lg bg-gray-100" 
+                 :class="imageAspectRatios[activeImage] === 'portrait' ? 'aspect-[3/4]' : 'aspect-video'">
+              <img :src="finishes[selected].images[activeImage]"
+                   :alt="finishes[selected].name + ' finish Rainforall - ' + activeImage + ' view'"
+                   class="w-full h-full object-cover gallery-main-img"
+                   @load="checkImageAspectRatio($event, activeImage)">
+            </div>
+          </div>
+
+          <!-- Thumbnails -->
+          <div class="lg:w-1/3">
+            <div class="grid grid-cols-4 lg:grid-cols-2 gap-3 md:gap-4 h-full">
+              <template x-for="(imgSrc, imgKey) in finishes[selected].images" :key="imgKey">
+                <button @click="activeImage = imgKey"
+                        :class="activeImage === imgKey ? 'ring-2 ring-brand-primary ring-offset-2' : 'hover:opacity-80'"
+                        class="rounded-xl overflow-hidden bg-gray-100 aspect-square transition-all duration-200"
+                        :aria-label="'View ' + imgKey + ' angle'">
+                  <img :src="imgSrc"
+                       :alt="finishes[selected].name + ' ' + imgKey + ' view'"
+                       class="w-full h-full object-cover">
+                </button>
+              </template>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pressure callout -->
+        <div class="mt-10 md:mt-14 fade-up">
+          <div class="bg-brand-primary/10 border border-brand-primary/20 rounded-2xl p-6 md:p-8 flex flex-col md:flex-row items-start md:items-center gap-4">
+            <div class="w-12 h-12 bg-brand-primary/20 rounded-xl flex items-center justify-center flex-shrink-0">
+              <svg class="w-6 h-6 text-brand-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+              </svg>
+            </div>
+            <div>
+              <h4 class="text-lg font-bold text-gray-900 mb-1">Full Pressure, Even Together</h4>
+              <p class="text-gray-600">Both shower heads maintain consistent, high pressure when used simultaneously. No diverter compromises—just powerful, luxurious water flow from both heads at once.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================
+         7. SOCIAL PROOF / REVIEWS SECTION
+         ============================================ -->
+    <section id="reviews" class="bg-gray-50 py-16 md:py-24 lg:py-32">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Section Header -->
+        <div class="text-center mb-12 md:mb-16 fade-up">
+          <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
+            Loved by Renters &amp; Homeowners
+          </h2>
+          <p class="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto">
+            See what our customers are saying.
+          </p>
+        </div>
+
+        <!-- Review Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 stagger-children">
+
+          <!-- Review 1 -->
+          <div class="bg-white rounded-2xl p-6 md:p-8 shadow-sm">
+            <div class="stars flex gap-1 mb-4">
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            </div>
+            <blockquote class="text-gray-700 text-base md:text-lg leading-relaxed mb-4">
+              "I'm 6'4" and have never enjoyed a shower at home until now. The center placement makes such a difference—it actually feels like standing in the rain."
+            </blockquote>
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                <span class="text-blue-600 font-semibold text-sm">MR</span>
+              </div>
+              <div>
+                <p class="font-semibold text-gray-900 text-sm">Marcus R.</p>
+                <p class="text-gray-500 text-xs">Verified Customer</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Review 2 -->
+          <div class="bg-white rounded-2xl p-6 md:p-8 shadow-sm">
+            <div class="stars flex gap-1 mb-4">
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            </div>
+            <blockquote class="text-gray-700 text-base md:text-lg leading-relaxed mb-4">
+              "Installed this in my apartment in under 10 minutes. My landlord will never know. The rose gold finish is absolutely stunning—feels like a boutique hotel."
+            </blockquote>
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 bg-pink-100 rounded-full flex items-center justify-center">
+                <span class="text-pink-600 font-semibold text-sm">SK</span>
+              </div>
+              <div>
+                <p class="font-semibold text-gray-900 text-sm">Sarah K.</p>
+                <p class="text-gray-500 text-xs">Verified Customer</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Review 3 -->
+          <div class="bg-white rounded-2xl p-6 md:p-8 shadow-sm">
+            <div class="stars flex gap-1 mb-4">
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            </div>
+            <blockquote class="text-gray-700 text-base md:text-lg leading-relaxed mb-4">
+              "My wife and I can finally shower comfortably together. The dual heads with full pressure is a game-changer. We got the matte black and it looks incredible."
+            </blockquote>
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                <span class="text-green-600 font-semibold text-sm">JT</span>
+              </div>
+              <div>
+                <p class="font-semibold text-gray-900 text-sm">James T.</p>
+                <p class="text-gray-500 text-xs">Verified Customer</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Press Logos Placeholder -->
+        <div class="mt-12 md:mt-16 text-center fade-up">
+          <p class="text-sm text-gray-400 uppercase tracking-widest font-medium mb-6">As Featured In</p>
+          <div class="flex flex-wrap justify-center items-center gap-8 md:gap-12 opacity-40">
+            <!-- Placeholder press logos - replace with real ones -->
+            <div class="h-8 w-24 bg-gray-300 rounded"></div>
+            <div class="h-8 w-28 bg-gray-300 rounded"></div>
+            <div class="h-8 w-20 bg-gray-300 rounded"></div>
+            <div class="h-8 w-24 bg-gray-300 rounded"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================
+         8. FINAL CTA SECTION
+         ============================================ -->
+    <section id="cta" class="bg-gradient-to-br from-brand-primary to-brand-secondary py-16 md:py-24 lg:py-32">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center fade-up">
+        <!-- Headline -->
+        <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4 md:mb-6">
+          Transform Your Shower Today
+        </h2>
+
+        <!-- Subheadline -->
+        <p class="text-lg md:text-xl text-gray-100 max-w-2xl mx-auto mb-8 md:mb-10">
+          Join thousands who've upgraded to luxury&mdash;without renovation.
+        </p>
+
+        <!-- Trust elements -->
+        <div class="flex flex-wrap justify-center gap-x-6 gap-y-3 mb-8 md:mb-10">
+          <span class="flex items-center gap-2 text-gray-100 text-sm md:text-base">
+            <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+            </svg>
+            Installs in Minutes
+          </span>
+          <span class="flex items-center gap-2 text-gray-100 text-sm md:text-base">
+            <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+            </svg>
+            No Tools Required
+          </span>
+          <span class="flex items-center gap-2 text-gray-100 text-sm md:text-base">
+            <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+            </svg>
+            Free Shipping
+          </span>
+          <span class="flex items-center gap-2 text-gray-100 text-sm md:text-base">
+            <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+            </svg>
+            30-Day Returns
+          </span>
+        </div>
+
+        <!-- CTA Button -->
+        <a href="#shopify-product"
+           class="cta-white inline-block bg-white text-blue-700 px-10 sm:px-12 py-4 sm:py-5 rounded-full text-lg sm:text-xl font-bold shadow-xl">
+          Shop Rainföll
+        </a>
+
+        <!-- Guarantee text -->
+        <p class="mt-4 text-blue-200 text-sm">
+          Free shipping. 30-day money-back guarantee.
+        </p>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ============================================
+       9. FOOTER
+       ============================================ -->
+  <footer class="bg-brand-primary text-gray-300 pt-12 md:pt-16 pb-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <!-- Footer Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12 mb-10 md:mb-14">
+
+        <!-- Column 1: Logo & Tagline -->
+        <div class="sm:col-span-2 lg:col-span-1">
+          <img src="assets/images/logo/rainfoll-logo-white-noback.png"
+               alt="Rainföll"
+               class="h-8 mb-4 opacity-80">
+          <p class="text-sm leading-relaxed max-w-xs">
+            The luxury rainfall shower by Rainföll. Installs in minutes—no tools, no drilling, no trace.
+          </p>
+        </div>
+
+        <!-- Column 2: Quick Links -->
+        <div>
+          <h4 class="text-white font-semibold text-sm uppercase tracking-wider mb-4">Quick Links</h4>
+          <ul class="space-y-3">
+            <li><a href="#benefits" class="text-sm hover:text-white transition-colors">Benefits</a></li>
+            <li><a href="#how-it-works" class="text-sm hover:text-white transition-colors">How It Works</a></li>
+            <li><a href="#finishes" class="text-sm hover:text-white transition-colors">Finishes</a></li>
+            <li><a href="#reviews" class="text-sm hover:text-white transition-colors">Reviews</a></li>
+          </ul>
+        </div>
+
+        <!-- Column 3: Support -->
+        <div>
+          <h4 class="text-white font-semibold text-sm uppercase tracking-wider mb-4">Support</h4>
+          <ul class="space-y-3">
+            <li><a href="#" class="text-sm hover:text-white transition-colors">Shipping Info</a></li>
+            <li><a href="#" class="text-sm hover:text-white transition-colors">Returns &amp; Exchanges</a></li>
+            <li><a href="#" class="text-sm hover:text-white transition-colors">FAQ</a></li>
+            <li><a href="#" class="text-sm hover:text-white transition-colors">Contact Us</a></li>
+          </ul>
+        </div>
+
+        <!-- Column 4: Social -->
+        <div>
+          <h4 class="text-white font-semibold text-sm uppercase tracking-wider mb-4">Follow Us</h4>
+          <div class="flex gap-4">
+            <!-- Instagram -->
+            <a href="#" class="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-gray-700 transition-colors" aria-label="Instagram">
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+              </svg>
+            </a>
+            <!-- TikTok -->
+            <a href="#" class="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-gray-700 transition-colors" aria-label="TikTok">
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1v-3.5a6.37 6.37 0 00-.79-.05A6.34 6.34 0 003.15 15.2a6.34 6.34 0 0010.86 4.48v-7.15a8.16 8.16 0 005.58 2.2v-3.45a4.85 4.85 0 01-1.99-4.59h1.99z"/>
+              </svg>
+            </a>
+            <!-- Facebook -->
+            <a href="#" class="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-gray-700 transition-colors" aria-label="Facebook">
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+              </svg>
+            </a>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Bottom Bar -->
+      <div class="border-t border-gray-800 pt-6 flex flex-col sm:flex-row justify-between items-center gap-4">
+        <p class="text-xs text-gray-400">&copy; 2026 Rainföll Inc. All rights reserved.</p>
+        <div class="flex gap-6">
+          <a href="#" class="text-xs text-gray-500 hover:text-gray-300 transition-colors">Privacy Policy</a>
+          <a href="#" class="text-xs text-gray-500 hover:text-gray-300 transition-colors">Terms of Service</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="assets/js/main.js"></script>
+  <script src="assets/js/animations.js"></script>
+
+  <!-- Header scroll behavior -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const nav = document.getElementById('main-nav');
+      
+      // Function to update active section based on scroll
+      function updateActiveSection() {
+        const sections = ['transformation', 'how-it-works', 'lifestyle', 'finishes', 'reviews'];
+        const scrollPosition = window.scrollY + 100; // Add offset
+        
+        for (const section of sections) {
+          const element = document.getElementById(section);
+          if (element) {
+            const rect = element.getBoundingClientRect();
+            const elementTop = rect.top + window.scrollY;
+            
+            if (elementTop <= scrollPosition) {
+              window.Alpine.store.activeSection = section;
+              break;
+            }
+          }
+        }
+      }
+      
+      window.addEventListener('scroll', function() {
+        if (window.scrollY > 50) {
+          nav.classList.remove('bg-transparent');
+          nav.classList.add('bg-brand-primary/90', 'backdrop-blur-sm');
+        } else {
+          nav.classList.add('bg-transparent');
+          nav.classList.remove('bg-brand-primary/90', 'backdrop-blur-sm');
+        }
+        
+        updateActiveSection();
+      });
+      
+      // Initial call
+      updateActiveSection();
+    });
+  </script>
+
+  <!-- Alpine.js x-cloak style -->
+  <style>[x-cloak] { display: none !important; }</style>
+
+</body>
+</html>
