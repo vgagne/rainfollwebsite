@@ -49,7 +49,7 @@ html {
 .hero-overlay {
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.45);
+  background: rgba(0, 0, 0, 0.08);
   z-index: 1;
 }
 
