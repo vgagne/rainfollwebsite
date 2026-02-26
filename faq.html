@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FAQ | Rainföll - Luxury Rainfall Shower</title>
+  <meta name="description" content="Frequently asked questions about Rainföll luxury rainfall shower systems. Installation, compatibility, maintenance, and more.">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/Favicon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/icons/Favicon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/Favicon.png">
+
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              primary: '#727D71',
+              secondary: '#DCC9B6', 
+              tertiary: '#A39171',
+              accent1: '#6D4C3D',
+              accent2: '#ABC4AB'
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+            display: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Alpine.js -->
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="assets/css/main.css">
+</head>
+
+<body class="font-sans text-gray-900 antialiased bg-white">
+
+  <!-- Skip to content (accessibility) -->
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <!-- ============================================
+       1. NAVIGATION
+       ============================================ -->
+  <nav id="main-nav" class="fixed top-0 left-0 right-0 z-50 bg-brand-primary/90 backdrop-blur-sm transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-20 md:h-24">
+        <!-- Logo -->
+        <a href="index.html" class="flex-shrink-0">
+          <img src="assets/images/logo/rainfoll-logo-white-noback.png"
+               alt="Rainföll"
+               class="h-10 md:h-12 w-auto">
+        </a>
+
+        <!-- Desktop Nav Links -->
+        <div class="hidden md:flex items-center space-x-8">
+          <a href="index.html" class="nav-link text-white hover:text-gray-300 transition-colors text-base font-medium tracking-wide uppercase">Home</a>
+          <a href="index.html#transformation" class="nav-link text-white hover:text-gray-300 transition-colors text-base font-medium tracking-wide uppercase">Experience</a>
+          <a href="index.html#finishes" class="nav-link text-white hover:text-gray-300 transition-colors text-base font-medium tracking-wide uppercase">Finishes</a>
+          <a href="faq.html" class="nav-link text-white hover:text-gray-300 transition-colors text-base font-medium tracking-wide uppercase">FAQ</a>
+          <a href="index.html#shopify-product" class="inline-block bg-brand-secondary text-white px-6 py-2.5 rounded-full text-base font-semibold hover:bg-brand-primary transition-colors">Shop Now</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ============================================
+       2. HERO SECTION
+       ============================================ -->
+  <section class="bg-gradient-to-br from-brand-primary to-brand-secondary pt-32 md:pt-40 pb-16 md:pb-24">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 md:mb-6">
+        Frequently Asked Questions
+      </h1>
+      <p class="text-lg md:text-xl text-gray-200 max-w-2xl mx-auto">
+        Everything you need to know about Rainföll luxury rainfall shower systems.
+      </p>
+    </div>
+  </section>
+
+  <main id="main-content" class="py-16 md:py-24">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <!-- FAQ Categories -->
+      <div class="mb-12">
+        <div class="flex flex-wrap justify-center gap-2 md:gap-4">
+          <button onclick="filterFAQ('all')" class="filter-btn px-4 py-2 rounded-full text-sm font-medium transition-colors bg-brand-primary text-white">
+            All Questions
+          </button>
+          <button onclick="filterFAQ('installation')" class="filter-btn px-4 py-2 rounded-full text-sm font-medium transition-colors bg-gray-200 text-gray-700 hover:bg-brand-primary hover:text-white">
+            Installation
+          </button>
+          <button onclick="filterFAQ('compatibility')" class="filter-btn px-4 py-2 rounded-full text-sm font-medium transition-colors bg-gray-200 text-gray-700 hover:bg-brand-primary hover:text-white">
+            Compatibility
+          </button>
+          <button onclick="filterFAQ('product')" class="filter-btn px-4 py-2 rounded-full text-sm font-medium transition-colors bg-gray-200 text-gray-700 hover:bg-brand-primary hover:text-white">
+            Product
+          </button>
+          <button onclick="filterFAQ('maintenance')" class="filter-btn px-4 py-2 rounded-full text-sm font-medium transition-colors bg-gray-200 text-gray-700 hover:bg-brand-primary hover:text-white">
+            Maintenance
+          </button>
+        </div>
+      </div>
+
+      <!-- FAQ Items -->
+      <div class="space-y-6" x-data="{ openItems: [] }">
+        
+        <!-- Installation Questions -->
+        <div class="faq-item" data-category="installation">
+          <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+            <button @click="openItems.includes(1) ? openItems = openItems.filter(i => i !== 1) : openItems.push(1)"
+                    class="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-gray-50 transition-colors">
+              <h3 class="text-lg font-semibold text-gray-900">How long does installation take?</h3>
+              <svg class="w-5 h-5 text-gray-500 transform transition-transform"
+                   :class="openItems.includes(1) ? 'rotate-180' : ''"
+                   fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+              </svg>
+            </button>
+            <div x-show="openItems.includes(1)" x-collapse class="px-6 pb-4">
+              <p class="text-gray-600 leading-relaxed">
+                Most customers complete installation in under 10 minutes. The process involves three simple steps: twist the tension bar into place, close the safety sheaths, and connect the shower hose. No tools or drilling required.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item" data-category="installation">
+          <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+            <button @click="openItems.includes(2) ? openItems = openItems.filter(i => i !== 2) : openItems.push(2)"
+                    class="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-gray-50 transition-colors">
+              <h3 class="text-lg font-semibold text-gray-900">Do I need any tools for installation?</h3>
+              <svg class="w-5 h-5 text-gray-500 transform transition-transform"
+                   :class="openItems.includes(2) ? 'rotate-180' : ''"
+                   fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+              </svg>
+            </button>
+            <div x-show="openItems.includes(2)" x-collapse class="px-6 pb-4">
+              <p class="text-gray-600 leading-relaxed">
+                No tools required! The Rainföll system uses a tension-based design that requires no drilling, screws, or special tools. Everything you need is included in the box.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item" data-category="installation">
+          <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+            <button @click="openItems.includes(3) ? openItems = openItems.filter(i => i !== 3) : openItems.push(3)"
+                    class="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-gray-50 transition-colors">
+              <h3 class="text-lg font-semibold text-gray-900">Can I install it if I rent my apartment?</h3>
+              <svg class="w-5 h-5 text-gray-500 transform transition-transform"
+                   :class="openItems.includes(3) ? 'rotate-180' : ''"
+                   fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+              </svg>
+            </button>
+            <div x-show="openItems.includes(3)" x-collapse class="px-6 pb-4">
+              <p class="text-gray-600 leading-relaxed">
+                Absolutely! Rainföll is perfect for renters because it requires no drilling or permanent modifications. When you move out, you can easily remove it without leaving any trace.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Compatibility Questions -->
+        <div class="faq-item" data-category="compatibility">
+          <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+            <button @click="openItems.includes(4) ? openItems = openItems.filter(i => i !== 4) : openItems.push(4)"
+                    class="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-gray-50 transition-colors">
+              <h3 class="text-lg font-semibold text-gray-900">What shower sizes are compatible?</h3>
+              <svg class="w-5 h-5 text-gray-500 transform transition-transform"
+                   :class="openItems.includes(4) ? 'rotate-180' : ''"
+                   fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+              </svg>
+            </button>
+            <div x-show="openItems.includes(4)" x-collapse class="px-6 pb-4">
+              <p class="text-gray-600 leading-relaxed">
+                Rainföll works in showers with opposing walls 56-80 inches apart. This covers most standard shower sizes. The tension bar is adjustable to ensure a perfect fit.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item" data-category="compatibility">
+          <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+            <button @click="openItems.includes(5) ? openItems = openItems.filter(i => i !== 5) : openItems.push(5)"
+                    class="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-gray-50 transition-colors">
+              <h3 class="text-lg font-semibold text-gray-900">Does it work with my existing plumbing?</h3>
+              <svg class="w-5 h-5 text-gray-500 transform transition-transform"
+                   :class="openItems.includes(5) ? 'rotate-180' : ''"
+                   fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+              </svg>
+            </button>
+            <div x-show="openItems.includes(5)" x-collapse class="px-6 pb-4">
+              <p class="text-gray-600 leading-relaxed">
+                Yes! Rainföll connects to your existing shower plumbing with standard fittings. The included hose attaches to your current shower arm or diverter valve.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Product Questions -->
+        <div class="faq-item" data-category="product">
+          <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+            <button @click="openItems.includes(6) ? openItems = openItems.filter(i => i !== 6) : openItems.push(6)"
+                    class="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-gray-50 transition-colors">
+              <h3 class="text-lg font-semibold text-gray-900">What finishes are available?</h3>
+              <svg class="w-5 h-5 text-gray-500 transform transition-transform"
+                   :class="openItems.includes(6) ? 'rotate-180' : ''"
+                   fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+              </svg>
+            </button>
+            <div x-show="openItems.includes(6)" x-collapse class="px-6 pb-4">
+              <p class="text-gray-600 leading-relaxed">
+                Rainföll is available in four premium finishes: Chrome, Matte Black, Gold, and Rose Gold. Each finish is carefully selected to complement modern bathroom designs.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item" data-category="product">
+          <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+            <button @click="openItems.includes(7) ? openItems = openItems.filter(i => i !== 7) : openItems.push(7)"
+                    class="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-gray-50 transition-colors">
+              <h3 class="text-lg font-semibold text-gray-900">Can both shower heads be used simultaneously?</h3>
+              <svg class="w-5 h-5 text-gray-500 transform transition-transform"
+                   :class="openItems.includes(7) ? 'rotate-180' : ''"
+                   fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+              </svg>
+            </button>
+            <div x-show="openItems.includes(7)" x-collapse class="px-6 pb-4">
+              <p class="text-gray-600 leading-relaxed">
+                Yes! Both shower heads maintain full pressure when used simultaneously. There's no diverter valve that compromises water flow—both heads deliver powerful, luxurious water flow at once.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item" data-category="product">
+          <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+            <button @click="openItems.includes(8) ? openItems = openItems.filter(i => i !== 8) : openItems.push(8)"
+                    class="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-gray-50 transition-colors">
+              <h3 class="text-lg font-semibold text-gray-900">What's included in the box?</h3>
+              <svg class="w-5 h-5 text-gray-500 transform transition-transform"
+                   :class="openItems.includes(8) ? 'rotate-180' : ''"
+                   fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+              </svg>
+            </button>
+            <div x-show="openItems.includes(8)" x-collapse class="px-6 pb-4">
+              <p class="text-gray-600 leading-relaxed">
+                Each Rainföll system includes: tension bar, two rainfall shower heads, safety sheaths, connecting hoses, and all necessary fittings. Everything you need for installation is included.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Maintenance Questions -->
+        <div class="faq-item" data-category="maintenance">
+          <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+            <button @click="openItems.includes(9) ? openItems = openItems.filter(i => i !== 9) : openItems.push(9)"
+                    class="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-gray-50 transition-colors">
+              <h3 class="text-lg font-semibold text-gray-900">How do I clean the shower heads?</h3>
+              <svg class="w-5 h-5 text-gray-500 transform transition-transform"
+                   :class="openItems.includes(9) ? 'rotate-180' : ''"
+                   fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+              </svg>
+            </button>
+            <div x-show="openItems.includes(9)" x-collapse class="px-6 pb-4">
+              <p class="text-gray-600 leading-relaxed">
+                Simply wipe the shower heads with a soft cloth and mild soap. For mineral buildup, soak the nozzles in a solution of equal parts white vinegar and water for 30 minutes, then rinse thoroughly.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item" data-category="maintenance">
+          <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+            <button @click="openItems.includes(10) ? openItems = openItems.filter(i => i !== 10) : openItems.push(10)"
+                    class="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-gray-50 transition-colors">
+              <h3 class="text-lg font-semibold text-gray-900">What is the warranty?</h3>
+              <svg class="w-5 h-5 text-gray-500 transform transition-transform"
+                   :class="openItems.includes(10) ? 'rotate-180' : ''"
+                   fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+              </svg>
+            </button>
+            <div x-show="openItems.includes(10)" x-collapse class="px-6 pb-4">
+              <p class="text-gray-600 leading-relaxed">
+                Rainföll comes with a 2-year limited warranty covering manufacturing defects and workmanship. Extended warranty options are available at checkout.
+              </p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Still have questions section -->
+      <div class="mt-16 text-center bg-brand-primary/10 rounded-2xl p-8 md:p-12">
+        <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-4">Still have questions?</h2>
+        <p class="text-gray-600 mb-6 max-w-2xl mx-auto">
+          Can't find the answer you're looking for? Our customer support team is here to help.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <a href="contact.html" class="inline-flex items-center justify-center bg-brand-primary text-white px-6 py-3 rounded-lg font-semibold hover:bg-brand-accent1 transition-colors">
+            Contact Support
+          </a>
+          <a href="https://www.instagram.com/rainfoll_showers/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center bg-white text-brand-primary border border-brand-primary px-6 py-3 rounded-lg font-semibold hover:bg-brand-primary hover:text-white transition-colors">
+            DM on Instagram
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- ============================================
+       3. FOOTER
+       ============================================ -->
+  <footer class="bg-brand-primary text-gray-300 pt-12 md:pt-16 pb-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <!-- Footer Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12 mb-10 md:mb-14">
+
+        <!-- Column 1: Logo & Tagline -->
+        <div class="sm:col-span-2 lg:col-span-1">
+          <img src="assets/images/logo/rainfoll-logo-white-noback.png"
+               alt="Rainföll"
+               class="h-8 mb-4 opacity-80">
+          <p class="text-sm leading-relaxed max-w-xs">
+            The luxury rainfall shower by Rainföll. Installs in minutes—no tools, no drilling, no trace.
+          </p>
+        </div>
+
+        <!-- Column 2: Quick Links -->
+        <div>
+          <h4 class="text-white font-semibold text-sm uppercase tracking-wider mb-4">Quick Links</h4>
+          <ul class="space-y-3">
+            <li><a href="index.html" class="text-sm hover:text-white transition-colors">Home</a></li>
+            <li><a href="index.html#how-it-works" class="text-sm hover:text-white transition-colors">How It Works</a></li>
+            <li><a href="index.html#finishes" class="text-sm hover:text-white transition-colors">Finishes</a></li>
+            <li><a href="index.html#reviews" class="text-sm hover:text-white transition-colors">Reviews</a></li>
+          </ul>
+        </div>
+
+        <!-- Column 3: Support -->
+        <div>
+          <h4 class="text-white font-semibold text-sm uppercase tracking-wider mb-4">Support</h4>
+          <ul class="space-y-3">
+            <li><a href="faq.html" class="text-sm hover:text-white transition-colors">FAQ</a></li>
+            <li><a href="contact.html" class="text-sm hover:text-white transition-colors">Contact Us</a></li>
+          </ul>
+        </div>
+
+        <!-- Column 4: Social -->
+        <div>
+          <h4 class="text-white font-semibold text-sm uppercase tracking-wider mb-4">Follow Us</h4>
+          <div class="flex gap-4">
+            <!-- Instagram -->
+            <a href="https://www.instagram.com/rainfoll_showers/" target="_blank" rel="noopener noreferrer" class="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-gray-700 transition-colors" aria-label="Instagram">
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+              </svg>
+            </a>
+            <!-- TikTok -->
+            <a href="#" class="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-gray-700 transition-colors" aria-label="TikTok">
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1v-3.5a6.37 6.37 0 00-.79-.05A6.34 6.34 0 003.15 15.2a6.34 6.34 0 0010.86 4.48v-7.15a8.16 8.16 0 005.58 2.2v-3.45a4.85 4.85 0 01-1.99-4.59h1.99z"/>
+              </svg>
+            </a>
+            <!-- Facebook -->
+            <a href="#" class="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-gray-700 transition-colors" aria-label="Facebook">
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+              </svg>
+            </a>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Bottom Bar -->
+      <div class="border-t border-gray-800 pt-6 flex flex-col sm:flex-row justify-between items-center gap-4">
+        <p class="text-xs text-gray-400">&copy; 2026 Rainföll Inc. All rights reserved.</p>
+        <div class="flex gap-6">
+          <a href="#" class="text-xs text-gray-500 hover:text-gray-300 transition-colors">Privacy Policy</a>
+          <a href="#" class="text-xs text-gray-500 hover:text-gray-300 transition-colors">Terms of Service</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- FAQ Filter Script -->
+  <script>
+    function filterFAQ(category) {
+      const items = document.querySelectorAll('.faq-item');
+      const buttons = document.querySelectorAll('.filter-btn');
+      
+      // Update button styles
+      buttons.forEach(btn => {
+        btn.classList.remove('bg-brand-primary', 'text-white');
+        btn.classList.add('bg-gray-200', 'text-gray-700');
+      });
+      event.target.classList.remove('bg-gray-200', 'text-gray-700');
+      event.target.classList.add('bg-brand-primary', 'text-white');
+      
+      // Filter items
+      items.forEach(item => {
+        if (category === 'all' || item.dataset.category === category) {
+          item.style.display = 'block';
+        } else {
+          item.style.display = 'none';
+        }
+      });
+    }
+  </script>
+
+  <!-- Alpine.js x-cloak style -->
+  <style>[x-cloak] { display: none !important; }</style>
+
+</body>
+</html>
