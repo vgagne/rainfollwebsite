@@ -363,7 +363,7 @@
       </header>
 
       <!-- ── KICKSTARTER BADGE ───────────────────── -->
-      <div class="mb-7 fade-in">
+      <div class="mb-4 sm:mb-7 fade-in">
         <div class="ks-badge">
           <span class="ks-dot"></span>
           Launching on Kickstarter
@@ -371,46 +371,57 @@
       </div>
 
       <!-- ── HEADLINE ───────────────────────────── -->
-      <div class="mb-8 fade-in">
-        <h1 class="text-3xl sm:text-4xl font-bold text-gray-900 leading-tight mb-3">
+      <div class="mb-4 sm:mb-8 fade-in">
+        <h1 class="text-2xl sm:text-4xl font-bold text-gray-900 leading-tight mb-2">
           We're Almost Ready to Launch.
         </h1>
-        <p class="text-gray-600 text-base sm:text-lg leading-relaxed">
-          Rainföll is heading to Kickstarter. We're finalizing the supply chain so every unit we ship is exactly right. Leave your email and you'll be the first to know when we go live.
+        <p class="text-gray-600 text-sm sm:text-lg leading-relaxed">
+          Rainföll is heading to Kickstarter. Leave your email and you'll be the first to know when we go live — with early backer pricing.
         </p>
       </div>
 
-      <!-- ── KICKSTARTER HIGHLIGHT CARD ─────────── -->
-      <div class="ks-card mb-8 fade-in">
-        <div class="flex items-start gap-4">
-          <div class="ks-icon-wrap">
-            <!-- Kickstarter-style "K" icon -->
-            <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none">
-              <path d="M7 4v16M7 12l4-3.5L17 4M7 12l4 3L17 20" stroke="#05ce78" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
+      <!-- ── KICKSTARTER HIGHLIGHT CARD + PROGRESS (collapsed on mobile) ── -->
+      <div class="hidden sm:block">
+        <div class="ks-card mb-8 fade-in">
+          <div class="flex items-start gap-4">
+            <div class="ks-icon-wrap">
+              <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none">
+                <path d="M7 4v16M7 12l4-3.5L17 4M7 12l4 3L17 20" stroke="#05ce78" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <div>
+              <p class="text-xs font-bold uppercase tracking-widest text-green-700 mb-1">Kickstarter Launch</p>
+              <h3 class="text-base font-bold text-gray-900 mb-1">Back us on Kickstarter — coming soon</h3>
+              <p class="text-gray-500 text-sm leading-relaxed">
+                Our Kickstarter campaign is in the works. Early backers will have access to launch pricing before we open to the public. Get on the list now — you'll be the first to know.
+              </p>
+            </div>
           </div>
-          <div>
-            <p class="text-xs font-bold uppercase tracking-widest text-green-700 mb-1">Kickstarter Launch</p>
-            <h3 class="text-base font-bold text-gray-900 mb-1">Back us on Kickstarter — coming soon</h3>
-            <p class="text-gray-500 text-sm leading-relaxed">
-              Our Kickstarter campaign is in the works. Early backers will have access to launch pricing before we open to the public. Get on the list now — you'll be the first to know.
-            </p>
+        </div>
+
+        <div class="mb-8 fade-in">
+          <div class="flex items-center justify-between text-xs text-gray-500 mb-2">
+            <span class="font-medium">Campaign Readiness</span>
+            <span class="font-bold text-brand-primary">73%</span>
+          </div>
+          <div class="progress-track">
+            <div class="progress-fill" id="progress-bar"></div>
+          </div>
+          <div class="flex justify-between text-xs text-gray-400 mt-1.5">
+            <span>Design &amp; Engineering</span>
+            <span>Kickstarter Live</span>
           </div>
         </div>
       </div>
 
-      <!-- ── PROGRESS ───────────────────────────── -->
-      <div class="mb-8 fade-in">
-        <div class="flex items-center justify-between text-xs text-gray-500 mb-2">
+      <!-- ── PROGRESS (mobile only, compact) ──────── -->
+      <div class="sm:hidden mb-4 fade-in">
+        <div class="flex items-center justify-between text-xs text-gray-500 mb-1.5">
           <span class="font-medium">Campaign Readiness</span>
           <span class="font-bold text-brand-primary">73%</span>
         </div>
         <div class="progress-track">
-          <div class="progress-fill" id="progress-bar"></div>
-        </div>
-        <div class="flex justify-between text-xs text-gray-400 mt-1.5">
-          <span>Design &amp; Engineering</span>
-          <span>Kickstarter Live</span>
+          <div class="progress-fill" id="progress-bar-mobile"></div>
         </div>
       </div>
 
@@ -644,8 +655,10 @@
 
     window.addEventListener('load', () => {
       setTimeout(() => {
-        const bar = document.getElementById('progress-bar');
-        if (bar) bar.style.width = '73%';
+        ['progress-bar', 'progress-bar-mobile'].forEach(id => {
+          const bar = document.getElementById(id);
+          if (bar) bar.style.width = '73%';
+        });
       }, 500);
     });
   </script>
