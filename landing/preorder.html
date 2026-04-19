@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rainföll | Reserve Your Spot — Kickstarter Coming Soon</title>
+  <meta name="description" content="We're launching on Kickstarter. Submit your email to be first in line when we go live.">
+
+  <link rel="icon" type="image/png" sizes="32x32" href="../assets/icons/Favicon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="../assets/icons/Favicon.png">
+
+  <!-- TikTok Pixel -->
+  <script>
+    !function (w, d, t) {
+      w.TiktokAnalyticsObject=t;var ttq=w[t]=w[t]||[];ttq.methods=["page","track","identify","instances","debug","on","off","once","ready","alias","group","enableCookie","disableCookie"],ttq.setAndDefer=function(t,e){t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}};for(var i=0;i<ttq.methods.length;i++)ttq.setAndDefer(ttq,ttq.methods[i]);ttq.instance=function(t){for(var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n]);return e},ttq.load=function(e,n){var i="https://analytics.tiktok.com/i18n/pixel/events.js";ttq._i=ttq._i||{},ttq._i[e]=[],ttq._i[e]._u=i,ttq._t=ttq._t||{},ttq._t[e]=+new Date,ttq._o=ttq._o||{},ttq._o[e]=n||{};var o=document.createElement("script");o.type="text/javascript",o.async=!0,o.src=i+"?sdkid="+e+"&lib="+t;var a=document.getElementsByTagName("script")[0];a.parentNode.insertBefore(o,a)};
+      // ttq.load('XXXXXXXXXXXXXXXX');
+      ttq.page();
+    }(window, document, 'ttq');
+  </script>
+
+  <!-- Meta Pixel -->
+  <script>
+    !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+    // fbq('init', 'XXXXXXXXXXXXXXXXXX');
+    // fbq('track', 'PageView');
+  </script>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              primary: '#727D71',
+              secondary: '#DCC9B6',
+              tertiary: '#A39171',
+              accent1: '#6D4C3D',
+              accent2: '#ABC4AB'
+            },
+            ks: '#05ce78'
+          },
+          fontFamily: { sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'] }
+        }
+      }
+    }
+  </script>
+
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --brand-primary: #727D71;
+      --brand-secondary: #DCC9B6;
+      --brand-tertiary: #A39171;
+      --brand-accent1: #6D4C3D;
+      --brand-accent2: #ABC4AB;
+      --ks-green: #05ce78;
+    }
+
+    * { -webkit-tap-highlight-color: transparent; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: #f8f6f3;
+      min-height: 100vh;
+    }
+
+    /* ── BACKGROUND IMAGE ────────────────────────────── */
+    .page-bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+    }
+    .page-bg img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      object-position: center top;
+    }
+    /* Light warm overlay so image shows through without overpowering content */
+    .page-bg::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(248, 246, 243, 0.72);
+    }
+
+    /* ── LAYOUT ─────────────────────────────────────── */
+    .page-content {
+      position: relative;
+      z-index: 1;
+    }
+
+    .content-col {
+      max-width: 620px;
+      margin: 0 auto;
+      padding: 0 1.5rem 4rem;
+    }
+
+    @media (min-width: 640px) {
+      .content-col { padding: 0 2rem 4rem; }
+    }
+
+    /* ── KICKSTARTER BADGE ────────────────────────── */
+    .ks-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(5, 206, 120, 0.10);
+      border: 1.5px solid rgba(5, 206, 120, 0.30);
+      border-radius: 9999px;
+      padding: 0.375rem 0.875rem;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #048a52;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .ks-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--ks-green);
+      box-shadow: 0 0 0 2px rgba(5, 206, 120, 0.2);
+      animation: pulse-ks 2s ease-in-out infinite;
+    }
+    @keyframes pulse-ks {
+      0%, 100% { box-shadow: 0 0 0 2px rgba(5, 206, 120, 0.2); }
+      50% { box-shadow: 0 0 0 6px rgba(5, 206, 120, 0.08); }
+    }
+
+    /* ── KICKSTARTER HIGHLIGHT CARD ──────────────── */
+    .ks-card {
+      background: #ffffff;
+      border: 1.5px solid rgba(5, 206, 120, 0.25);
+      border-radius: 1.25rem;
+      padding: 1.5rem;
+      box-shadow: 0 2px 16px rgba(5, 206, 120, 0.06);
+    }
+    .ks-icon-wrap {
+      width: 3rem; height: 3rem;
+      border-radius: 0.875rem;
+      background: rgba(5, 206, 120, 0.10);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    /* ── STATUS / PROGRESS ───────────────────────── */
+    .progress-track {
+      background: #e5e1dc;
+      border-radius: 9999px;
+      height: 6px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      border-radius: 9999px;
+      background: linear-gradient(90deg, var(--brand-primary), var(--brand-secondary));
+      width: 0%;
+      transition: width 1.2s ease;
+    }
+
+    /* ── FORM CARD ────────────────────────────────── */
+    .form-card {
+      background: #ffffff;
+      border: 1px solid #e8e2da;
+      border-radius: 1.5rem;
+      padding: 2rem;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+    }
+
+    /* ── INPUT ────────────────────────────────────── */
+    .email-input {
+      width: 100%;
+      background: #f8f6f3;
+      border: 1.5px solid #d4cdc5;
+      border-radius: 0.875rem;
+      padding: 0.9rem 1.1rem;
+      color: #1a1a1a;
+      font-size: 1rem;
+      font-family: 'Inter', sans-serif;
+      transition: border-color 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
+      outline: none;
+      -webkit-appearance: none;
+    }
+    .email-input::placeholder { color: #a09890; }
+    .email-input:focus {
+      border-color: var(--brand-primary);
+      background: #ffffff;
+      box-shadow: 0 0 0 3px rgba(114, 125, 113, 0.12);
+    }
+    .email-input.error { border-color: #ef4444; }
+
+    /* ── SUBMIT BUTTON ───────────────────────────── */
+    .submit-btn {
+      width: 100%;
+      background: var(--brand-secondary);
+      color: #fff;
+      font-weight: 700;
+      font-size: 1rem;
+      border-radius: 0.875rem;
+      padding: 0.95rem 1.5rem;
+      border: none;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      font-family: 'Inter', sans-serif;
+    }
+    .submit-btn:hover {
+      background: var(--brand-primary);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(114,125,113,0.30);
+    }
+    .submit-btn:active { transform: scale(0.98); }
+    .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+    /* ── PRIVACY NOTE ────────────────────────────── */
+    .privacy-note {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+      background: #f3f0ec;
+      border: 1px solid #e0d9d0;
+      border-radius: 0.75rem;
+      padding: 0.875rem 1rem;
+    }
+
+    /* ── SUCCESS STATE ───────────────────────────── */
+    .success-card {
+      background: rgba(5, 206, 120, 0.06);
+      border: 1px solid rgba(5, 206, 120, 0.25);
+      border-radius: 1.25rem;
+      padding: 2rem;
+      text-align: center;
+    }
+
+    /* ── PRODUCT MINI PREVIEWS ───────────────────── */
+    .mini-preview {
+      border-radius: 0.75rem;
+      overflow: hidden;
+      aspect-ratio: 1;
+    }
+    .mini-preview img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      object-position: center top;
+    }
+
+    /* ── DIVIDER ─────────────────────────────────── */
+    .divider { border: none; border-top: 1px solid #e5e0d9; }
+
+    /* ── FAQ ─────────────────────────────────────── */
+    .faq-item {
+      border: 1px solid #e5e0d9;
+      background: #ffffff;
+      border-radius: 0.875rem;
+      overflow: hidden;
+    }
+    .faq-btn {
+      width: 100%;
+      text-align: left;
+      padding: 1rem 1.125rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+    }
+    .faq-answer { padding: 0 1.125rem 1rem; }
+
+    /* ── ANIMATIONS ──────────────────────────────── */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+    .stagger > * {
+      opacity: 0;
+      transform: translateY(14px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+    .stagger.visible > *:nth-child(1) { transition-delay: 0ms;   opacity: 1; transform: translateY(0); }
+    .stagger.visible > *:nth-child(2) { transition-delay: 80ms;  opacity: 1; transform: translateY(0); }
+    .stagger.visible > *:nth-child(3) { transition-delay: 160ms; opacity: 1; transform: translateY(0); }
+    .stagger.visible > *:nth-child(4) { transition-delay: 240ms; opacity: 1; transform: translateY(0); }
+    .stagger.visible > *:nth-child(5) { transition-delay: 320ms; opacity: 1; transform: translateY(0); }
+
+    [x-cloak] { display: none !important; }
+  </style>
+</head>
+
+<body class="font-sans antialiased">
+
+  <!-- Background image -->
+  <div class="page-bg">
+    <img src="../assets/images/products/matte/matte-right-water.jpg"
+         alt="" aria-hidden="true" loading="eager">
+  </div>
+
+  <div class="page-content">
+    <div class="content-col">
+
+      <!-- Top bar -->
+      <header class="py-6 flex items-center justify-between">
+        <a href="index.html">
+          <img src="../assets/images/logo/Rainfoll-Logo-black-noback.png" alt="Rainföll" class="h-8 w-auto">
+        </a>
+        <a href="index.html" class="text-xs text-gray-400 hover:text-gray-700 transition-colors flex items-center gap-1 font-medium">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+          Back
+        </a>
+      </header>
+
+      <!-- ── KICKSTARTER BADGE ───────────────────── -->
+      <div class="mb-7 fade-in">
+        <div class="ks-badge">
+          <span class="ks-dot"></span>
+          Launching on Kickstarter
+        </div>
+      </div>
+
+      <!-- ── HEADLINE ───────────────────────────── -->
+      <div class="mb-8 fade-in">
+        <h1 class="text-3xl sm:text-4xl font-bold text-gray-900 leading-tight mb-3">
+          We're Almost Ready to Launch.
+        </h1>
+        <p class="text-gray-600 text-base sm:text-lg leading-relaxed">
+          Rainföll is heading to Kickstarter. We're finalizing the supply chain so every unit we ship is exactly right. Leave your email and you'll be the first to know when we go live.
+        </p>
+      </div>
+
+      <!-- ── KICKSTARTER HIGHLIGHT CARD ─────────── -->
+      <div class="ks-card mb-8 fade-in">
+        <div class="flex items-start gap-4">
+          <div class="ks-icon-wrap">
+            <!-- Kickstarter-style "K" icon -->
+            <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none">
+              <path d="M7 4v16M7 12l4-3.5L17 4M7 12l4 3L17 20" stroke="#05ce78" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div>
+            <p class="text-xs font-bold uppercase tracking-widest text-green-700 mb-1">Kickstarter Launch</p>
+            <h3 class="text-base font-bold text-gray-900 mb-1">Back us on Kickstarter — coming soon</h3>
+            <p class="text-gray-500 text-sm leading-relaxed">
+              Our Kickstarter campaign is in the works. Early backers will have access to launch pricing before we open to the public. Get on the list now — you'll be the first to know.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── PROGRESS ───────────────────────────── -->
+      <div class="mb-8 fade-in">
+        <div class="flex items-center justify-between text-xs text-gray-500 mb-2">
+          <span class="font-medium">Campaign Readiness</span>
+          <span class="font-bold text-brand-primary">73%</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" id="progress-bar"></div>
+        </div>
+        <div class="flex justify-between text-xs text-gray-400 mt-1.5">
+          <span>Design &amp; Engineering</span>
+          <span>Kickstarter Live</span>
+        </div>
+      </div>
+
+      <!-- ── EMAIL FORM ─────────────────────────── -->
+      <div class="form-card mb-6 fade-in" x-data="{
+        email: '',
+        submitted: false,
+        error: '',
+        loading: false,
+        validate() {
+          const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+          if (!this.email.trim()) { this.error = 'Please enter your email address.'; return false; }
+          if (!re.test(this.email)) { this.error = 'Please enter a valid email address.'; return false; }
+          this.error = '';
+          return true;
+        },
+        submit() {
+          if (!this.validate()) return;
+          this.loading = true;
+          // ── CRM INTEGRATION POINT ──────────────────────────────────────
+          // Connect your CRM here. Examples:
+          //   Klaviyo:    POST https://a.klaviyo.com/client/subscriptions/
+          //   Mailchimp:  POST to your Mailchimp embedded form action URL
+          //   Loops.so:   POST https://app.loops.so/api/v1/contacts/create
+          //   ConvertKit: POST https://api.convertkit.com/v3/forms/:id/subscribe
+          //
+          // For now we simulate success after a short delay.
+          // ───────────────────────────────────────────────────────────────
+          setTimeout(() => {
+            this.loading = false;
+            this.submitted = true;
+            if (typeof ttq !== 'undefined') ttq.track('CompleteRegistration', { email: this.email });
+            if (typeof fbq !== 'undefined') fbq('track', 'Lead', { email: this.email });
+          }, 800);
+        }
+      }">
+
+        <!-- Form state -->
+        <div x-show="!submitted">
+          <h2 class="text-xl font-bold text-gray-900 mb-1">Be First to Back Us</h2>
+          <p class="text-gray-500 text-sm mb-6">One email. One moment. When our Kickstarter goes live, you'll hear it from us first — with early backer access before anyone else.</p>
+
+          <div class="space-y-3">
+            <div>
+              <label for="email-input" class="sr-only">Email address</label>
+              <input
+                id="email-input"
+                type="email"
+                x-model="email"
+                :class="error ? 'email-input error' : 'email-input'"
+                placeholder="your@email.com"
+                @keydown.enter="submit()"
+                @input="error = ''"
+                autocomplete="email"
+                inputmode="email"
+              >
+              <p x-show="error" x-text="error" class="text-red-500 text-xs mt-1.5 pl-1"></p>
+            </div>
+
+            <button
+              type="button"
+              class="submit-btn"
+              @click="submit()"
+              :disabled="loading"
+            >
+              <span x-show="!loading">Notify Me When the Kickstarter Is Live</span>
+              <span x-show="loading" class="flex items-center justify-center gap-2">
+                <svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                </svg>
+                Saving your spot…
+              </span>
+            </button>
+          </div>
+
+          <!-- Privacy reassurance -->
+          <div class="privacy-note mt-4">
+            <svg class="w-4 h-4 text-brand-primary flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+            </svg>
+            <p class="text-gray-500 text-xs leading-relaxed">
+              <strong class="text-gray-700">Your email is sacred to us.</strong> You'll only hear from us when there's something worth knowing — like when our Kickstarter goes live.
+            </p>
+          </div>
+        </div>
+
+        <!-- Success state -->
+        <div x-show="submitted" x-cloak class="success-card">
+          <div class="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-4" style="background: rgba(5,206,120,0.12);">
+            <svg class="w-7 h-7" fill="none" stroke="#05ce78" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+            </svg>
+          </div>
+          <h3 class="text-xl font-bold text-gray-900 mb-2">You're on the list.</h3>
+          <p class="text-gray-600 text-sm leading-relaxed mb-1">
+            We'll reach out the moment our Kickstarter goes live. That's the only email you'll get from us.
+          </p>
+          <p class="text-gray-400 text-xs mt-2">Confirmed: <span class="text-gray-600 font-medium" x-text="email"></span></p>
+        </div>
+
+      </div>
+
+      <!-- ── SUPPLY CHAIN / TEAM NOTE ───────────── -->
+      <div class="mb-8 fade-in">
+        <div class="bg-white border border-gray-200 rounded-2xl p-5">
+          <div class="flex items-start gap-3">
+            <svg class="w-5 h-5 text-brand-tertiary flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            <div>
+              <h3 class="text-sm font-bold text-gray-800 mb-2">A note from the Rainföll team</h3>
+              <p class="text-gray-500 text-sm leading-relaxed">
+                We're currently finalizing our supply chain to make sure every unit we ship meets the standard we designed for. We won't launch until it's right.
+              </p>
+              <p class="text-gray-500 text-sm leading-relaxed mt-2">
+                When we do go live on Kickstarter, people on this list get access first — including any early backer pricing before we open publicly.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <hr class="divider mb-8">
+
+      <!-- ── WHAT YOU'LL BE GETTING ─────────────── -->
+      <div class="mb-10 fade-in">
+        <h2 class="text-lg font-bold text-gray-900 mb-5">What you'll be backing</h2>
+
+        <div class="grid grid-cols-2 gap-3 mb-6 stagger">
+          <div class="mini-preview">
+            <img src="../assets/images/products/chrome/Chrome-center-with-water-portrait.jpg" alt="Chrome">
+          </div>
+          <div class="mini-preview">
+            <img src="../assets/images/products/gold/gold-center-water.jpg" alt="Gold">
+          </div>
+          <div class="mini-preview">
+            <img src="../assets/images/products/matte/matte-center-water.jpg" alt="Matte Black">
+          </div>
+          <div class="mini-preview">
+            <img src="../assets/images/products/rose/rose-center-water.jpg" alt="Rose Gold">
+          </div>
+        </div>
+
+        <div class="space-y-3 stagger">
+          <div class="flex items-center gap-3">
+            <div class="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0" style="background: rgba(114,125,113,0.12);">
+              <svg class="w-3 h-3 text-brand-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+            </div>
+            <p class="text-gray-600 text-sm">Sliding overhead rainfall system — goes anywhere in your shower</p>
+          </div>
+          <div class="flex items-center gap-3">
+            <div class="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0" style="background: rgba(114,125,113,0.12);">
+              <svg class="w-3 h-3 text-brand-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+            </div>
+            <p class="text-gray-600 text-sm">Dual shower heads with full pressure simultaneously</p>
+          </div>
+          <div class="flex items-center gap-3">
+            <div class="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0" style="background: rgba(114,125,113,0.12);">
+              <svg class="w-3 h-3 text-brand-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+            </div>
+            <p class="text-gray-600 text-sm">Zero drilling — tension bar fits showers 56–80 inches wide</p>
+          </div>
+          <div class="flex items-center gap-3">
+            <div class="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0" style="background: rgba(114,125,113,0.12);">
+              <svg class="w-3 h-3 text-brand-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+            </div>
+            <p class="text-gray-600 text-sm">4 premium finishes: Chrome, Gold, Matte Black, Rose Gold</p>
+          </div>
+          <div class="flex items-center gap-3">
+            <div class="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0" style="background: rgba(114,125,113,0.12);">
+              <svg class="w-3 h-3 text-brand-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+            </div>
+            <p class="text-gray-600 text-sm">Installs in under 10 minutes — no tools, no plumber</p>
+          </div>
+        </div>
+      </div>
+
+      <hr class="divider mb-8">
+
+      <!-- ── FAQ ───────────────────────────────── -->
+      <div class="mb-10 fade-in" x-data="{ open: null }">
+        <h2 class="text-lg font-bold text-gray-900 mb-5">Quick answers</h2>
+
+        <div class="space-y-2">
+
+          <div class="faq-item">
+            <button class="faq-btn" @click="open = open === 1 ? null : 1">
+              <span class="text-sm font-semibold text-gray-800">When does the Kickstarter launch?</span>
+              <svg class="w-4 h-4 text-gray-400 flex-shrink-0 transition-transform duration-200" :class="open === 1 ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+            </button>
+            <div x-show="open === 1" x-collapse class="faq-answer">
+              <p class="text-gray-500 text-sm leading-relaxed">We're targeting a launch in the coming months. We won't go live until the supply chain is locked in and quality meets our standards. Everyone on this list gets notified before we go public.</p>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-btn" @click="open = open === 2 ? null : 2">
+              <span class="text-sm font-semibold text-gray-800">Do I have to pay anything to join this list?</span>
+              <svg class="w-4 h-4 text-gray-400 flex-shrink-0 transition-transform duration-200" :class="open === 2 ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+            </button>
+            <div x-show="open === 2" x-collapse class="faq-answer">
+              <p class="text-gray-500 text-sm leading-relaxed">Not at all. Submitting your email is completely free. We'll let you know when the Kickstarter launches, and you can decide then whether to back us.</p>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-btn" @click="open = open === 3 ? null : 3">
+              <span class="text-sm font-semibold text-gray-800">Will early backers get special pricing?</span>
+              <svg class="w-4 h-4 text-gray-400 flex-shrink-0 transition-transform duration-200" :class="open === 3 ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+            </button>
+            <div x-show="open === 3" x-collapse class="faq-answer">
+              <p class="text-gray-500 text-sm leading-relaxed">Yes — Kickstarter campaigns typically offer early bird tiers at a lower price than retail. People on this list will get access to those tiers first, before they're publicly available or sell out.</p>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-btn" @click="open = open === 4 ? null : 4">
+              <span class="text-sm font-semibold text-gray-800">What will you do with my email?</span>
+              <svg class="w-4 h-4 text-gray-400 flex-shrink-0 transition-transform duration-200" :class="open === 4 ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+            </button>
+            <div x-show="open === 4" x-collapse class="faq-answer">
+              <p class="text-gray-500 text-sm leading-relaxed">One thing only: notify you when the Kickstarter goes live. No newsletters, no promotional blasts, no third-party sharing. One email, when it matters. That's a promise.</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Patent Pending Disclaimer -->
+      <div class="text-center py-4 mb-2">
+        <p class="text-sm font-semibold tracking-wide" style="color:#A39171;">
+          &#9670; Proudly Patent Pending Internationally &#9670;
+        </p>
+      </div>
+
+      <!-- ── FOOTER ─────────────────────────────── -->
+      <footer class="border-t border-gray-200 pt-7 pb-4">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+          <img src="../assets/images/logo/Rainfoll-Logo-black-noback.png" alt="Rainföll" class="h-6 opacity-40">
+          <div class="flex gap-5">
+            <a href="../faq.html" class="text-xs text-gray-400 hover:text-gray-600 transition-colors">FAQ</a>
+            <a href="../contact.html" class="text-xs text-gray-400 hover:text-gray-600 transition-colors">Contact</a>
+            <a href="#" class="text-xs text-gray-400 hover:text-gray-600 transition-colors">Privacy Policy</a>
+          </div>
+        </div>
+        <p class="text-xs text-gray-300 mt-3">&copy; 2026 Rainföll Inc. All rights reserved.</p>
+      </footer>
+
+    </div><!-- /content-col -->
+
+  </div><!-- /page-content -->
+
+  <script>
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add('visible');
+      });
+    }, { threshold: 0.08 });
+
+    document.querySelectorAll('.fade-in, .stagger').forEach(el => observer.observe(el));
+
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        const bar = document.getElementById('progress-bar');
+        if (bar) bar.style.width = '73%';
+      }, 500);
+    });
+  </script>
+
+  <!-- Alpine x-collapse for FAQ -->
+  <script>
+    document.addEventListener('alpine:init', () => {
+      Alpine.directive('collapse', (el) => {
+        el._x_doShow = () => { el.style.display = 'block'; }
+        el._x_doHide = () => { el.style.display = 'none'; }
+      });
+    });
+  </script>
+
+  <style>[x-cloak] { display: none !important; }</style>
+</body>
+</html>
