@@ -46,6 +46,13 @@
     }
   </script>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script>
+    const supabaseClient = supabase.createClient(
+      'https://xflbbfonlavnvqboosiy.supabase.co',
+      'sb_publishable__CRjclNdLQD0C8OkJt6wyg_RneMxFBF'
+    );
+  </script>
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -384,24 +391,24 @@
           this.error = '';
           return true;
         },
-        submit() {
+        async submit() {
           if (!this.validate()) return;
           this.loading = true;
-          // ── CRM INTEGRATION POINT ──────────────────────────────────────
-          // Connect your CRM here. Examples:
-          //   Klaviyo:    POST https://a.klaviyo.com/client/subscriptions/
-          //   Mailchimp:  POST to your Mailchimp embedded form action URL
-          //   Loops.so:   POST https://app.loops.so/api/v1/contacts/create
-          //   ConvertKit: POST https://api.convertkit.com/v3/forms/:id/subscribe
-          //
-          // For now we simulate success after a short delay.
-          // ───────────────────────────────────────────────────────────────
-          setTimeout(() => {
-            this.loading = false;
-            this.submitted = true;
-            if (typeof ttq !== 'undefined') ttq.track('CompleteRegistration', { email: this.email });
-            if (typeof fbq !== 'undefined') fbq('track', 'Lead', { email: this.email });
-          }, 800);
+          const { error } = await supabaseClient
+            .from('email_signups')
+            .insert({ email: this.email.trim().toLowerCase() });
+          this.loading = false;
+          if (error) {
+            if (error.code === '23505') {
+              this.error = "You're already on the list — we'll see you at launch!";
+            } else {
+              this.error = 'Something went wrong. Please try again.';
+            }
+            return;
+          }
+          this.submitted = true;
+          if (typeof ttq !== 'undefined') ttq.track('CompleteRegistration', { email: this.email });
+          if (typeof fbq !== 'undefined') fbq('track', 'Lead', { email: this.email });
         }
       }">
 
