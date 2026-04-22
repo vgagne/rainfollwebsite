@@ -66,8 +66,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
-  <link rel="preload" href="../assets/images/hero/Hero-Video-3.mp4" as="video" type="video/mp4" media="(min-width: 769px)">
-  <link rel="preload" href="../assets/images/hero/Hero-Video-Portrait-2.mp4" as="video" type="video/mp4" media="(max-width: 768px)">
+  <link rel="preload" href="../assets/images/hero/Hero-Video-3.webm" as="video" type="video/webm" media="(min-width: 769px)">
+  <link rel="preload" href="../assets/images/hero/Hero-Video-Portrait-2.webm" as="video" type="video/webm" media="(max-width: 768px)">
 
   <style>
     :root {
@@ -263,7 +263,9 @@
     <video autoplay muted loop playsinline preload="auto"
            poster="../assets/images/products/chrome/chrome-center-water.jpg"
            aria-label="Rainföll shower system in action">
+      <source src="../assets/images/hero/Hero-Video-Portrait-2.webm" type="video/webm" media="(max-width: 768px)">
       <source src="../assets/images/hero/Hero-Video-Portrait-2.mp4" type="video/mp4" media="(max-width: 768px)">
+      <source src="../assets/images/hero/Hero-Video-3.webm" type="video/webm">
       <source src="../assets/images/hero/Hero-Video-3.mp4" type="video/mp4">
     </video>
 
