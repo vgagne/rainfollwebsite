@@ -232,6 +232,23 @@
       transform: translateY(-2px);
     }
 
+    @keyframes hero-glow {
+      0%, 100% {
+        box-shadow: 0 4px 20px rgba(42,122,92,0.4), 0 0 0 0 rgba(42,122,92,0.5);
+      }
+      50% {
+        box-shadow: 0 8px 40px rgba(42,122,92,0.75), 0 0 0 16px rgba(42,122,92,0);
+      }
+    }
+
+    .hero-cta {
+      animation: hero-glow 2.2s ease-in-out infinite;
+    }
+
+    .hero-cta:hover {
+      animation-play-state: paused;
+    }
+
     /* Mid-section CTA strip */
     .cta-strip {
       text-align: center;
@@ -290,7 +307,7 @@
         No drilling. No plumber. Use your entire shower space.
       </p>
 
-      <a href="preorder.html" class="cta-btn px-6 sm:px-8 py-3.5 sm:py-4 text-base sm:text-lg w-full sm:w-auto text-center sm:text-left" onclick="trackCTA('hero-primary')">
+      <a href="preorder.html" class="cta-btn hero-cta px-8 sm:px-10 py-4 sm:py-5 text-xl sm:text-2xl w-full sm:w-auto text-center sm:text-left" onclick="trackCTA('hero-primary')">
         Get Early Access
       </a>
     </div>
