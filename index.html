@@ -1,10 +1,732 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-NLM0KNT900"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-NLM0KNT900');
+  </script>
+  <!-- Microsoft Clarity -->
+  <script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "wgtk94k854");
+  </script>
   <meta charset="UTF-8">
-  <meta http-equiv="refresh" content="0;url=/landing/">
-  <title>Rainföll</title>
-  <script>window.location.replace('/landing/');</script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rainföll | Luxury Rainfall Shower — No Drilling Required</title>
+  <meta name="description" content="Turn your shower into a luxury rainfall experience in minutes. No drilling. No plumber. Use your entire shower space.">
+
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/Favicon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/Favicon.png">
+
+  <meta property="og:title" content="Rainföll | Luxury Rainfall Shower — No Drilling Required">
+  <meta property="og:description" content="Turn your shower into a luxury rainfall experience in minutes. No drilling. No plumber.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="assets/images/products/chrome/chrome-center-water.jpg">
+
+  <!-- TikTok Pixel -->
+  <script>
+    !function (w, d, t) {
+      w.TiktokAnalyticsObject=t;var ttq=w[t]=w[t]||[];ttq.methods=["page","track","identify","instances","debug","on","off","once","ready","alias","group","enableCookie","disableCookie"],ttq.setAndDefer=function(t,e){t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}};for(var i=0;i<ttq.methods.length;i++)ttq.setAndDefer(ttq,ttq.methods[i]);ttq.instance=function(t){for(var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n]);return e},ttq.load=function(e,n){var i="https://analytics.tiktok.com/i18n/pixel/events.js";ttq._i=ttq._i||{},ttq._i[e]=[],ttq._i[e]._u=i,ttq._t=ttq._t||{},ttq._t[e]=+new Date,ttq._o=ttq._o||{},ttq._o[e]=n||{};var o=document.createElement("script");o.type="text/javascript",o.async=!0,o.src=i+"?sdkid="+e+"&lib="+t;var a=document.getElementsByTagName("script")[0];a.parentNode.insertBefore(o,a)};
+      // ttq.load('XXXXXXXXXXXXXXXX');
+      ttq.page();
+    }(window, document, 'ttq');
+  </script>
+
+  <!-- Meta Pixel -->
+  <script>
+    !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+    // fbq('init', 'XXXXXXXXXXXXXXXXXX');
+    // fbq('track', 'PageView');
+  </script>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              primary: '#727D71',
+              secondary: '#DCC9B6',
+              tertiary: '#A39171',
+              accent1: '#6D4C3D',
+              accent2: '#ABC4AB'
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="preload" href="assets/images/hero/Hero-Video-3.webm" as="video" type="video/webm" media="(min-width: 769px)">
+  <link rel="preload" href="assets/images/hero/Hero-Video-Portrait-2.webm" as="video" type="video/webm" media="(max-width: 768px)">
+
+  <style>
+    :root {
+      --brand-primary: #727D71;
+      --brand-secondary: #DCC9B6;
+      --brand-tertiary: #A39171;
+      --brand-accent1: #6D4C3D;
+      --brand-accent2: #ABC4AB;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    .lp-hero {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      height: 100svh;
+      min-height: 600px;
+      overflow: hidden;
+    }
+    @media (max-width: 768px) {
+      .lp-hero { min-height: 0; }
+    }
+    .lp-hero video {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;
+      object-position: center center;
+    }
+    @media (max-width: 768px) {
+      .lp-hero video { object-position: center top; }
+    }
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.70) 0%, rgba(0,0,0,0.15) 60%, transparent 100%);
+      z-index: 1;
+    }
+    .hero-content { position: relative; z-index: 2; }
+
+    @keyframes bounce-slow {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(10px); }
+    }
+    .scroll-cue { animation: bounce-slow 2s ease-in-out infinite; }
+
+    .problem-card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+
+    .benefit-card {
+      background: #fff;
+      border-radius: 1.25rem;
+      padding: 2rem;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.07);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .benefit-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px rgba(0,0,0,0.1);
+    }
+
+    .step-ghost {
+      font-size: 8rem;
+      font-weight: 800;
+      color: rgba(114,125,113,0.08);
+      line-height: 1;
+      position: absolute;
+      top: -1rem; left: -0.5rem;
+      user-select: none;
+      pointer-events: none;
+    }
+    @media (min-width: 768px) {
+      .step-ghost { font-size: 11rem; top: -1.5rem; left: -0.75rem; }
+    }
+
+    .demo-card {
+      border-radius: 1rem;
+      overflow: hidden;
+      position: relative;
+    }
+    .demo-card img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      transition: transform 0.6s ease;
+    }
+    .demo-card:hover img { transform: scale(1.04); }
+
+    .fade-up {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+    .stagger-children > * {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+    .stagger-children.visible > *:nth-child(1) { transition-delay: 0ms;   opacity: 1; transform: translateY(0); }
+    .stagger-children.visible > *:nth-child(2) { transition-delay: 100ms; opacity: 1; transform: translateY(0); }
+    .stagger-children.visible > *:nth-child(3) { transition-delay: 200ms; opacity: 1; transform: translateY(0); }
+    .stagger-children.visible > *:nth-child(4) { transition-delay: 300ms; opacity: 1; transform: translateY(0); }
+
+    .cta-btn {
+      display: inline-block;
+      background: #2A7A5C;
+      color: #fff;
+      font-weight: 700;
+      border-radius: 9999px;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 16px rgba(42,122,92,0.35);
+    }
+    .cta-btn:hover {
+      background: #1F5E45;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(42,122,92,0.45);
+    }
+
+    .cta-btn-dark {
+      display: inline-block;
+      background: #1a1a1a;
+      color: #fff;
+      font-weight: 700;
+      border-radius: 9999px;
+      transition: all 0.3s ease;
+    }
+    .cta-btn-dark:hover {
+      background: #333;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    }
+
+    .cta-btn-outline {
+      display: inline-block;
+      background: transparent;
+      color: var(--brand-primary);
+      font-weight: 700;
+      border-radius: 9999px;
+      border: 2px solid var(--brand-primary);
+      transition: all 0.3s ease;
+    }
+    .cta-btn-outline:hover {
+      background: var(--brand-primary);
+      color: #fff;
+      transform: translateY(-2px);
+    }
+
+    @keyframes hero-glow {
+      0%, 100% {
+        box-shadow: 0 4px 20px rgba(42,122,92,0.4), 0 0 0 0 rgba(42,122,92,0.5);
+      }
+      50% {
+        box-shadow: 0 8px 40px rgba(42,122,92,0.75), 0 0 0 16px rgba(42,122,92,0);
+      }
+    }
+
+    .hero-cta {
+      animation: hero-glow 2.2s ease-in-out infinite;
+    }
+
+    .hero-cta:hover {
+      animation-play-state: paused;
+    }
+
+    /* Mid-section CTA strip */
+    .cta-strip {
+      text-align: center;
+      padding: 2.5rem 1.5rem;
+    }
+
+    .sticky-cta {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      z-index: 50;
+      padding: 0.875rem 1.25rem;
+      background: rgba(114, 125, 113, 0.97);
+      backdrop-filter: blur(8px);
+      border-top: 1px solid rgba(255,255,255,0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .stars { color: #f59e0b; }
+
+    [x-cloak] { display: none !important; }
+
+    * { -webkit-tap-highlight-color: transparent; }
+    @media (max-width: 767px) {
+      body { padding-bottom: 5rem; }
+    }
+  </style>
 </head>
-<body></body>
+
+<body class="font-sans text-gray-900 antialiased" x-data="{ ctaVisible: false }" @scroll.window="ctaVisible = window.scrollY > 400">
+
+  <!-- ============================================
+       HERO
+       ============================================ -->
+  <section class="lp-hero">
+    <video autoplay muted loop playsinline preload="auto"
+           poster="assets/images/products/chrome/chrome-center-water.jpg"
+           aria-label="Rainföll shower system in action">
+      <source src="assets/images/hero/Hero-Video-Portrait-2.webm" type="video/webm" media="(max-width: 768px)">
+      <source src="assets/images/hero/Hero-Video-Portrait-2.mp4" type="video/mp4" media="(max-width: 768px)">
+      <source src="assets/images/hero/Hero-Video-3.webm" type="video/webm">
+      <source src="assets/images/hero/Hero-Video-3.mp4" type="video/mp4">
+    </video>
+
+    <div class="hero-content flex flex-col justify-end h-full px-5 sm:px-8 pb-16 sm:pb-20 w-full md:max-w-2xl md:ml-16 lg:ml-24">
+      <div class="mb-5 sm:mb-8">
+        <img src="assets/images/logo/rainfoll-logo-white-noback.png" alt="Rainföll" class="h-8 sm:h-10 md:h-11 w-auto">
+      </div>
+
+      <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-white leading-tight mb-3 sm:mb-4">
+        Turn Your Shower Into a Luxury Rainfall Experience
+      </h1>
+
+      <p class="text-base sm:text-lg md:text-xl text-gray-200 font-light mb-6 sm:mb-8 md:mb-10 max-w-lg">
+        No drilling. No plumber. Use your entire shower space.
+      </p>
+
+      <a href="landing/preorder.html" class="cta-btn hero-cta px-8 sm:px-10 py-4 sm:py-5 text-xl sm:text-2xl w-full sm:w-auto text-center sm:text-left" onclick="trackCTA('hero-primary')">
+        Get Early Access
+      </a>
+    </div>
+
+    <div class="absolute bottom-6 left-1/2 -translate-x-1/2 scroll-cue z-10">
+      <svg class="w-6 h-6 text-white/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
+      </svg>
+    </div>
+  </section>
+
+  <!-- ============================================
+       PROBLEM
+       ============================================ -->
+  <section style="background:#1a1a1a;" class="py-16 md:py-24">
+    <div class="max-w-4xl mx-auto px-6">
+      <div class="fade-up text-center mb-10">
+        <p class="text-brand-secondary text-sm font-semibold uppercase tracking-widest mb-3">Sound familiar?</p>
+        <h2 class="text-3xl md:text-4xl font-bold text-white">Your current shower isn't working for you.</h2>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 stagger-children">
+        <div class="problem-card">
+          <div class="flex-shrink-0 w-10 h-10 rounded-full bg-red-500/20 flex items-center justify-center">
+            <svg class="w-5 h-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+          </div>
+          <div>
+            <p class="text-white font-semibold">Stuck against the wall</p>
+            <p class="text-gray-400 text-sm mt-1">Extension arms keep you crammed in one corner.</p>
+          </div>
+        </div>
+        <div class="problem-card">
+          <div class="flex-shrink-0 w-10 h-10 rounded-full bg-red-500/20 flex items-center justify-center">
+            <svg class="w-5 h-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+          </div>
+          <div>
+            <p class="text-white font-semibold">Awkward positioning</p>
+            <p class="text-gray-400 text-sm mt-1">Ducking, twisting, never fully covered.</p>
+          </div>
+        </div>
+        <div class="problem-card">
+          <div class="flex-shrink-0 w-10 h-10 rounded-full bg-red-500/20 flex items-center justify-center">
+            <svg class="w-5 h-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+          </div>
+          <div>
+            <p class="text-white font-semibold">Cheap-looking setups</p>
+            <p class="text-gray-400 text-sm mt-1">Plastic arms that don't match your bathroom.</p>
+          </div>
+        </div>
+        <div class="problem-card">
+          <div class="flex-shrink-0 w-10 h-10 rounded-full bg-red-500/20 flex items-center justify-center">
+            <svg class="w-5 h-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+          </div>
+          <div>
+            <p class="text-white font-semibold">No flexibility</p>
+            <p class="text-gray-400 text-sm mt-1">One fixed spot. No adjustment. No freedom.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- CTA after problem -->
+      <div class="cta-strip fade-up mt-6">
+        <a href="landing/preorder.html" class="cta-btn px-8 py-4 text-base" onclick="trackCTA('problem')">
+          Join the Launch List
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       SOLUTION
+       ============================================ -->
+  <section style="background:#f8f6f3;" class="py-16 md:py-24">
+    <div class="max-w-5xl mx-auto px-6">
+      <div class="fade-up text-center mb-12">
+        <p class="text-brand-tertiary text-sm font-semibold uppercase tracking-widest mb-3">Introducing Rainföll</p>
+        <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">This Changes Everything.</h2>
+        <p class="text-lg text-gray-600 max-w-xl mx-auto">A sliding overhead rainfall system that installs between your shower walls — no drilling, no permanent changes.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-5 stagger-children">
+        <div class="demo-card aspect-[9/14] shadow-lg">
+          <video src="assets/videos/Moving Back and Forth.mp4" class="w-full h-full object-cover" autoplay muted loop playsinline></video>
+          <div class="absolute inset-0 flex items-end p-5 pointer-events-none">
+            <p class="text-white font-semibold text-sm px-3 py-1.5 rounded-full" style="background:rgba(0,0,0,0.45);backdrop-filter:blur(6px);">Move it anywhere</p>
+          </div>
+        </div>
+        <div class="demo-card aspect-[9/14] shadow-xl" style="outline: 2px solid #DCC9B6; outline-offset: 3px; border-radius: 1rem;">
+          <video src="assets/videos/Chrome-Water-Running-Video.mp4" class="w-full h-full object-cover" autoplay muted loop playsinline></video>
+          <div class="absolute inset-0 flex items-end p-5 pointer-events-none">
+            <p class="text-white font-semibold text-sm px-3 py-1.5 rounded-full" style="background:rgba(0,0,0,0.45);backdrop-filter:blur(6px);">Full-body coverage</p>
+          </div>
+        </div>
+        <div class="demo-card aspect-[9/14] shadow-lg">
+          <video src="assets/videos/Install Video.mp4" class="w-full h-full object-cover" autoplay muted loop playsinline></video>
+          <div class="absolute inset-0 flex items-end p-5 pointer-events-none">
+            <p class="text-white font-semibold text-sm px-3 py-1.5 rounded-full" style="background:rgba(0,0,0,0.45);backdrop-filter:blur(6px);">Easiest Install Ever</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- CTA after solution -->
+      <div class="cta-strip fade-up">
+        <p class="text-gray-500 text-sm mb-4">Launching on Kickstarter — be first to back us.</p>
+        <a href="landing/preorder.html" class="cta-btn px-9 py-4 text-lg" onclick="trackCTA('solution')">
+          Get Early Access
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       KEY BENEFITS
+       ============================================ -->
+  <section style="background:#ffffff;" class="py-16 md:py-24">
+    <div class="max-w-5xl mx-auto px-6">
+      <div class="fade-up text-center mb-12">
+        <h2 class="text-3xl md:text-4xl font-bold text-gray-900">Why Rainföll?</h2>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 stagger-children">
+        <div class="benefit-card">
+          <div class="w-12 h-12 rounded-xl bg-brand-accent2/20 flex items-center justify-center mb-4">
+            <svg class="w-6 h-6 text-brand-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/></svg>
+          </div>
+          <h3 class="text-xl font-bold text-gray-900 mb-2">Use Your Whole Shower</h3>
+          <p class="text-gray-600">Stop being stuck in one spot. Slide the head anywhere — left, center, right. Your whole shower is now yours.</p>
+        </div>
+        <div class="benefit-card">
+          <div class="w-12 h-12 rounded-xl bg-brand-secondary/30 flex items-center justify-center mb-4">
+            <svg class="w-6 h-6 text-brand-tertiary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          </div>
+          <h3 class="text-xl font-bold text-gray-900 mb-2">Install in Minutes</h3>
+          <p class="text-gray-600">No power tools. No permanent changes. Twist the tension bar between your walls, connect the hose, turn it on.</p>
+        </div>
+        <div class="benefit-card">
+          <div class="w-12 h-12 rounded-xl bg-brand-primary/10 flex items-center justify-center mb-4">
+            <svg class="w-6 h-6 text-brand-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>
+          </div>
+          <h3 class="text-xl font-bold text-gray-900 mb-2">Feels Like a Luxury Upgrade</h3>
+          <p class="text-gray-600">Four premium finishes. Overhead rainfall from above. Hotel experience — without the renovation cost.</p>
+        </div>
+        <div class="benefit-card">
+          <div class="w-12 h-12 rounded-xl bg-brand-accent1/10 flex items-center justify-center mb-4">
+            <svg class="w-6 h-6 text-brand-accent1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+          </div>
+          <h3 class="text-xl font-bold text-gray-900 mb-2">Built for Real Comfort</h3>
+          <p class="text-gray-600">Dual shower heads with full pressure. Whether you're 5'4" or 6'4" — it fits everyone.</p>
+        </div>
+      </div>
+
+      <!-- CTA after benefits -->
+      <div class="cta-strip fade-up mt-4">
+        <a href="landing/preorder.html" class="cta-btn-outline px-9 py-4 text-lg" onclick="trackCTA('benefits')">
+          Save My Spot
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       HOW IT WORKS
+       ============================================ -->
+  <section style="background:#f8f6f3;" class="py-16 md:py-24">
+    <div class="max-w-4xl mx-auto px-6">
+      <div class="fade-up text-center mb-14">
+        <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-3">Up and Running in 3 Steps</h2>
+        <p class="text-lg text-gray-600">No plumber. No landlord permission needed.</p>
+      </div>
+
+      <div class="space-y-14">
+        <div class="flex flex-col md:flex-row items-center gap-8 fade-up">
+          <div class="w-full md:w-2/5 flex-shrink-0">
+            <div class="rounded-2xl overflow-hidden shadow-lg aspect-[9/14]">
+              <video src="assets/videos/Twist Into Place.mp4" class="w-full h-full object-cover" autoplay muted loop playsinline>
+            </div>
+          </div>
+          <div class="relative w-full md:w-3/5">
+            <span class="step-ghost">01</span>
+            <span class="inline-block bg-brand-primary/10 text-brand-primary text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide mb-3">Step 1</span>
+            <h3 class="text-2xl font-bold text-gray-900 mb-3">Twist into place</h3>
+            <p class="text-gray-600 text-lg leading-relaxed">Extend the tension bar between your shower walls (fits 56–80 inch wide showers) and twist until snug. Zero drilling, zero damage.</p>
+          </div>
+        </div>
+
+        <div class="flex flex-col md:flex-row-reverse items-center gap-8 fade-up">
+          <div class="w-full md:w-2/5 flex-shrink-0">
+            <div class="rounded-2xl overflow-hidden shadow-lg aspect-[9/14]">
+              <video src="assets/videos/Close The Sheaths.mp4" class="w-full h-full object-cover" autoplay muted loop playsinline>
+            </div>
+          </div>
+          <div class="relative w-full md:w-3/5">
+            <span class="step-ghost">02</span>
+            <span class="inline-block bg-brand-secondary/50 text-brand-accent1 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide mb-3">Step 2</span>
+            <h3 class="text-2xl font-bold text-gray-900 mb-3">Close the sheaths</h3>
+            <p class="text-gray-600 text-lg leading-relaxed">Slide the sheath close and lock with the pins. Move the rainfall head wherever you want — left, center, or right. </p>
+          </div>
+        </div>
+
+        <div class="flex flex-col md:flex-row items-center gap-8 fade-up">
+          <div class="w-full md:w-2/5 flex-shrink-0">
+            <div class="rounded-2xl overflow-hidden shadow-lg aspect-[9/14]">
+              <video src="assets/videos/Connect to Plumbing.mp4" class="w-full h-full object-cover" autoplay muted loop playsinline>
+            </div>
+          </div>
+          <div class="relative w-full md:w-3/5">
+            <span class="step-ghost">03</span>
+            <span class="inline-block bg-brand-accent2/30 text-brand-primary text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide mb-3">Step 3</span>
+            <h3 class="text-2xl font-bold text-gray-900 mb-3">Connect to your plumbing  </h3>
+            <p class="text-gray-600 text-lg leading-relaxed">Connect the Handheld shower head to your existing plumbing. Then connect the hoses. That's it. </p>
+            <p class="text-gray-600 text-lg leading-relaxed">Luxury, instantly.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- CTA after how it works -->
+      <div class="cta-strip fade-up">
+        <a href="landing/preorder.html" class="cta-btn px-9 py-4 text-lg" onclick="trackCTA('how-it-works')">
+          Join the Launch List
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       DEMO / ALL FINISHES
+       ============================================ -->
+  <section style="background:#1a1a1a;" class="py-16 md:py-24">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="fade-up text-center mb-12">
+        <h2 class="text-3xl md:text-4xl font-bold text-white mb-3">See It in Action</h2>
+        <p class="text-gray-400 text-lg">Four finishes. One system. Your shower, transformed.</p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 stagger-children">
+        <div class="demo-card aspect-[9/14]" id="slideshow-chrome"></div>
+        <div class="demo-card aspect-[9/14]" id="slideshow-gold"></div>
+        <div class="demo-card aspect-[9/14]" id="slideshow-matte"></div>
+      </div>
+
+      <style>
+        .slideshow-img {
+          position: absolute;
+          inset: 0;
+          width: 100%; height: 100%;
+          object-fit: cover;
+          opacity: 0;
+          z-index: 0;
+          transition: opacity 1.6s ease;
+        }
+        .slideshow-img.active  { opacity: 1; z-index: 1; }
+        .slideshow-img.leaving { opacity: 0; z-index: 2; transition: opacity 1.6s ease; }
+      </style>
+
+      <script>
+        const slideshows = [
+          {
+            id: 'slideshow-chrome',
+            interval: 3200,
+            images: [
+              'assets/images/products/chrome/Chrome - New/Rainfoll-Render-Chrome-1.png',
+              'assets/images/products/chrome/Chrome - New/Rainfoll-Render-Chrome-2.jpg',
+              'assets/images/products/chrome/Chrome - New/Rainfoll-Render-Chrome-3.jpg',
+              'assets/images/products/chrome/Chrome - New/Rainfoll-Render-Chrome-4.jpg',
+              'assets/images/products/chrome/Chrome - New/Rainfoll-Render-Chrome-5.jpg',
+              'assets/images/products/chrome/Chrome - New/Rainfoll-Render-Chrome-6.png',
+            ]
+          },
+          {
+            id: 'slideshow-gold',
+            interval: 3800,
+            images: [
+              'assets/images/products/gold/Gold - New/Rainfoll-Render-Gold-1.jpg',
+              'assets/images/products/gold/Gold - New/Rainfoll-Render-Gold-2.jpg',
+              'assets/images/products/gold/Gold - New/Rainfoll-Render-Gold-3.jpg',
+              'assets/images/products/gold/Gold - New/Rainfoll-Render-Gold-4.png',
+            ]
+          },
+          {
+            id: 'slideshow-matte',
+            interval: 4400,
+            images: [
+              'assets/images/products/matte/Black - New/Rainfoll-Render-1.jpg',
+              'assets/images/products/matte/Black - New/Rainfoll-Render-2.jpg',
+              'assets/images/products/matte/Black - New/Rainfoll-Render-3.jpg',
+              'assets/images/products/matte/Black - New/Rainfoll-Render-4.jpg',
+              'assets/images/products/matte/Black - New/Rainfoll-Render-5.jpg',
+              'assets/images/products/matte/Black - New/Rainfoll-Render-6.jpg',
+              'assets/images/products/matte/Black - New/Rainfoll-Render-Black-7.png',
+              'assets/images/products/matte/Black - New/Rainfoll-Render-Black-8.png',
+              'assets/images/products/matte/Black - New/Rainfoll-Render-Black-9.png',
+              'assets/images/products/matte/Black - New/Rainfoll-Render-Black-10.png',
+            ]
+          },
+        ];
+
+        slideshows.forEach(({ id, interval, images }) => {
+          const container = document.getElementById(id);
+          const els = images.map((src, i) => {
+            const img = document.createElement('img');
+            img.src = src;
+            img.className = 'slideshow-img' + (i === 0 ? ' active' : '');
+            img.loading = 'lazy';
+            container.appendChild(img);
+            return img;
+          });
+
+          let current = 0;
+          setInterval(() => {
+            const outgoing = els[current];
+            let next;
+            do { next = Math.floor(Math.random() * els.length); } while (next === current);
+            current = next;
+            const incoming = els[current];
+            // incoming fades in underneath, then outgoing fades away on top
+            incoming.classList.add('active');
+            outgoing.classList.add('leaving');
+            outgoing.classList.remove('active');
+            setTimeout(() => {
+              outgoing.classList.remove('leaving');
+              outgoing.style.zIndex = '';
+            }, 1700);
+          }, interval);
+        });
+      </script>
+
+      <!-- CTA after demo -->
+      <div class="cta-strip fade-up">
+        <a href="landing/preorder.html" class="cta-btn px-9 py-4 text-base" onclick="trackCTA('demo')">
+          Save My Spot
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       FINAL CTA
+       ============================================ -->
+  <section class="relative py-24 md:py-36 overflow-hidden">
+    <div class="absolute inset-0">
+      <img src="assets/images/products/chrome/Chrome-center-with-water-portrait.jpg" alt="" class="w-full h-full object-cover object-top" aria-hidden="true">
+      <div class="absolute inset-0" style="background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.50) 60%, rgba(0,0,0,0.25) 100%);"></div>
+    </div>
+
+    <div class="relative z-10 max-w-2xl mx-auto px-6 text-center fade-up">
+      <h2 class="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 leading-tight">
+        Upgrade Your Shower Today
+      </h2>
+      <p class="text-lg text-gray-200 mb-2">Launching on Kickstarter — coming soon.</p>
+      <p class="text-gray-300 mb-10">Join the list and be first to back us when we go live.</p>
+
+      <div class="flex flex-wrap justify-center gap-4 mb-10">
+        <span class="flex items-center gap-2 text-gray-200 text-sm">
+          <svg class="w-4 h-4 text-green-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+          Installs in minutes
+        </span>
+        <span class="flex items-center gap-2 text-gray-200 text-sm">
+          <svg class="w-4 h-4 text-green-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+          No tools required
+        </span>
+        <span class="flex items-center gap-2 text-gray-200 text-sm">
+          <svg class="w-4 h-4 text-green-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+          Works in any shower
+        </span>
+      </div>
+
+      <a href="landing/preorder.html" class="cta-btn px-10 py-5 text-xl inline-block" onclick="trackCTA('final-primary')">
+        Join the Launch List
+      </a>
+    </div>
+  </section>
+
+  <!-- ============================================
+       MINIMAL FOOTER
+       ============================================ -->
+  <!-- Patent Pending Disclaimer -->
+  <div style="background:#1a1a1a; border-top: 1px solid rgba(220,201,182,0.3);" class="py-5 text-center px-6">
+    <p class="text-brand-secondary font-semibold text-sm tracking-wide">
+      &#9670; Proudly Patent Pending Internationally &#9670;
+    </p>
+  </div>
+
+  <footer style="background:#0d0d0d;" class="py-8 text-center">
+    <div class="flex flex-col items-center gap-3">
+      <img src="assets/images/logo/rainfoll-logo-white-noback.png" alt="Rainföll" class="h-7 opacity-50">
+      <p class="text-xs text-gray-600">&copy; 2026 Rainföll Inc. All rights reserved.</p>
+      <div class="flex gap-5">
+        <a href="faq.html" class="text-xs text-gray-600 hover:text-gray-400 transition-colors">FAQ</a>
+        <a href="contact.html" class="text-xs text-gray-600 hover:text-gray-400 transition-colors">Contact</a>
+        <a href="#" class="text-xs text-gray-600 hover:text-gray-400 transition-colors">Privacy Policy</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- STICKY MOBILE CTA -->
+  <div class="sticky-cta md:hidden" x-show="ctaVisible" x-cloak
+       x-transition:enter="transition ease-out duration-300"
+       x-transition:enter-start="opacity-0 translate-y-4"
+       x-transition:enter-end="opacity-100 translate-y-0">
+    <a href="landing/preorder.html" class="w-full max-w-sm text-center cta-btn px-6 py-3.5 text-base block" onclick="trackCTA('sticky')">
+      Join the Launch List &rarr;
+    </a>
+  </div>
+
+  <script>
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add('visible');
+      });
+    }, { threshold: 0.12 });
+
+    document.querySelectorAll('.fade-up, .stagger-children').forEach(el => observer.observe(el));
+
+    function trackCTA(location) {
+      if (typeof ttq !== 'undefined') ttq.track('ClickButton', { content_name: 'CTA', content_category: location });
+      if (typeof fbq !== 'undefined') fbq('track', 'InitiateCheckout', { content_name: 'CTA' });
+    }
+  </script>
+
+  <style>[x-cloak] { display: none !important; }</style>
+</body>
 </html>
