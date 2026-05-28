@@ -2,7 +2,7 @@ name: Supabase Keepalive & Weekly Signup Report
 
 on:
   schedule:
-    - cron: '0 9 * * 1'   # Every Monday at 09:00 UTC
+    - cron: '0 9 * * 1,4'   # Monday and Thursday at 09:00 UTC
   workflow_dispatch:
 
 jobs:
@@ -14,7 +14,35 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Query Supabase & send Resend report
+      - name: Ping Supabase
+        id: ping
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+        run: |
+          node << 'SCRIPT'
+          (async () => {
+            const supabaseUrl = process.env.SUPABASE_URL;
+            const supabaseKey = process.env.SUPABASE_SECRET_KEY;
+
+            const sbRes = await fetch(
+              `${supabaseUrl}/rest/v1/email_signups?select=email`,
+              {
+                headers: {
+                  apikey: supabaseKey,
+                  Authorization: `Bearer ${supabaseKey}`,
+                },
+              }
+            );
+            if (!sbRes.ok) {
+              throw new Error(`Supabase error ${sbRes.status}: ${await sbRes.text()}`);
+            }
+            const rows = await sbRes.json();
+            console.log(`Fetched ${rows.length} signup(s) from Supabase.`);
+          })();
+          SCRIPT
+
+      - name: Send email report
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
@@ -26,7 +54,6 @@ jobs:
             const supabaseKey = process.env.SUPABASE_SECRET_KEY;
             const resendKey   = process.env.RESEND_API_KEY;
 
-            // 1. Query Supabase (keepalive + data fetch)
             const sbRes = await fetch(
               `${supabaseUrl}/rest/v1/email_signups?select=email`,
               {
@@ -43,9 +70,6 @@ jobs:
             const emails = rows.map(r => r.email);
             const date   = new Date().toISOString().split('T')[0];
 
-            console.log(`Fetched ${emails.length} signup(s) from Supabase.`);
-
-            // 2. Build email body
             const listHtml = emails.length
               ? `<ol>${emails.map(e => `<li>${e}</li>`).join('')}</ol>`
               : '<p><em>No signups yet.</em></p>';
@@ -63,7 +87,6 @@ jobs:
             `;
             const text = `Rainföll Weekly Signup Report\nDate: ${date}\nTotal signups: ${emails.length}\n\n${listText}`;
 
-            // 3. Send via Resend
             const rsRes = await fetch('https://api.resend.com/emails', {
               method: 'POST',
               headers: {
