@@ -106,7 +106,7 @@
           }
           this.submitted = true;
           if (typeof gtag !== 'undefined') gtag('event', 'conversion', { send_to: 'G-NLM0KNT900', event_category: 'engagement', event_label: 'email_signup' });
-          if (typeof ttq !== 'undefined') ttq.track('CompleteRegistration', { email: this.email });
+          if (typeof ttq !== 'undefined') ttq.track('SubmitForm');
           if (typeof fbq !== 'undefined') fbq('track', 'Lead', { email: this.email });
         }
       }));
