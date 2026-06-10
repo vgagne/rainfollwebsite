@@ -1,4 +1,4 @@
-import bcrypt from 'bcryptjs';
+import * as bcrypt from 'bcryptjs';
 
 const PROJECT_ID   = 'rainfoll-143ef';
 const COLLECTION   = 'signups';
