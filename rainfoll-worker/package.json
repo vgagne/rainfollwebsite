@@ -1,0 +1,17 @@
+{
+  "name": "rainfoll-worker",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/worker.js",
+  "type": "module",
+  "scripts": {
+    "deploy": "wrangler deploy",
+    "dev": "wrangler dev"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^3.0.3"
+  }
+}
