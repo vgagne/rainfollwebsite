@@ -1,4 +1,4 @@
-import * as bcrypt from 'bcryptjs';
+import { compareSync } from 'bcryptjs';
 
 const PROJECT_ID   = 'rainfoll-143ef';
 const COLLECTION   = 'signups';
@@ -180,8 +180,13 @@ async function handleLogin(request, env) {
   if (limit.blocked)
     return json({ error: 'Too many failed attempts', locked_until: limit.lockedUntil, retry_after_seconds: limit.retry_after_seconds }, 429);
 
-  const hash  = (await env.ADMIN_RATE_LIMIT.get('admin:password_hash')) || env.ADMIN_PASSWORD_HASH;
-  const valid = bcrypt.compareSync(password, hash);
+  const hash = (await env.ADMIN_RATE_LIMIT.get('admin:password_hash')) || env.ADMIN_PASSWORD_HASH;
+  let valid = false;
+  try {
+    valid = compareSync(password, hash);
+  } catch (e) {
+    return json({ error: 'Password check failed', detail: e.message }, 500);
+  }
 
   if (!valid) {
     const d = await recordFail(ip, env);
@@ -205,7 +210,7 @@ async function handleChangePassword(request, env) {
   const { old_password, new_password_hash } = await request.json();
   const currentHash = (await env.ADMIN_RATE_LIMIT.get('admin:password_hash')) || env.ADMIN_PASSWORD_HASH;
 
-  if (!bcrypt.compareSync(old_password, currentHash))
+  if (!compareSync(old_password, currentHash))
     return json({ error: 'Current password is incorrect' }, 403);
 
   await env.ADMIN_RATE_LIMIT.put('admin:password_hash', new_password_hash);
