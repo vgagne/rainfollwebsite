@@ -131,13 +131,22 @@
       <section>
         <div class="flex items-center justify-between mb-5">
           <h2 class="text-lg font-bold text-gray-900">Signups</h2>
-          <button @click="loadSignups()" :disabled="tableLoading"
-            class="text-xs text-brand-primary font-medium hover:text-brand-accent1 transition flex items-center gap-1">
-            <svg class="w-3.5 h-3.5" :class="tableLoading ? 'animate-spin' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
-            </svg>
-            Refresh
-          </button>
+          <div class="flex items-center gap-3">
+            <button @click="exportCSV()" :disabled="tableLoading || signups.length === 0"
+              class="text-xs text-brand-primary font-medium hover:text-brand-accent1 transition flex items-center gap-1 disabled:opacity-40 disabled:cursor-not-allowed">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+              </svg>
+              Export CSV
+            </button>
+            <button @click="loadSignups()" :disabled="tableLoading"
+              class="text-xs text-brand-primary font-medium hover:text-brand-accent1 transition flex items-center gap-1">
+              <svg class="w-3.5 h-3.5" :class="tableLoading ? 'animate-spin' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+              </svg>
+              Refresh
+            </button>
+          </div>
         </div>
 
         <!-- Error -->
@@ -453,6 +462,30 @@
           try {
             return new Date(iso).toLocaleDateString('en-CA', { year: 'numeric', month: 'short', day: 'numeric' });
           } catch { return iso; }
+        },
+
+        exportCSV() {
+          const escape = (v) => {
+            const s = String(v ?? '');
+            return s.includes(',') || s.includes('"') || s.includes('\n')
+              ? `"${s.replace(/"/g, '""')}"` : s;
+          };
+          const headers = ['Email', 'VIP', 'Payment ID', 'Payment Status', 'Created At'];
+          const rows = this.filteredSignups.map(r => [
+            r.email,
+            r.is_vip ? 'Yes' : 'No',
+            r.payment_id || '',
+            r.payment_status || 'none',
+            r.created_at || '',
+          ]);
+          const csv = [headers, ...rows].map(r => r.map(escape).join(',')).join('\r\n');
+          const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8;' });
+          const url  = URL.createObjectURL(blob);
+          const a    = document.createElement('a');
+          a.href     = url;
+          a.download = `rainfoll-signups-${new Date().toISOString().slice(0, 10)}.csv`;
+          a.click();
+          URL.revokeObjectURL(url);
         },
 
         // ── CHANGE PASSWORD ────────────────────────────
