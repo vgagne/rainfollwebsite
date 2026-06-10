@@ -86,14 +86,14 @@
           if (!this.validate()) return;
           this.loading = true;
           try {
-            const res = await fetch('__APPS_SCRIPT_URL__', {
-              method: 'POST',
-              headers: { 'Content-Type': 'text/plain' },
-              body: JSON.stringify({
-                token: '__APPS_SCRIPT_SECRET__',
-                action: 'signup',
-                email: this.email.trim().toLowerCase()
-              })
+            const params = new URLSearchParams({
+              token: '__APPS_SCRIPT_SECRET__',
+              action: 'signup',
+              email: this.email.trim().toLowerCase()
+            });
+            const res = await fetch('__APPS_SCRIPT_URL__?' + params.toString(), {
+              method: 'GET',
+              redirect: 'follow'
             });
             this.loading = false;
             if (!res.ok) {
