@@ -196,19 +196,24 @@
                       Email <span x-text="sortIcon('email')" class="text-gray-300"></span>
                     </span>
                   </th>
+                  <th class="text-left px-4 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wide">VIP</th>
+                  <th class="text-left px-4 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wide">Payment ID</th>
                   <th class="text-left px-4 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wide">
-                    <span class="sort-btn flex items-center gap-1" @click="setSort('createdAt')">
-                      Signed Up <span x-text="sortIcon('createdAt')" class="text-gray-300"></span>
+                    <span class="sort-btn flex items-center gap-1" @click="setSort('payment_status')">
+                      Payment Status <span x-text="sortIcon('payment_status')" class="text-gray-300"></span>
                     </span>
                   </th>
-                  <th class="text-left px-4 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wide">Status</th>
-                  <th class="text-left px-4 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wide">Payment</th>
+                  <th class="text-left px-4 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wide">
+                    <span class="sort-btn flex items-center gap-1" @click="setSort('created_at')">
+                      Created At <span x-text="sortIcon('created_at')" class="text-gray-300"></span>
+                    </span>
+                  </th>
                 </tr>
               </thead>
               <tbody>
                 <template x-if="tableLoading">
                   <tr>
-                    <td colspan="4" class="px-4 py-10 text-center text-sm text-gray-400">
+                    <td colspan="5" class="px-4 py-10 text-center text-sm text-gray-400">
                       <svg class="w-5 h-5 animate-spin mx-auto mb-2 text-gray-300" fill="none" viewBox="0 0 24 24">
                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
@@ -219,19 +224,20 @@
                 </template>
                 <template x-if="!tableLoading && filteredSignups.length === 0">
                   <tr>
-                    <td colspan="4" class="px-4 py-10 text-center text-sm text-gray-400">No signups found.</td>
+                    <td colspan="5" class="px-4 py-10 text-center text-sm text-gray-400">No signups found.</td>
                   </tr>
                 </template>
                 <template x-for="row in filteredSignups" :key="row.id">
                   <tr class="table-row border-b border-gray-50 last:border-0">
                     <td class="px-4 py-3 text-gray-700 font-medium" x-text="row.email"></td>
-                    <td class="px-4 py-3 text-gray-500 text-xs" x-text="formatDate(row.createdAt)"></td>
                     <td class="px-4 py-3">
-                      <span :class="row.vip ? 'badge badge-vip' : 'badge badge-free'" x-text="row.vip ? 'VIP' : 'Free'"></span>
+                      <span :class="row.is_vip ? 'badge badge-vip' : 'badge badge-free'" x-text="row.is_vip ? 'Yes' : 'No'"></span>
                     </td>
+                    <td class="px-4 py-3 text-gray-400 text-xs font-mono" x-text="row.payment_id || '—'"></td>
                     <td class="px-4 py-3">
-                      <span :class="row.paymentStatus === 'paid' ? 'badge badge-paid' : 'badge badge-none'" x-text="row.paymentStatus || 'none'"></span>
+                      <span :class="row.payment_status === 'paid' ? 'badge badge-paid' : 'badge badge-none'" x-text="row.payment_status || 'none'"></span>
                     </td>
+                    <td class="px-4 py-3 text-gray-500 text-xs" x-text="formatDate(row.created_at)"></td>
                   </tr>
                 </template>
               </tbody>
@@ -315,7 +321,7 @@
         search: '',
         filterVip: '',
         filterPayment: '',
-        sortKey: 'createdAt',
+        sortKey: 'created_at',
         sortDir: 'desc',
 
         // change password
@@ -384,16 +390,14 @@
             if (res.status === 401) { this.logout(); return; }
             if (!res.ok) { this.tableError = 'Failed to load signups.'; this.tableLoading = false; return; }
             const data = await res.json();
-            this.signups = (data.documents || []).map(doc => {
-              const f = doc.fields || {};
-              return {
-                id: doc.name,
-                email: f.email?.stringValue || '',
-                createdAt: f.created_at?.stringValue || f.createdAt?.stringValue || '',
-                vip: f.vip?.booleanValue || false,
-                paymentStatus: f.payment_status?.stringValue || f.paymentStatus?.stringValue || 'none'
-              };
-            });
+            this.signups = (data.documents || []).map(doc => ({
+              id:             doc.id             || '',
+              email:          doc.email          || '',
+              is_vip:         doc.is_vip         || false,
+              payment_id:     doc.payment_id     || '',
+              payment_status: doc.payment_status || 'none',
+              created_at:     doc.created_at     || '',
+            }));
           } catch (e) {
             this.tableError = 'Could not reach server.';
           }
@@ -402,10 +406,10 @@
 
         // ── STATS ──────────────────────────────────────
         get stats() {
-          const total = this.signups.length;
-          const vip = this.signups.filter(s => s.vip).length;
-          const paid = this.signups.filter(s => s.paymentStatus === 'paid').length;
-          const dates = this.signups.map(s => s.createdAt).filter(Boolean).sort();
+          const total  = this.signups.length;
+          const vip    = this.signups.filter(s => s.is_vip).length;
+          const paid   = this.signups.filter(s => s.payment_status === 'paid').length;
+          const dates  = this.signups.map(s => s.created_at).filter(Boolean).sort();
           const latest = dates.length ? this.formatDate(dates[dates.length - 1]) : null;
           return { total, vip, paid, latest };
         },
@@ -419,10 +423,10 @@
           }
           if (this.filterVip !== '') {
             const v = this.filterVip === 'true';
-            rows = rows.filter(r => r.vip === v);
+            rows = rows.filter(r => r.is_vip === v);
           }
           if (this.filterPayment !== '') {
-            rows = rows.filter(r => (r.paymentStatus || 'none') === this.filterPayment);
+            rows = rows.filter(r => (r.payment_status || 'none') === this.filterPayment);
           }
           rows.sort((a, b) => {
             const av = a[this.sortKey] || '';

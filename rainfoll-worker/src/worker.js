@@ -80,9 +80,10 @@ function fromDoc(doc) {
   return {
     id:             doc.name?.split('/').pop(),
     email:          f.email?.stringValue          || '',
-    created_at:     f.created_at?.stringValue     || '',
-    vip:            f.vip?.booleanValue           || false,
+    is_vip:         f.is_vip?.booleanValue        || false,
+    payment_id:     f.payment_id?.stringValue     || '',
     payment_status: f.payment_status?.stringValue || 'none',
+    created_at:     f.created_at?.stringValue     || '',
   };
 }
 
@@ -260,7 +261,7 @@ async function handlePost(request, env) {
       method: 'POST',
       headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        fields: toFields({ id: docId, email, created_at: new Date().toISOString(), vip: false, payment_status: 'none' }),
+        fields: toFields({ id: docId, email, is_vip: false, payment_id: '', payment_status: 'none', created_at: new Date().toISOString() }),
       }),
     });
     if (!putRes.ok) return json({ error: 'Failed to save signup' }, 500);
