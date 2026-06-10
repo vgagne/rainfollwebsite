@@ -88,7 +88,7 @@
           try {
             const res = await fetch('__APPS_SCRIPT_URL__', {
               method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
+              headers: { 'Content-Type': 'text/plain' },
               body: JSON.stringify({
                 token: '__APPS_SCRIPT_SECRET__',
                 action: 'signup',
