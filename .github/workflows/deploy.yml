@@ -31,6 +31,10 @@ jobs:
         sed -i "s|__APPS_SCRIPT_URL__|${APPS_SCRIPT_URL}|g" landing/preorder.html
         sed -i "s|__APPS_SCRIPT_SECRET__|${APPS_SCRIPT_SECRET}|g" landing/preorder.html
 
+    - name: Debug injection
+      run: |
+        grep -n "script.google.com\|__APPS_SCRIPT_URL__" landing/preorder.html || echo "Neither found"
+
     - name: Setup Pages
       uses: actions/configure-pages@v4
 
