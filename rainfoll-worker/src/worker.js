@@ -180,7 +180,7 @@ async function handleLogin(request, env) {
   if (limit.blocked)
     return json({ error: 'Too many failed attempts', locked_until: limit.lockedUntil, retry_after_seconds: limit.retry_after_seconds }, 429);
 
-  const hash = (await env.ADMIN_RATE_LIMIT.get('admin:password_hash')) || env.ADMIN_PASSWORD_HASH;
+  const hash = ((await env.ADMIN_RATE_LIMIT.get('admin:password_hash')) || env.ADMIN_PASSWORD_HASH || '').trim();
   let valid = false;
   try {
     valid = compareSync(password, hash);
@@ -208,7 +208,7 @@ async function handleChangePassword(request, env) {
   if (!await requireAuth(request, env)) return json({ error: 'Unauthorized' }, 401);
 
   const { old_password, new_password_hash } = await request.json();
-  const currentHash = (await env.ADMIN_RATE_LIMIT.get('admin:password_hash')) || env.ADMIN_PASSWORD_HASH;
+  const currentHash = ((await env.ADMIN_RATE_LIMIT.get('admin:password_hash')) || env.ADMIN_PASSWORD_HASH || '').trim();
 
   if (!compareSync(old_password, currentHash))
     return json({ error: 'Current password is incorrect' }, 403);
