@@ -290,6 +290,10 @@ export default {
     if (request.method === 'POST' && url.pathname === '/auth/login')           return handleLogin(request, env);
     if (request.method === 'POST' && url.pathname === '/auth/change-password') return handleChangePassword(request, env);
     if (request.method === 'GET'  && url.searchParams.get('action') === 'list') return handleList(request, env);
+    if (request.method === 'GET'  && url.searchParams.get('action') === 'debug-hash') {
+      const h = ((await env.ADMIN_RATE_LIMIT.get('admin:password_hash')) || env.ADMIN_PASSWORD_HASH || '').trim();
+      return json({ length: h.length, prefix: h.substring(0, 7), last4: h.slice(-4), starts_with_2b: h.startsWith('$2b$') });
+    }
     if (request.method === 'GET')  return json({ error: 'Not found' }, 404);
     if (request.method === 'POST') return handlePost(request, env);
 
