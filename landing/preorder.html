@@ -68,13 +68,6 @@
     }
   </script>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-  <script>
-    const supabaseClient = supabase.createClient(
-      'https://xflbbfonlavnvqboosiy.supabase.co',
-      'sb_publishable__CRjclNdLQD0C8OkJt6wyg_RneMxFBF'
-    );
-  </script>
   <script>
     document.addEventListener('alpine:init', () => {
       Alpine.data('emailForm', () => ({
@@ -92,22 +85,39 @@
         async submit() {
           if (!this.validate()) return;
           this.loading = true;
-          const { error } = await supabaseClient
-            .from('email_signups')
-            .insert({ email: this.email.trim().toLowerCase() });
-          this.loading = false;
-          if (error) {
-            if (error.code === '23505') {
-              this.error = "You're already on the list — we'll see you at launch!";
-            } else {
-              this.error = 'Something went wrong. Please try again.';
+          try {
+            const res = await fetch('__APPS_SCRIPT_URL__', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                token: '__APPS_SCRIPT_SECRET__',
+                action: 'signup',
+                email: this.email.trim().toLowerCase()
+              })
+            });
+            this.loading = false;
+            if (!res.ok) {
+              const data = await res.json().catch(() => ({}));
+              if (data && data.duplicate) {
+                this.error = "You're already on the list — we'll see you at launch!";
+              } else {
+                this.error = 'Something went wrong. Please try again.';
+              }
+              return;
             }
-            return;
+            const data = await res.json().catch(() => ({}));
+            if (data && data.duplicate) {
+              this.error = "You're already on the list — we'll see you at launch!";
+              return;
+            }
+            this.submitted = true;
+            if (typeof gtag !== 'undefined') gtag('event', 'conversion', { send_to: 'G-NLM0KNT900', event_category: 'engagement', event_label: 'email_signup' });
+            if (typeof ttq !== 'undefined') ttq.track('SubmitForm');
+            if (typeof fbq !== 'undefined') fbq('track', 'Lead', { email: this.email });
+          } catch (e) {
+            this.loading = false;
+            this.error = 'Something went wrong. Please try again.';
           }
-          this.submitted = true;
-          if (typeof gtag !== 'undefined') gtag('event', 'conversion', { send_to: 'G-NLM0KNT900', event_category: 'engagement', event_label: 'email_signup' });
-          if (typeof ttq !== 'undefined') ttq.track('SubmitForm');
-          if (typeof fbq !== 'undefined') fbq('track', 'Lead', { email: this.email });
         }
       }));
     });
