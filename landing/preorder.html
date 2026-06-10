@@ -86,14 +86,13 @@
           if (!this.validate()) return;
           this.loading = true;
           try {
-            const params = new URLSearchParams({
-              token: '__APPS_SCRIPT_SECRET__',
-              action: 'signup',
-              email: this.email.trim().toLowerCase()
-            });
-            const res = await fetch('__APPS_SCRIPT_URL__?' + params.toString(), {
-              method: 'GET',
-              redirect: 'follow'
+            const res = await fetch('https://square-violet-0b51.vgagne11.workers.dev/', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                action: 'signup',
+                email: this.email.trim().toLowerCase()
+              })
             });
             this.loading = false;
             if (!res.ok) {
