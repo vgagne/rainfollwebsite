@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rainföll Admin</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/png" sizes="32x32" href="../assets/icons/Favicon.png">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              primary: '#727D71',
+              secondary: '#DCC9B6',
+              tertiary: '#A39171',
+              accent1: '#6D4C3D',
+              accent2: '#ABC4AB'
+            }
+          },
+          fontFamily: { sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'] }
+        }
+      }
+    }
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bcryptjs/2.4.3/bcrypt.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    [x-cloak] { display: none !important; }
+    body { background: #f8f6f3; }
+    .table-row:hover { background: #faf9f7; }
+    .badge {
+      display: inline-flex; align-items: center;
+      padding: 2px 10px; border-radius: 9999px;
+      font-size: 0.7rem; font-weight: 600; letter-spacing: 0.03em;
+    }
+    .badge-vip  { background: rgba(114,125,113,0.12); color: #4a5549; }
+    .badge-free { background: rgba(229,224,217,0.6);  color: #9a8f82; }
+    .badge-paid { background: rgba(5,206,120,0.10);   color: #048a52; }
+    .badge-none { background: rgba(229,224,217,0.6);  color: #9a8f82; }
+    .stat-card {
+      background: #fff; border: 1px solid #ede9e3;
+      border-radius: 1rem; padding: 1.25rem 1.5rem;
+    }
+    .sort-btn { cursor: pointer; user-select: none; }
+    .sort-btn:hover { color: #4a5549; }
+  </style>
+</head>
+<body class="font-sans antialiased min-h-screen" x-data="adminApp()" x-init="init()">
+
+  <!-- ── LOGIN SCREEN ──────────────────────────────────────────────── -->
+  <div x-show="!loggedIn" x-cloak class="min-h-screen flex items-center justify-center px-4">
+    <div class="w-full max-w-sm">
+
+      <div class="text-center mb-8">
+        <img src="../assets/images/logo/Rainfoll-Logo-black-noback.png" alt="Rainföll" class="h-8 mx-auto mb-3 opacity-80">
+        <p class="text-sm text-gray-400">Admin Dashboard</p>
+      </div>
+
+      <div class="bg-white border border-gray-200 rounded-2xl p-8 shadow-sm">
+        <h1 class="text-lg font-bold text-gray-900 mb-6">Sign in</h1>
+
+        <div class="space-y-4">
+          <div>
+            <label class="block text-xs font-medium text-gray-500 mb-1.5">Password</label>
+            <input
+              type="password"
+              x-model="loginPassword"
+              @keydown.enter="login()"
+              class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-primary/30 focus:border-brand-primary transition"
+              placeholder="Enter password"
+              :disabled="loginLoading"
+            >
+          </div>
+
+          <template x-if="loginError">
+            <div class="text-xs rounded-lg px-3 py-2.5" :class="loginLocked ? 'bg-red-50 text-red-600 border border-red-100' : 'bg-amber-50 text-amber-700 border border-amber-100'" x-text="loginError"></div>
+          </template>
+
+          <button
+            @click="login()"
+            :disabled="loginLoading || loginLocked"
+            class="w-full bg-gray-900 text-white text-sm font-semibold py-2.5 rounded-xl hover:bg-gray-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <span x-show="!loginLoading">Sign in</span>
+            <span x-show="loginLoading" class="flex items-center justify-center gap-2">
+              <svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+              </svg>
+              Signing in…
+            </span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── DASHBOARD ─────────────────────────────────────────────────── -->
+  <div x-show="loggedIn" x-cloak class="min-h-screen">
+
+    <!-- Header -->
+    <header class="bg-white border-b border-gray-200 sticky top-0 z-10">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <img src="../assets/images/logo/Rainfoll-Logo-black-noback.png" alt="Rainföll" class="h-6 opacity-70">
+          <span class="text-xs text-gray-300">|</span>
+          <span class="text-xs font-semibold text-gray-400 tracking-wide uppercase">Admin</span>
+        </div>
+        <button
+          @click="logout()"
+          class="text-xs text-gray-400 hover:text-gray-700 font-medium transition flex items-center gap-1.5"
+        >
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h6a2 2 0 012 2v1"/>
+          </svg>
+          Logout
+        </button>
+      </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 sm:px-6 py-8 space-y-10">
+
+      <!-- ── SIGNUPS SECTION ───────────────────────────── -->
+      <section>
+        <div class="flex items-center justify-between mb-5">
+          <h2 class="text-lg font-bold text-gray-900">Signups</h2>
+          <button @click="loadSignups()" :disabled="tableLoading"
+            class="text-xs text-brand-primary font-medium hover:text-brand-accent1 transition flex items-center gap-1">
+            <svg class="w-3.5 h-3.5" :class="tableLoading ? 'animate-spin' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+            </svg>
+            Refresh
+          </button>
+        </div>
+
+        <!-- Error -->
+        <template x-if="tableError">
+          <div class="bg-red-50 border border-red-100 text-red-600 text-xs rounded-xl px-4 py-3 mb-4" x-text="tableError"></div>
+        </template>
+
+        <!-- Stat cards -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
+          <div class="stat-card">
+            <p class="text-xs text-gray-400 font-medium mb-1">Total Signups</p>
+            <p class="text-2xl font-bold text-gray-900" x-text="stats.total"></p>
+          </div>
+          <div class="stat-card">
+            <p class="text-xs text-gray-400 font-medium mb-1">VIP</p>
+            <p class="text-2xl font-bold text-gray-900" x-text="stats.vip"></p>
+          </div>
+          <div class="stat-card">
+            <p class="text-xs text-gray-400 font-medium mb-1">Paid</p>
+            <p class="text-2xl font-bold text-gray-900" x-text="stats.paid"></p>
+          </div>
+          <div class="stat-card">
+            <p class="text-xs text-gray-400 font-medium mb-1">Latest Signup</p>
+            <p class="text-sm font-semibold text-gray-700 leading-tight mt-0.5" x-text="stats.latest || '—'"></p>
+          </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="flex flex-col sm:flex-row gap-3 mb-4">
+          <input
+            type="text"
+            x-model="search"
+            placeholder="Search by email…"
+            class="flex-1 border border-gray-200 rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-primary/30 focus:border-brand-primary transition"
+          >
+          <select x-model="filterVip" class="border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-primary/30 text-gray-600 bg-white">
+            <option value="">All statuses</option>
+            <option value="true">VIP only</option>
+            <option value="false">Free only</option>
+          </select>
+          <select x-model="filterPayment" class="border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-primary/30 text-gray-600 bg-white">
+            <option value="">All payments</option>
+            <option value="paid">Paid</option>
+            <option value="none">None</option>
+          </select>
+        </div>
+
+        <!-- Table -->
+        <div class="bg-white border border-gray-200 rounded-2xl overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+              <thead>
+                <tr class="border-b border-gray-100">
+                  <th class="text-left px-4 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wide">
+                    <span class="sort-btn flex items-center gap-1" @click="setSort('email')">
+                      Email <span x-text="sortIcon('email')" class="text-gray-300"></span>
+                    </span>
+                  </th>
+                  <th class="text-left px-4 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wide">
+                    <span class="sort-btn flex items-center gap-1" @click="setSort('createdAt')">
+                      Signed Up <span x-text="sortIcon('createdAt')" class="text-gray-300"></span>
+                    </span>
+                  </th>
+                  <th class="text-left px-4 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wide">Status</th>
+                  <th class="text-left px-4 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wide">Payment</th>
+                </tr>
+              </thead>
+              <tbody>
+                <template x-if="tableLoading">
+                  <tr>
+                    <td colspan="4" class="px-4 py-10 text-center text-sm text-gray-400">
+                      <svg class="w-5 h-5 animate-spin mx-auto mb-2 text-gray-300" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                      </svg>
+                      Loading…
+                    </td>
+                  </tr>
+                </template>
+                <template x-if="!tableLoading && filteredSignups.length === 0">
+                  <tr>
+                    <td colspan="4" class="px-4 py-10 text-center text-sm text-gray-400">No signups found.</td>
+                  </tr>
+                </template>
+                <template x-for="row in filteredSignups" :key="row.id">
+                  <tr class="table-row border-b border-gray-50 last:border-0">
+                    <td class="px-4 py-3 text-gray-700 font-medium" x-text="row.email"></td>
+                    <td class="px-4 py-3 text-gray-500 text-xs" x-text="formatDate(row.createdAt)"></td>
+                    <td class="px-4 py-3">
+                      <span :class="row.vip ? 'badge badge-vip' : 'badge badge-free'" x-text="row.vip ? 'VIP' : 'Free'"></span>
+                    </td>
+                    <td class="px-4 py-3">
+                      <span :class="row.paymentStatus === 'paid' ? 'badge badge-paid' : 'badge badge-none'" x-text="row.paymentStatus || 'none'"></span>
+                    </td>
+                  </tr>
+                </template>
+              </tbody>
+            </table>
+          </div>
+          <div class="px-4 py-2.5 border-t border-gray-100 text-xs text-gray-400" x-show="!tableLoading">
+            Showing <span class="font-medium text-gray-600" x-text="filteredSignups.length"></span>
+            of <span class="font-medium text-gray-600" x-text="signups.length"></span> signups
+          </div>
+        </div>
+      </section>
+
+      <!-- ── CHANGE PASSWORD SECTION ───────────────────── -->
+      <section>
+        <h2 class="text-lg font-bold text-gray-900 mb-5">Change Password</h2>
+        <div class="bg-white border border-gray-200 rounded-2xl p-6 max-w-md">
+          <div class="space-y-4">
+            <div>
+              <label class="block text-xs font-medium text-gray-500 mb-1.5">Current password</label>
+              <input type="password" x-model="pw.current"
+                class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-primary/30 focus:border-brand-primary transition"
+                placeholder="Current password">
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-gray-500 mb-1.5">New password <span class="text-gray-400 font-normal">(min. 12 characters)</span></label>
+              <input type="password" x-model="pw.newPw"
+                class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-primary/30 focus:border-brand-primary transition"
+                placeholder="New password">
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-gray-500 mb-1.5">Confirm new password</label>
+              <input type="password" x-model="pw.confirm"
+                class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-primary/30 focus:border-brand-primary transition"
+                placeholder="Confirm new password">
+            </div>
+
+            <template x-if="pw.error">
+              <div class="text-xs bg-red-50 border border-red-100 text-red-600 rounded-lg px-3 py-2.5" x-text="pw.error"></div>
+            </template>
+            <template x-if="pw.success">
+              <div class="text-xs bg-green-50 border border-green-100 text-green-700 rounded-lg px-3 py-2.5">Password updated successfully.</div>
+            </template>
+
+            <button
+              @click="changePassword()"
+              :disabled="pw.loading"
+              class="w-full bg-gray-900 text-white text-sm font-semibold py-2.5 rounded-xl hover:bg-gray-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <span x-show="!pw.loading">Update Password</span>
+              <span x-show="pw.loading" class="flex items-center justify-center gap-2">
+                <svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                </svg>
+                Updating…
+              </span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <script>
+    const WORKER_URL = 'https://square-violet-0b51.vgagne11.workers.dev';
+
+    function adminApp() {
+      return {
+        // auth state
+        loggedIn: false,
+        loginPassword: '',
+        loginLoading: false,
+        loginError: '',
+        loginLocked: false,
+
+        // signups
+        signups: [],
+        tableLoading: false,
+        tableError: '',
+        search: '',
+        filterVip: '',
+        filterPayment: '',
+        sortKey: 'createdAt',
+        sortDir: 'desc',
+
+        // change password
+        pw: { current: '', newPw: '', confirm: '', loading: false, error: '', success: false },
+
+        init() {
+          const token = sessionStorage.getItem('admin_token');
+          if (token) {
+            this.loggedIn = true;
+            this.$nextTick(() => this.loadSignups());
+          }
+        },
+
+        // ── LOGIN ──────────────────────────────────────
+        async login() {
+          this.loginError = '';
+          if (!this.loginPassword) { this.loginError = 'Please enter your password.'; return; }
+          this.loginLoading = true;
+          try {
+            const res = await fetch(`${WORKER_URL}/auth/login`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ password: this.loginPassword })
+            });
+            const data = await res.json();
+            if (res.status === 429) {
+              this.loginLocked = true;
+              const mins = data.retry_after_seconds ? Math.ceil(data.retry_after_seconds / 60) : 15;
+              this.loginError = `Too many failed attempts. Try again in ${mins} minute${mins !== 1 ? 's' : ''}.`;
+            } else if (!res.ok) {
+              const rem = data.remaining_attempts;
+              this.loginError = rem !== undefined
+                ? `Incorrect password. ${rem} attempt${rem !== 1 ? 's' : ''} remaining.`
+                : (data.error || 'Login failed.');
+            } else {
+              sessionStorage.setItem('admin_token', data.token);
+              this.loggedIn = true;
+              this.loginPassword = '';
+              this.$nextTick(() => this.loadSignups());
+            }
+          } catch (e) {
+            this.loginError = 'Could not reach server. Please try again.';
+          }
+          this.loginLoading = false;
+        },
+
+        // ── LOGOUT ─────────────────────────────────────
+        logout() {
+          sessionStorage.removeItem('admin_token');
+          this.loggedIn = false;
+          this.signups = [];
+          this.loginPassword = '';
+          this.loginError = '';
+          this.loginLocked = false;
+        },
+
+        // ── LOAD SIGNUPS ───────────────────────────────
+        async loadSignups() {
+          this.tableLoading = true;
+          this.tableError = '';
+          try {
+            const token = sessionStorage.getItem('admin_token');
+            const res = await fetch(`${WORKER_URL}/?action=list`, {
+              headers: { 'Authorization': `Bearer ${token}` }
+            });
+            if (res.status === 401) { this.logout(); return; }
+            if (!res.ok) { this.tableError = 'Failed to load signups.'; this.tableLoading = false; return; }
+            const data = await res.json();
+            this.signups = (data.documents || []).map(doc => {
+              const f = doc.fields || {};
+              return {
+                id: doc.name,
+                email: f.email?.stringValue || '',
+                createdAt: f.created_at?.stringValue || f.createdAt?.stringValue || '',
+                vip: f.vip?.booleanValue || false,
+                paymentStatus: f.payment_status?.stringValue || f.paymentStatus?.stringValue || 'none'
+              };
+            });
+          } catch (e) {
+            this.tableError = 'Could not reach server.';
+          }
+          this.tableLoading = false;
+        },
+
+        // ── STATS ──────────────────────────────────────
+        get stats() {
+          const total = this.signups.length;
+          const vip = this.signups.filter(s => s.vip).length;
+          const paid = this.signups.filter(s => s.paymentStatus === 'paid').length;
+          const dates = this.signups.map(s => s.createdAt).filter(Boolean).sort();
+          const latest = dates.length ? this.formatDate(dates[dates.length - 1]) : null;
+          return { total, vip, paid, latest };
+        },
+
+        // ── FILTER + SORT ──────────────────────────────
+        get filteredSignups() {
+          let rows = [...this.signups];
+          if (this.search.trim()) {
+            const q = this.search.trim().toLowerCase();
+            rows = rows.filter(r => r.email.toLowerCase().includes(q));
+          }
+          if (this.filterVip !== '') {
+            const v = this.filterVip === 'true';
+            rows = rows.filter(r => r.vip === v);
+          }
+          if (this.filterPayment !== '') {
+            rows = rows.filter(r => (r.paymentStatus || 'none') === this.filterPayment);
+          }
+          rows.sort((a, b) => {
+            const av = a[this.sortKey] || '';
+            const bv = b[this.sortKey] || '';
+            return this.sortDir === 'asc'
+              ? av < bv ? -1 : av > bv ? 1 : 0
+              : av > bv ? -1 : av < bv ? 1 : 0;
+          });
+          return rows;
+        },
+
+        setSort(key) {
+          if (this.sortKey === key) { this.sortDir = this.sortDir === 'asc' ? 'desc' : 'asc'; }
+          else { this.sortKey = key; this.sortDir = 'asc'; }
+        },
+
+        sortIcon(key) {
+          if (this.sortKey !== key) return '↕';
+          return this.sortDir === 'asc' ? '↑' : '↓';
+        },
+
+        formatDate(iso) {
+          if (!iso) return '—';
+          try {
+            return new Date(iso).toLocaleDateString('en-CA', { year: 'numeric', month: 'short', day: 'numeric' });
+          } catch { return iso; }
+        },
+
+        // ── CHANGE PASSWORD ────────────────────────────
+        async changePassword() {
+          this.pw.error = '';
+          this.pw.success = false;
+          const { current, newPw, confirm } = this.pw;
+          if (!current || !newPw || !confirm) { this.pw.error = 'All fields are required.'; return; }
+          if (newPw.length < 12) { this.pw.error = 'New password must be at least 12 characters.'; return; }
+          if (newPw !== confirm) { this.pw.error = 'New passwords do not match.'; return; }
+
+          this.pw.loading = true;
+          try {
+            // Hash new password client-side before sending
+            const newHash = await new Promise((resolve, reject) => {
+              dcodeIO.bcrypt.hash(newPw, 12, (err, hash) => err ? reject(err) : resolve(hash));
+            });
+
+            const token = sessionStorage.getItem('admin_token');
+            const res = await fetch(`${WORKER_URL}/auth/change-password`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+              },
+              body: JSON.stringify({ old_password: current, new_password_hash: newHash })
+            });
+            const data = await res.json().catch(() => ({}));
+            if (!res.ok) {
+              this.pw.error = data.error || 'Failed to update password.';
+            } else {
+              this.pw.success = true;
+              this.pw.current = '';
+              this.pw.newPw = '';
+              this.pw.confirm = '';
+            }
+          } catch (e) {
+            this.pw.error = 'Could not reach server. Please try again.';
+          }
+          this.pw.loading = false;
+        }
+      };
+    }
+  </script>
+</body>
+</html>
