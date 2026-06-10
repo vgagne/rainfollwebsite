@@ -60,8 +60,9 @@ async function getFirestoreToken(env) {
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     body: `grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Ajwt-bearer&assertion=${unsigned}.${sig}`,
   });
-  const { access_token } = await res.json();
-  return access_token;
+  const tokenRes = await res.json();
+  if (!tokenRes.access_token) throw new Error(`OAuth failed: ${JSON.stringify(tokenRes)}`);
+  return tokenRes.access_token;
 }
 
 // ── Firestore helpers ──────────────────────────────────────────────────
@@ -221,11 +222,17 @@ async function handleChangePassword(request, env) {
 async function handleList(request, env) {
   if (!await requireAuth(request, env)) return json({ error: 'Unauthorized' }, 401);
 
-  const token = await getFirestoreToken(env);
-  const res   = await fetch(`${FIRESTORE_BASE}/${COLLECTION}?pageSize=1000`, {
+  let token;
+  try { token = await getFirestoreToken(env); }
+  catch (e) { return json({ error: 'Firestore auth failed', detail: e.message }, 500); }
+
+  const res  = await fetch(`${FIRESTORE_BASE}/${COLLECTION}?pageSize=1000`, {
     headers: { Authorization: `Bearer ${token}` },
   });
-  if (!res.ok) return json({ error: 'Failed to fetch signups' }, 500);
+  if (!res.ok) {
+    const detail = await res.text();
+    return json({ error: 'Firestore fetch failed', status: res.status, detail }, 500);
+  }
 
   const data = await res.json();
   return json({ documents: (data.documents || []).map(fromDoc) });
@@ -239,7 +246,9 @@ async function handlePost(request, env) {
 
   if (!email) return json({ error: 'Missing email' }, 400);
 
-  const token = await getFirestoreToken(env);
+  let token;
+  try { token = await getFirestoreToken(env); }
+  catch (e) { return json({ error: 'Firestore auth failed', detail: e.message }, 500); }
 
   // ── signup ─────────────────────────────────────────────────────────
   if (action === 'signup') {
@@ -292,7 +301,18 @@ export default {
     if (request.method === 'GET'  && url.searchParams.get('action') === 'list') return handleList(request, env);
     if (request.method === 'GET'  && url.searchParams.get('action') === 'debug-hash') {
       const h = ((await env.ADMIN_RATE_LIMIT.get('admin:password_hash')) || env.ADMIN_PASSWORD_HASH || '').trim();
-      return json({ length: h.length, prefix: h.substring(0, 7), last4: h.slice(-4), starts_with_2b: h.startsWith('$2b$') });
+      const email = env.FIREBASE_CLIENT_EMAIL || '';
+      const key   = env.FIREBASE_PRIVATE_KEY  || '';
+      return json({
+        hash: { length: h.length, prefix: h.substring(0, 7), last4: h.slice(-4), starts_with_2b: h.startsWith('$2b$') },
+        firebase: {
+          email_set: email.length > 0,
+          email_preview: email.substring(0, 20),
+          key_set: key.length > 0,
+          key_length: key.length,
+          key_prefix: key.substring(0, 27),
+        }
+      });
     }
     if (request.method === 'GET')  return json({ error: 'Not found' }, 404);
     if (request.method === 'POST') return handlePost(request, env);
