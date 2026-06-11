@@ -651,11 +651,14 @@
           return {
             total,
             questions: [
-              breakdown('q1', 'Q1 — Where would you use Rainföll?'),
-              breakdown('q2', 'Q2 — Biggest frustration with current position?'),
-              breakdown('q3', 'Q3 — Who else struggles with height?'),
-              breakdown('q4', 'Q4 — Expected price range?'),
-              breakdown('q5', 'Q5 — Preferred finish? (VIP only)'),
+              breakdown('decline_reason',      'Decline reason (free only)'),
+              breakdown('price_too_expensive', 'Price: too expensive ($)'),
+              breakdown('price_expensive',     'Price: expensive but okay ($)'),
+              breakdown('price_bargain',       'Price: bargain ($)'),
+              breakdown('price_too_cheap',     'Price: too cheap ($)'),
+              breakdown('appeal',              'What appeals most'),
+              breakdown('tenure',              'Rent or own'),
+              breakdown('who_for',             'Who would it be for (free only)'),
             ],
           };
         },

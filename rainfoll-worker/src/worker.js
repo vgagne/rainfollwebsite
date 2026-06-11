@@ -99,17 +99,25 @@ function fromDoc(doc) {
 function fromSurvey(doc) {
   const f = doc.fields || {};
   return {
-    id:           doc.name?.split('/').pop(),
-    email:        f.email?.stringValue        || '',
-    vip:          f.vip?.booleanValue         || false,
-    session_id:   f.session_id?.stringValue   || '',
-    q1:           f.q1?.stringValue           || '',
-    q2:           f.q2?.stringValue           || '',
-    q3:           f.q3?.stringValue           || '',
-    q4:           f.q4?.stringValue           || '',
-    q5:           f.q5?.stringValue           || '',
-    submitted_at: f.submitted_at?.stringValue || '',
-    utm_content:  f.utm_content?.stringValue  || '',
+    id:                  doc.name?.split('/').pop(),
+    email:               f.email?.stringValue               || '',
+    vip:                 f.vip?.booleanValue                || false,
+    cohort:              f.cohort?.stringValue              || '',
+    session_id:          f.session_id?.stringValue          || '',
+    decline_reason:      f.decline_reason?.stringValue      || '',
+    price_too_expensive: f.price_too_expensive?.stringValue || '',
+    price_expensive:     f.price_expensive?.stringValue     || '',
+    price_bargain:       f.price_bargain?.stringValue       || '',
+    price_too_cheap:     f.price_too_cheap?.stringValue     || '',
+    appeal:              f.appeal?.stringValue              || '',
+    tenure:              f.tenure?.stringValue              || '',
+    who_for:             f.who_for?.stringValue             || '',
+    open_feedback:       f.open_feedback?.stringValue       || '',
+    utm_source:          f.utm_source?.stringValue          || '',
+    utm_medium:          f.utm_medium?.stringValue          || '',
+    utm_campaign:        f.utm_campaign?.stringValue        || '',
+    utm_content:         f.utm_content?.stringValue         || '',
+    submitted_at:        f.submitted_at?.stringValue        || '',
   };
 }
 
@@ -350,15 +358,23 @@ async function handleSurvey(request, env) {
   if (await checkSurveyRateLimit(ip, env))
     return json({ error: 'Too many submissions' }, 429);
 
-  const email      = surveyEmail;
-  const vip        = !!body.vip;
-  const session_id = String(body.session_id || '').slice(0, 200);
-  const q1         = String(body.q1 || '').slice(0, 500);
-  const q2         = String(body.q2 || '').slice(0, 500);
-  const q3         = String(body.q3 || '').slice(0, 500);
-  const q4         = String(body.q4 || '').slice(0, 500);
-  const q5         = String(body.q5 || '').slice(0, 500);
-  const utm_content = String(body.utm_content || '').slice(0, 200);
+  const email              = surveyEmail;
+  const vip                = !!body.vip;
+  const cohort             = String(body.cohort      || '').slice(0, 50);
+  const session_id         = String(body.session_id  || '').slice(0, 200);
+  const decline_reason     = String(body.decline_reason      || '').slice(0, 500);
+  const price_too_expensive = String(body.price_too_expensive || '').slice(0, 20);
+  const price_expensive    = String(body.price_expensive     || '').slice(0, 20);
+  const price_bargain      = String(body.price_bargain       || '').slice(0, 20);
+  const price_too_cheap    = String(body.price_too_cheap     || '').slice(0, 20);
+  const appeal             = String(body.appeal     || '').slice(0, 500);
+  const tenure             = String(body.tenure     || '').slice(0, 100);
+  const who_for            = String(body.who_for    || '').slice(0, 100);
+  const open_feedback      = String(body.open_feedback || '').slice(0, 1000);
+  const utm_source         = String(body.utm_source   || '').slice(0, 200);
+  const utm_medium         = String(body.utm_medium   || '').slice(0, 200);
+  const utm_campaign       = String(body.utm_campaign || '').slice(0, 200);
+  const utm_content        = String(body.utm_content  || '').slice(0, 200);
 
   let token;
   try { token = await getFirestoreToken(env); }
@@ -369,7 +385,13 @@ async function handleSurvey(request, env) {
     method: 'POST',
     headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      fields: toFields({ id: docId, email, vip, session_id, q1, q2, q3, q4, q5, utm_content, submitted_at: new Date().toISOString() }),
+      fields: toFields({
+        id: docId, email, vip, cohort, session_id,
+        decline_reason, price_too_expensive, price_expensive, price_bargain, price_too_cheap,
+        appeal, tenure, who_for, open_feedback,
+        utm_source, utm_medium, utm_campaign, utm_content,
+        submitted_at: new Date().toISOString(),
+      }),
     }),
   });
 
