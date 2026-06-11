@@ -559,7 +559,12 @@ export default {
           key_set: key.length > 0,
           key_length: key.length,
           key_prefix: key.substring(0, 27),
-        }
+        },
+        test_email: {
+          set: !!(env.TEST_EMAIL),
+          length: (env.TEST_EMAIL || '').length,
+          preview: (env.TEST_EMAIL || '').substring(0, 4) + (env.TEST_EMAIL?.length > 4 ? '…' : ''),
+        },
       });
     }
     if (request.method === 'GET')  return json({ error: 'Not found' }, 404);
