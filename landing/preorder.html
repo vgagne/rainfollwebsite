@@ -300,6 +300,11 @@
       border-radius: 1.5rem;
       padding: 2rem;
       box-shadow: 0 20px 60px rgba(0,0,0,0.25), 0 0 0 1px rgba(255,255,255,0.06);
+      transition: background 0.3s ease, box-shadow 0.3s ease;
+    }
+    .form-card.vip-active {
+      background: #ffffff;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.18), 0 0 0 2px #DCC9B6;
     }
 
     /* ── INPUT ────────────────────────────────────── */
@@ -350,22 +355,23 @@
     /* ── VIP BUTTON ──────────────────────────────── */
     .vip-btn {
       width: 100%;
-      background: linear-gradient(135deg, #A39171, #6D4C3D);
+      background: #1a1a1a;
       color: #fff;
-      font-weight: 700;
-      font-size: 1rem;
+      font-weight: 800;
+      font-size: 1.0625rem;
       border-radius: 0.875rem;
-      padding: 1rem 1.5rem;
+      padding: 1.1rem 1.5rem;
       border: none;
       cursor: pointer;
-      transition: all 0.25s ease;
+      transition: all 0.2s ease;
       font-family: 'Inter', sans-serif;
-      box-shadow: 0 4px 20px rgba(109,76,61,0.40);
+      letter-spacing: -0.01em;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.22);
     }
     .vip-btn:hover {
-      opacity: 0.92;
+      background: #111;
       transform: translateY(-2px);
-      box-shadow: 0 8px 28px rgba(109,76,61,0.50);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.30);
     }
     .vip-btn:active { transform: scale(0.98); }
 
@@ -527,7 +533,7 @@
       <!-- ── FORM CARD ─────────────────────────────
            Manages three visual states via Alpine step.
       ─────────────────────────────────────────────── -->
-      <div class="form-card mb-6 fade-in" x-data="emailForm()">
+      <div class="form-card mb-6 fade-in" :class="step === 'vip' ? 'vip-active' : ''" x-data="emailForm()">
 
         <!-- ── Step: email form ── -->
         <div x-show="step === 'form'">
@@ -583,38 +589,38 @@
         <div x-show="step === 'vip'" x-cloak>
           <!-- Confirmed badge -->
           <div class="flex items-center gap-2 mb-5">
-            <div class="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0" style="background:rgba(5,206,120,0.15);">
+            <div class="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0" style="background:rgba(5,206,120,0.12); border:1px solid rgba(5,206,120,0.25);">
               <svg class="w-3.5 h-3.5" fill="none" stroke="#05ce78" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
               </svg>
             </div>
-            <p class="text-xs font-semibold" style="color:rgba(255,255,255,0.50);">You're on the list — <span x-text="email" style="color:rgba(255,255,255,0.70);"></span></p>
+            <p class="text-xs font-semibold text-gray-400">You're on the list — <span x-text="email" class="text-gray-600"></span></p>
           </div>
 
-          <h2 class="text-xl font-bold text-white mb-3 leading-snug">
+          <h2 class="text-2xl font-extrabold text-gray-900 mb-3 leading-snug">
             Want to lock in our best launch deal?
           </h2>
-          <p class="text-sm leading-relaxed mb-6" style="color:rgba(255,255,255,0.60);">
-            Become a VIP for <strong style="color:#DCC9B6;">$1</strong> and lock in the lowest price we'll ever offer on Rainföll — guaranteed best launch pricing, first access when we go live, and your $1 is credited toward your order. Fully refundable anytime.
+          <p class="text-sm leading-relaxed mb-5 text-gray-600">
+            Become a VIP for <strong class="text-gray-900">$1</strong> and lock in the lowest price we'll ever offer on Rainföll — guaranteed best launch pricing, first access when we go live, and your $1 is credited toward your order. Fully refundable anytime.
           </p>
 
           <!-- VIP perks list -->
-          <div class="space-y-2 mb-6">
+          <div class="space-y-2.5 mb-6 bg-gray-50 rounded-xl p-4 border border-gray-100">
             <div class="flex items-center gap-2.5">
-              <svg class="w-4 h-4 flex-shrink-0" style="color:#A39171;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
-              <p class="text-xs" style="color:rgba(255,255,255,0.65);">Guaranteed best launch pricing — the lowest we'll ever offer</p>
+              <svg class="w-4 h-4 flex-shrink-0 text-brand-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+              <p class="text-sm text-gray-700">Guaranteed best launch pricing — the lowest we'll ever offer</p>
             </div>
             <div class="flex items-center gap-2.5">
-              <svg class="w-4 h-4 flex-shrink-0" style="color:#A39171;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
-              <p class="text-xs" style="color:rgba(255,255,255,0.65);">First access when we go live on Kickstarter</p>
+              <svg class="w-4 h-4 flex-shrink-0 text-brand-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+              <p class="text-sm text-gray-700">First access when we go live on Kickstarter</p>
             </div>
             <div class="flex items-center gap-2.5">
-              <svg class="w-4 h-4 flex-shrink-0" style="color:#A39171;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
-              <p class="text-xs" style="color:rgba(255,255,255,0.65);">Your $1 is credited toward your order</p>
+              <svg class="w-4 h-4 flex-shrink-0 text-brand-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+              <p class="text-sm text-gray-700">Your $1 is credited toward your order</p>
             </div>
             <div class="flex items-center gap-2.5">
-              <svg class="w-4 h-4 flex-shrink-0" style="color:#A39171;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
-              <p class="text-xs" style="color:rgba(255,255,255,0.65);">Fully refundable anytime — no questions asked</p>
+              <svg class="w-4 h-4 flex-shrink-0 text-brand-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+              <p class="text-sm text-gray-700">Fully refundable anytime — no questions asked</p>
             </div>
           </div>
 
@@ -626,10 +632,8 @@
             <button
               type="button"
               @click="declineVip()"
-              class="text-xs font-medium transition-colors"
-              style="color:rgba(255,255,255,0.30); text-decoration:underline; text-underline-offset:3px; background:none; border:none; cursor:pointer;"
-              onmouseover="this.style.color='rgba(255,255,255,0.55)'"
-              onmouseout="this.style.color='rgba(255,255,255,0.30)'"
+              class="text-xs font-medium text-gray-400 hover:text-gray-600 transition-colors"
+              style="text-decoration:underline; text-underline-offset:3px; background:none; border:none; cursor:pointer;"
             >
               No thanks, continue
             </button>
