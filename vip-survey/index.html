@@ -138,8 +138,12 @@
               this.loading = false;
               return;
             }
-            if (typeof fbq !== 'undefined') fbq('trackCustom', 'SurveyComplete', { vip: true });
-            if (typeof ttq !== 'undefined') ttq.track('SubmitForm', { content_name: 'VipSurvey' });
+            // Fire completion pixels (suppressed for test email)
+            const vipSurveyData = await res.json().catch(() => ({}));
+            if (!vipSurveyData.test) {
+              if (typeof fbq !== 'undefined') fbq('trackCustom', 'SurveyComplete', { vip: true });
+              if (typeof ttq !== 'undefined') ttq.track('SubmitForm', { content_name: 'VipSurvey' });
+            }
             this.step = 'done';
           } catch (e) {
             this.error = 'Something went wrong. Please try again.';

@@ -341,10 +341,16 @@ async function handleSurvey(request, env) {
   // Honeypot: bots fill this field, humans don't
   if (body.website) return json({ success: true });
 
+  // Test-email bypass: skip DB write
+  const surveyEmail = (body.email || '').trim().toLowerCase() || 'anonymous';
+  if (env.TEST_EMAIL && surveyEmail === env.TEST_EMAIL.trim().toLowerCase()) {
+    return json({ success: true, test: true });
+  }
+
   if (await checkSurveyRateLimit(ip, env))
     return json({ error: 'Too many submissions' }, 429);
 
-  const email      = (body.email || '').trim().toLowerCase() || 'anonymous';
+  const email      = surveyEmail;
   const vip        = !!body.vip;
   const session_id = String(body.session_id || '').slice(0, 200);
   const q1         = String(body.q1 || '').slice(0, 500);
@@ -481,6 +487,11 @@ async function handlePost(request, env) {
 
   // ── signup ─────────────────────────────────────────────────────────
   if (action === 'signup') {
+    // Test-email bypass: skip DB read/write, return success without pixels
+    if (env.TEST_EMAIL && email === env.TEST_EMAIL.trim().toLowerCase()) {
+      return json({ success: true, docId: 'test-doc-id', test: true });
+    }
+
     const existing = await findByEmail(email, token);
     if (existing) return json({ duplicate: true }, 409);
 

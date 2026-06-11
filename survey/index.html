@@ -117,9 +117,12 @@
               this.loading = false;
               return;
             }
-            // Fire completion pixels
-            if (typeof fbq !== 'undefined') fbq('trackCustom', 'SurveyComplete');
-            if (typeof ttq !== 'undefined') ttq.track('SubmitForm', { content_name: 'FreeSurvey' });
+            // Fire completion pixels (suppressed for test email)
+            const surveyData = await res.json().catch(() => ({}));
+            if (!surveyData.test) {
+              if (typeof fbq !== 'undefined') fbq('trackCustom', 'SurveyComplete');
+              if (typeof ttq !== 'undefined') ttq.track('SubmitForm', { content_name: 'FreeSurvey' });
+            }
             this.step = 'done';
           } catch (e) {
             this.error = 'Something went wrong. Please try again.';

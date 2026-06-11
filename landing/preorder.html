@@ -142,10 +142,12 @@
             // Capture docId for Stripe client_reference_id
             this.docId = data.docId || '';
 
-            // Fire conversion pixels on confirmed success
-            if (typeof gtag !== 'undefined') gtag('event', 'conversion', { send_to: 'G-NLM0KNT900', event_category: 'engagement', event_label: 'email_signup' });
-            if (typeof ttq !== 'undefined') ttq.track('SubmitForm');
-            if (typeof fbq !== 'undefined') fbq('track', 'Lead', { email: this.email });
+            // Fire conversion pixels on confirmed success (suppressed for test email)
+            if (!data.test) {
+              if (typeof gtag !== 'undefined') gtag('event', 'conversion', { send_to: 'G-NLM0KNT900', event_category: 'engagement', event_label: 'email_signup' });
+              if (typeof ttq !== 'undefined') ttq.track('SubmitForm');
+              if (typeof fbq !== 'undefined') fbq('track', 'Lead', { email: this.email });
+            }
 
             this.step = 'vip';
           } catch (e) {
