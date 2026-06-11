@@ -31,21 +31,34 @@
   <link rel="icon" type="image/png" sizes="32x32" href="../assets/icons/Favicon.png">
   <link rel="apple-touch-icon" sizes="180x180" href="../assets/icons/Favicon.png">
 
-  <!-- TikTok Pixel -->
+  <!-- TikTok Pixel Code Start -->
   <script>
-    !function (w, d, t) {
-      w.TiktokAnalyticsObject=t;var ttq=w[t]=w[t]||[];ttq.methods=["page","track","identify","instances","debug","on","off","once","ready","alias","group","enableCookie","disableCookie"],ttq.setAndDefer=function(t,e){t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}};for(var i=0;i<ttq.methods.length;i++)ttq.setAndDefer(ttq,ttq.methods[i]);ttq.instance=function(t){for(var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n]);return e},ttq.load=function(e,n){var i="https://analytics.tiktok.com/i18n/pixel/events.js";ttq._i=ttq._i||{},ttq._i[e]=[],ttq._i[e]._u=i,ttq._t=ttq._t||{},ttq._t[e]=+new Date,ttq._o=ttq._o||{},ttq._o[e]=n||{};var o=document.createElement("script");o.type="text/javascript",o.async=!0,o.src=i+"?sdkid="+e+"&lib="+t;var a=document.getElementsByTagName("script")[0];a.parentNode.insertBefore(o,a)};
-      // ttq.load('XXXXXXXXXXXXXXXX');
-      ttq.page();
-    }(window, document, 'ttq');
+  !function (w, d, t) {
+    w.TiktokAnalyticsObject=t;var ttq=w[t]=w[t]||[];ttq.methods=["page","track","identify","instances","debug","on","off","once","ready","alias","group","enableCookie","disableCookie","holdConsent","revokeConsent","grantConsent"],ttq.setAndDefer=function(t,e){t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}};for(var i=0;i<ttq.methods.length;i++)ttq.setAndDefer(ttq,ttq.methods[i]);ttq.instance=function(t){for(
+  var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n]);return e},ttq.load=function(e,n){var r="https://analytics.tiktok.com/i18n/pixel/events.js",o=n&&n.partner;ttq._i=ttq._i||{},ttq._i[e]=[],ttq._i[e]._u=r,ttq._t=ttq._t||{},ttq._t[e]=+new Date,ttq._o=ttq._o||{},ttq._o[e]=n||{};n=document.createElement("script")
+  ;n.type="text/javascript",n.async=!0,n.src=r+"?sdkid="+e+"&lib="+t;e=document.getElementsByTagName("script")[0];e.parentNode.insertBefore(n,e)};
+    ttq.load('D8HHN53C77UDLID68NHG');
+    ttq.page();
+  }(window, document, 'ttq');
   </script>
-
-  <!-- Meta Pixel -->
+  <!-- TikTok Pixel Code End -->
+  <!-- Meta Pixel Code -->
   <script>
-    !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
-    // fbq('init', 'XXXXXXXXXXXXXXXXXX');
-    // fbq('track', 'PageView');
+  !function(f,b,e,v,n,t,s)
+  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+  n.queue=[];t=b.createElement(e);t.async=!0;
+  t.src=v;s=b.getElementsByTagName(e)[0];
+  s.parentNode.insertBefore(t,s)}(window, document,'script',
+  'https://connect.facebook.net/en_US/fbevents.js');
+  fbq('init', '971805995701381');
+  fbq('track', 'PageView');
   </script>
+  <noscript><img height="1" width="1" style="display:none"
+  src="https://www.facebook.com/tr?id=971805995701381&ev=PageView&noscript=1"
+  /></noscript>
+  <!-- End Meta Pixel Code -->
 
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -69,12 +82,27 @@
   </script>
 
   <script>
+    // ── UTM capture ──────────────────────────────────────────────────
+    (function() {
+      const p = new URLSearchParams(window.location.search);
+      const utm = p.get('utm_content') || '';
+      if (utm) sessionStorage.setItem('utm_content', utm);
+    })();
+
+    // ── Stripe Payment Link URL (swap test→live without code change) ─
+    // Set this to your Stripe Payment Link URL before going live.
+    const STRIPE_PAYMENT_LINK = 'https://buy.stripe.com/TODO_REPLACE_WITH_PAYMENT_LINK';
+    const WORKER_URL = 'https://square-violet-0b51.vgagne11.workers.dev';
+
     document.addEventListener('alpine:init', () => {
       Alpine.data('emailForm', () => ({
         email: '',
-        submitted: false,
+        step: 'form',  // 'form' | 'vip' | 'done'
         error: '',
         loading: false,
+        docId: '',
+        utmContent: sessionStorage.getItem('utm_content') || '',
+
         validate() {
           const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
           if (!this.email.trim()) { this.error = 'Please enter your email address.'; return false; }
@@ -82,16 +110,18 @@
           this.error = '';
           return true;
         },
+
         async submit() {
           if (!this.validate()) return;
           this.loading = true;
           try {
-            const res = await fetch('https://square-violet-0b51.vgagne11.workers.dev/', {
+            const res = await fetch(`${WORKER_URL}/`, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
                 action: 'signup',
-                email: this.email.trim().toLowerCase()
+                email: this.email.trim().toLowerCase(),
+                utm_content: this.utmContent,
               })
             });
             this.loading = false;
@@ -109,15 +139,38 @@
               this.error = "You're already on the list — we'll see you at launch!";
               return;
             }
-            this.submitted = true;
+            // Capture docId for Stripe client_reference_id
+            this.docId = data.docId || '';
+
+            // Fire conversion pixels on confirmed success
             if (typeof gtag !== 'undefined') gtag('event', 'conversion', { send_to: 'G-NLM0KNT900', event_category: 'engagement', event_label: 'email_signup' });
             if (typeof ttq !== 'undefined') ttq.track('SubmitForm');
             if (typeof fbq !== 'undefined') fbq('track', 'Lead', { email: this.email });
+
+            this.step = 'vip';
           } catch (e) {
             this.loading = false;
             this.error = 'Something went wrong. Please try again.';
           }
-        }
+        },
+
+        goVip() {
+          if (typeof fbq !== 'undefined') fbq('track', 'InitiateCheckout');
+          if (typeof ttq !== 'undefined') ttq.track('InitiateCheckout');
+
+          const email = encodeURIComponent(this.email.trim().toLowerCase());
+          const ref   = encodeURIComponent(this.docId || this.email.trim().toLowerCase());
+          window.location.href = `${STRIPE_PAYMENT_LINK}?prefilled_email=${email}&client_reference_id=${ref}`;
+        },
+
+        declineVip() {
+          if (typeof fbq !== 'undefined') fbq('trackCustom', 'VipDeclined');
+          if (typeof ttq !== 'undefined') ttq.track('ClickButton', { content_name: 'VipDeclined' });
+
+          const email = encodeURIComponent(this.email.trim().toLowerCase());
+          const utm   = encodeURIComponent(this.utmContent);
+          window.location.href = `/survey?email=${email}&utm_content=${utm}`;
+        },
       }));
     });
   </script>
@@ -156,7 +209,6 @@
       object-fit: cover;
       object-position: center top;
     }
-    /* Light warm overlay so image shows through without overpowering content */
     .page-bg::after {
       content: '';
       position: absolute;
@@ -293,6 +345,28 @@
     .submit-btn:active { transform: scale(0.98); }
     .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; box-shadow: none; }
 
+    /* ── VIP BUTTON ──────────────────────────────── */
+    .vip-btn {
+      width: 100%;
+      background: linear-gradient(135deg, #A39171, #6D4C3D);
+      color: #fff;
+      font-weight: 700;
+      font-size: 1rem;
+      border-radius: 0.875rem;
+      padding: 1rem 1.5rem;
+      border: none;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      font-family: 'Inter', sans-serif;
+      box-shadow: 0 4px 20px rgba(109,76,61,0.40);
+    }
+    .vip-btn:hover {
+      opacity: 0.92;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(109,76,61,0.50);
+    }
+    .vip-btn:active { transform: scale(0.98); }
+
     /* ── PRIVACY NOTE ────────────────────────────── */
     .privacy-note {
       display: flex;
@@ -302,15 +376,6 @@
       border: 1px solid rgba(255,255,255,0.08);
       border-radius: 0.75rem;
       padding: 0.875rem 1rem;
-    }
-
-    /* ── SUCCESS STATE ───────────────────────────── */
-    .success-card {
-      background: rgba(5, 206, 120, 0.06);
-      border: 1px solid rgba(5, 206, 120, 0.25);
-      border-radius: 1.25rem;
-      padding: 2rem;
-      text-align: center;
     }
 
     /* ── PRODUCT MINI PREVIEWS ───────────────────── */
@@ -370,34 +435,6 @@
 
     [x-cloak] { display: none !important; }
   </style>
-  <!-- TikTok Pixel Code Start -->
-  <script>
-  !function (w, d, t) {
-    w.TiktokAnalyticsObject=t;var ttq=w[t]=w[t]||[];ttq.methods=["page","track","identify","instances","debug","on","off","once","ready","alias","group","enableCookie","disableCookie","holdConsent","revokeConsent","grantConsent"],ttq.setAndDefer=function(t,e){t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}};for(var i=0;i<ttq.methods.length;i++)ttq.setAndDefer(ttq,ttq.methods[i]);ttq.instance=function(t){for(
-  var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n]);return e},ttq.load=function(e,n){var r="https://analytics.tiktok.com/i18n/pixel/events.js",o=n&&n.partner;ttq._i=ttq._i||{},ttq._i[e]=[],ttq._i[e]._u=r,ttq._t=ttq._t||{},ttq._t[e]=+new Date,ttq._o=ttq._o||{},ttq._o[e]=n||{};n=document.createElement("script")
-  ;n.type="text/javascript",n.async=!0,n.src=r+"?sdkid="+e+"&lib="+t;e=document.getElementsByTagName("script")[0];e.parentNode.insertBefore(n,e)};
-    ttq.load('D8HHN53C77UDLID68NHG');
-    ttq.page();
-  }(window, document, 'ttq');
-  </script>
-  <!-- TikTok Pixel Code End -->
-  <!-- Meta Pixel Code -->
-  <script>
-  !function(f,b,e,v,n,t,s)
-  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-  n.queue=[];t=b.createElement(e);t.async=!0;
-  t.src=v;s=b.getElementsByTagName(e)[0];
-  s.parentNode.insertBefore(t,s)}(window, document,'script',
-  'https://connect.facebook.net/en_US/fbevents.js');
-  fbq('init', '971805995701381');
-  fbq('track', 'PageView');
-  </script>
-  <noscript><img height="1" width="1" style="display:none"
-  src="https://www.facebook.com/tr?id=971805995701381&ev=PageView&noscript=1"
-  /></noscript>
-  <!-- End Meta Pixel Code -->
 </head>
 
 <body class="font-sans antialiased">
@@ -430,8 +467,8 @@
         </div>
       </div>
 
-      <!-- ── HEADLINE ───────────────────────────── -->
-      <div class="mb-4 sm:mb-8 fade-in">
+      <!-- ── HEADLINE (hidden once on VIP step) ─── -->
+      <div class="mb-4 sm:mb-8 fade-in" id="main-headline">
         <h1 class="text-2xl sm:text-4xl font-bold text-gray-900 leading-tight mb-2">
           We're Almost Ready to Launch.
         </h1>
@@ -440,8 +477,8 @@
         </p>
       </div>
 
-      <!-- ── KICKSTARTER HIGHLIGHT CARD + PROGRESS (collapsed on mobile) ── -->
-      <div class="hidden sm:block">
+      <!-- ── KICKSTARTER HIGHLIGHT CARD + PROGRESS (desktop) ── -->
+      <div class="hidden sm:block" id="ks-detail-block">
         <div class="ks-card mb-8 fade-in">
           <div class="flex items-start gap-4">
             <div class="ks-icon-wrap">
@@ -475,7 +512,7 @@
       </div>
 
       <!-- ── PROGRESS (mobile only, compact) ──────── -->
-      <div class="sm:hidden mb-4 fade-in">
+      <div class="sm:hidden mb-4 fade-in" id="ks-progress-mobile">
         <div class="flex items-center justify-between text-xs text-gray-500 mb-1.5">
           <span class="font-medium">Campaign Readiness</span>
           <span class="font-bold text-brand-primary">73%</span>
@@ -485,11 +522,13 @@
         </div>
       </div>
 
-      <!-- ── EMAIL FORM ─────────────────────────── -->
+      <!-- ── FORM CARD ─────────────────────────────
+           Manages three visual states via Alpine step.
+      ─────────────────────────────────────────────── -->
       <div class="form-card mb-6 fade-in" x-data="emailForm()">
 
-        <!-- Form state -->
-        <div x-show="!submitted">
+        <!-- ── Step: email form ── -->
+        <div x-show="step === 'form'">
           <h2 class="text-xl font-bold text-white mb-1">Be First to Back Us</h2>
           <p class="text-sm mb-6" style="color:rgba(255,255,255,0.55);">One email. One moment. When our Kickstarter goes live, you'll hear it from us first — with early backer access before anyone else.</p>
 
@@ -538,21 +577,65 @@
           </div>
         </div>
 
-        <!-- Success state -->
-        <div x-show="submitted" x-cloak class="success-card">
-          <div class="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-4" style="background: rgba(5,206,120,0.12);">
-            <svg class="w-7 h-7" fill="none" stroke="#05ce78" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
-            </svg>
+        <!-- ── Step: VIP offer ── -->
+        <div x-show="step === 'vip'" x-cloak>
+          <!-- Confirmed badge -->
+          <div class="flex items-center gap-2 mb-5">
+            <div class="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0" style="background:rgba(5,206,120,0.15);">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="#05ce78" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+              </svg>
+            </div>
+            <p class="text-xs font-semibold" style="color:rgba(255,255,255,0.50);">You're on the list — <span x-text="email" style="color:rgba(255,255,255,0.70);"></span></p>
           </div>
-          <h3 class="text-xl font-bold text-gray-900 mb-2">You're on the list.</h3>
-          <p class="text-gray-600 text-sm leading-relaxed mb-1">
-            We'll reach out the moment our Kickstarter goes live. That's the only email you'll get from us.
+
+          <h2 class="text-xl font-bold text-white mb-3 leading-snug">
+            Want to lock in our best launch deal?
+          </h2>
+          <p class="text-sm leading-relaxed mb-6" style="color:rgba(255,255,255,0.60);">
+            Become a VIP for <strong style="color:#DCC9B6;">$1</strong> and lock in the lowest price we'll ever offer on Rainföll — guaranteed best launch pricing, first access when we go live, and your $1 is credited toward your order. Fully refundable anytime.
           </p>
-          <p class="text-gray-400 text-xs mt-2">Confirmed: <span class="text-gray-600 font-medium" x-text="email"></span></p>
+
+          <!-- VIP perks list -->
+          <div class="space-y-2 mb-6">
+            <div class="flex items-center gap-2.5">
+              <svg class="w-4 h-4 flex-shrink-0" style="color:#A39171;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+              <p class="text-xs" style="color:rgba(255,255,255,0.65);">Guaranteed best launch pricing — the lowest we'll ever offer</p>
+            </div>
+            <div class="flex items-center gap-2.5">
+              <svg class="w-4 h-4 flex-shrink-0" style="color:#A39171;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+              <p class="text-xs" style="color:rgba(255,255,255,0.65);">First access when we go live on Kickstarter</p>
+            </div>
+            <div class="flex items-center gap-2.5">
+              <svg class="w-4 h-4 flex-shrink-0" style="color:#A39171;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+              <p class="text-xs" style="color:rgba(255,255,255,0.65);">Your $1 is credited toward your order</p>
+            </div>
+            <div class="flex items-center gap-2.5">
+              <svg class="w-4 h-4 flex-shrink-0" style="color:#A39171;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+              <p class="text-xs" style="color:rgba(255,255,255,0.65);">Fully refundable anytime — no questions asked</p>
+            </div>
+          </div>
+
+          <button type="button" class="vip-btn" @click="goVip()">
+            Become a VIP — $1
+          </button>
+
+          <div class="text-center mt-4">
+            <button
+              type="button"
+              @click="declineVip()"
+              class="text-xs font-medium transition-colors"
+              style="color:rgba(255,255,255,0.30); text-decoration:underline; text-underline-offset:3px; background:none; border:none; cursor:pointer;"
+              onmouseover="this.style.color='rgba(255,255,255,0.55)'"
+              onmouseout="this.style.color='rgba(255,255,255,0.30)'"
+            >
+              No thanks, continue
+            </button>
+          </div>
         </div>
 
       </div>
+      <!-- /form-card -->
 
       <!-- ── SUPPLY CHAIN / TEAM NOTE ───────────── -->
       <div class="mb-8 fade-in">

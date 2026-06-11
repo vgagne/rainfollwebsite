@@ -1,7 +1,8 @@
 import { compareSync } from 'bcryptjs';
 
-const PROJECT_ID   = 'rainfoll-143ef';
-const COLLECTION   = 'signups';
+const PROJECT_ID     = 'rainfoll-143ef';
+const COLLECTION     = 'signups';
+const SURVEYS_COLL   = 'surveys';
 const FIRESTORE_BASE = `https://firestore.googleapis.com/v1/projects/${PROJECT_ID}/databases/(default)/documents`;
 
 // ── CORS ───────────────────────────────────────────────────────────────
@@ -69,8 +70,10 @@ async function getFirestoreToken(env) {
 function toFields(obj) {
   const fields = {};
   for (const [k, v] of Object.entries(obj)) {
-    if (typeof v === 'string')  fields[k] = { stringValue: v };
-    else if (typeof v === 'boolean') fields[k] = { booleanValue: v };
+    if (v === null || v === undefined) continue;
+    if (typeof v === 'string')        fields[k] = { stringValue: v };
+    else if (typeof v === 'boolean')  fields[k] = { booleanValue: v };
+    else if (typeof v === 'number')   fields[k] = { doubleValue: v };
   }
   return fields;
 }
@@ -78,12 +81,35 @@ function toFields(obj) {
 function fromDoc(doc) {
   const f = doc.fields || {};
   return {
-    id:             doc.name?.split('/').pop(),
-    email:          f.email?.stringValue          || '',
-    is_vip:         f.is_vip?.booleanValue        || false,
-    payment_id:     f.payment_id?.stringValue     || '',
-    payment_status: f.payment_status?.stringValue || 'none',
-    created_at:     f.created_at?.stringValue     || '',
+    id:              doc.name?.split('/').pop(),
+    email:           f.email?.stringValue           || '',
+    is_vip:          f.is_vip?.booleanValue         || false,
+    payment_id:      f.payment_id?.stringValue      || '',
+    payment_status:  f.payment_status?.stringValue  || 'none',
+    created_at:      f.created_at?.stringValue      || '',
+    utm_content:     f.utm_content?.stringValue     || '',
+    vipPaidAt:       f.vipPaidAt?.stringValue       || '',
+    stripeSessionId: f.stripeSessionId?.stringValue || '',
+    amount:          f.amount?.doubleValue          || 0,
+    surveyCompleted: f.surveyCompleted?.booleanValue || false,
+    vipOnly:         f.vipOnly?.booleanValue        || false,
+  };
+}
+
+function fromSurvey(doc) {
+  const f = doc.fields || {};
+  return {
+    id:           doc.name?.split('/').pop(),
+    email:        f.email?.stringValue        || '',
+    vip:          f.vip?.booleanValue         || false,
+    session_id:   f.session_id?.stringValue   || '',
+    q1:           f.q1?.stringValue           || '',
+    q2:           f.q2?.stringValue           || '',
+    q3:           f.q3?.stringValue           || '',
+    q4:           f.q4?.stringValue           || '',
+    q5:           f.q5?.stringValue           || '',
+    submitted_at: f.submitted_at?.stringValue || '',
+    utm_content:  f.utm_content?.stringValue  || '',
   };
 }
 
@@ -110,6 +136,15 @@ async function findByEmail(email, token) {
   );
   const rows = await res.json();
   return rows.find((r) => r.document)?.document || null;
+}
+
+async function findById(docId, collection, token) {
+  const res = await fetch(`${FIRESTORE_BASE}/${collection}/${docId}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  if (!res.ok) return null;
+  const doc = await res.json();
+  return doc.name ? doc : null;
 }
 
 // ── Session JWT (HMAC-SHA256) ─────────────────────────────────────────
@@ -147,9 +182,9 @@ async function requireAuth(request, env) {
   return verifySessionJWT(token, env.JWT_SECRET);
 }
 
-// ── Rate limiting ──────────────────────────────────────────────────────
-const MAX_ATTEMPTS     = 10;
-const LOCKOUT_SECONDS  = 900; // 15 min
+// ── Admin rate limiting ────────────────────────────────────────────────
+const MAX_ATTEMPTS    = 10;
+const LOCKOUT_SECONDS = 900;
 
 async function checkRateLimit(ip, env) {
   const raw = await env.ADMIN_RATE_LIMIT.get(`rl:${ip}`);
@@ -171,6 +206,45 @@ async function recordFail(ip, env) {
 
 async function clearRateLimit(ip, env) {
   await env.ADMIN_RATE_LIMIT.delete(`rl:${ip}`);
+}
+
+// ── Survey rate limiting (max 5 per IP per hour) ──────────────────────
+async function checkSurveyRateLimit(ip, env) {
+  const raw = await env.ADMIN_RATE_LIMIT.get(`sv:${ip}`);
+  if (!raw) return false;
+  const d = JSON.parse(raw);
+  return (d.count || 0) >= 5 && d.resetAt > Date.now();
+}
+
+async function recordSurveySubmit(ip, env) {
+  const raw = await env.ADMIN_RATE_LIMIT.get(`sv:${ip}`);
+  const d   = raw ? JSON.parse(raw) : { count: 0, resetAt: Date.now() + 3600000 };
+  if (d.resetAt < Date.now()) { d.count = 0; d.resetAt = Date.now() + 3600000; }
+  d.count++;
+  await env.ADMIN_RATE_LIMIT.put(`sv:${ip}`, JSON.stringify(d), { expirationTtl: 3600 });
+}
+
+// ── Stripe webhook signature verification ────────────────────────────
+async function verifyStripeSignature(rawBody, sigHeader, secret) {
+  const parts = (sigHeader || '').split(',');
+  const t  = (parts.find(p => p.startsWith('t='))  || '').slice(2);
+  const v1 = (parts.find(p => p.startsWith('v1=')) || '').slice(3);
+  if (!t || !v1) return false;
+
+  // Reject events older than 5 minutes
+  if (Math.abs(Date.now() / 1000 - parseInt(t, 10)) > 300) return false;
+
+  const key = await crypto.subtle.importKey(
+    'raw', new TextEncoder().encode(secret),
+    { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']
+  );
+  const sig = await crypto.subtle.sign('HMAC', key, new TextEncoder().encode(`${t}.${rawBody}`));
+  const computed = Array.from(new Uint8Array(sig)).map(b => b.toString(16).padStart(2, '0')).join('');
+
+  if (computed.length !== v1.length) return false;
+  let diff = 0;
+  for (let i = 0; i < computed.length; i++) diff |= computed.charCodeAt(i) ^ v1.charCodeAt(i);
+  return diff === 0;
 }
 
 // ── POST /auth/login ───────────────────────────────────────────────────
@@ -227,7 +301,7 @@ async function handleList(request, env) {
   try { token = await getFirestoreToken(env); }
   catch (e) { return json({ error: 'Firestore auth failed', detail: e.message }, 500); }
 
-  const res  = await fetch(`${FIRESTORE_BASE}/${COLLECTION}?pageSize=1000`, {
+  const res = await fetch(`${FIRESTORE_BASE}/${COLLECTION}?pageSize=1000`, {
     headers: { Authorization: `Bearer ${token}` },
   });
   if (!res.ok) {
@@ -237,6 +311,160 @@ async function handleList(request, env) {
 
   const data = await res.json();
   return json({ documents: (data.documents || []).map(fromDoc) });
+}
+
+// ── GET /?action=list-surveys ──────────────────────────────────────────
+async function handleListSurveys(request, env) {
+  if (!await requireAuth(request, env)) return json({ error: 'Unauthorized' }, 401);
+
+  let token;
+  try { token = await getFirestoreToken(env); }
+  catch (e) { return json({ error: 'Firestore auth failed', detail: e.message }, 500); }
+
+  const res = await fetch(`${FIRESTORE_BASE}/${SURVEYS_COLL}?pageSize=1000`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  if (!res.ok) {
+    const detail = await res.text();
+    return json({ error: 'Firestore fetch failed', status: res.status, detail }, 500);
+  }
+
+  const data = await res.json();
+  return json({ documents: (data.documents || []).map(fromSurvey) });
+}
+
+// ── POST /api/survey ───────────────────────────────────────────────────
+async function handleSurvey(request, env) {
+  const ip   = request.headers.get('CF-Connecting-IP') || 'unknown';
+  const body = await request.json();
+
+  // Honeypot: bots fill this field, humans don't
+  if (body.website) return json({ success: true });
+
+  if (await checkSurveyRateLimit(ip, env))
+    return json({ error: 'Too many submissions' }, 429);
+
+  const email      = (body.email || '').trim().toLowerCase() || 'anonymous';
+  const vip        = !!body.vip;
+  const session_id = String(body.session_id || '').slice(0, 200);
+  const q1         = String(body.q1 || '').slice(0, 500);
+  const q2         = String(body.q2 || '').slice(0, 500);
+  const q3         = String(body.q3 || '').slice(0, 500);
+  const q4         = String(body.q4 || '').slice(0, 500);
+  const q5         = String(body.q5 || '').slice(0, 500);
+  const utm_content = String(body.utm_content || '').slice(0, 200);
+
+  let token;
+  try { token = await getFirestoreToken(env); }
+  catch (e) { return json({ error: 'Firestore auth failed' }, 500); }
+
+  const docId  = crypto.randomUUID();
+  const putRes = await fetch(`${FIRESTORE_BASE}/${SURVEYS_COLL}?documentId=${docId}`, {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      fields: toFields({ id: docId, email, vip, session_id, q1, q2, q3, q4, q5, utm_content, submitted_at: new Date().toISOString() }),
+    }),
+  });
+
+  if (!putRes.ok) return json({ error: 'Failed to save survey' }, 500);
+
+  // Mark surveyCompleted on the signup doc
+  if (email !== 'anonymous') {
+    try {
+      const signupDoc = await findByEmail(email, token);
+      if (signupDoc) {
+        await fetch(`${signupDoc.name}?updateMask.fieldPaths=surveyCompleted`, {
+          method: 'PATCH',
+          headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ fields: { surveyCompleted: { booleanValue: true } } }),
+        });
+      }
+    } catch (_) {}
+  }
+
+  await recordSurveySubmit(ip, env);
+  return json({ success: true });
+}
+
+// ── POST /api/stripe-webhook ───────────────────────────────────────────
+async function handleStripeWebhook(request, env) {
+  const rawBody   = await request.text();
+  const sigHeader = request.headers.get('stripe-signature') || '';
+  const secret    = env.STRIPE_WEBHOOK_SECRET || '';
+
+  if (!secret) {
+    console.error('STRIPE_WEBHOOK_SECRET not configured');
+    return json({ error: 'Webhook secret not configured' }, 500);
+  }
+
+  const valid = await verifyStripeSignature(rawBody, sigHeader, secret);
+  if (!valid) return json({ error: 'Invalid signature' }, 400);
+
+  let event;
+  try { event = JSON.parse(rawBody); }
+  catch { return json({ error: 'Invalid JSON' }, 400); }
+
+  // Acknowledge events we don't handle
+  if (event.type !== 'checkout.session.completed') return json({ received: true });
+
+  const session    = event.data?.object;
+  if (!session) return json({ received: true });
+
+  const sessionId     = session.id || '';
+  const customerEmail = (session.customer_details?.email || session.customer_email || '').trim().toLowerCase();
+  const clientRef     = (session.client_reference_id || '').trim().toLowerCase();
+
+  let token;
+  try { token = await getFirestoreToken(env); }
+  catch (e) { console.error('Firestore auth failed:', e.message); return json({ received: true }); }
+
+  // Locate signup doc: try clientRef as UUID doc ID first, then as email, then customerEmail
+  let signupDoc = null;
+  const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(clientRef);
+  if (isUUID) {
+    signupDoc = await findById(clientRef, COLLECTION, token);
+  }
+  if (!signupDoc && customerEmail) {
+    signupDoc = await findByEmail(customerEmail, token);
+  }
+  if (!signupDoc && clientRef && !isUUID && clientRef !== customerEmail) {
+    signupDoc = await findByEmail(clientRef, token);
+  }
+
+  if (signupDoc) {
+    // Idempotency: skip if already processed
+    const existing = fromDoc(signupDoc);
+    if (existing.stripeSessionId === sessionId) return json({ received: true });
+
+    const mask = ['is_vip', 'payment_status', 'vipPaidAt', 'stripeSessionId', 'amount']
+      .map(f => `updateMask.fieldPaths=${f}`).join('&');
+    const patchRes = await fetch(`${signupDoc.name}?${mask}`, {
+      method: 'PATCH',
+      headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        fields: toFields({ is_vip: true, payment_status: 'paid', vipPaidAt: new Date().toISOString(), stripeSessionId: sessionId, amount: 1 }),
+      }),
+    });
+    if (!patchRes.ok) console.error('Failed to patch signup:', await patchRes.text());
+  } else {
+    // No matching signup: create a vipOnly record so revenue is tracked
+    const email  = customerEmail || clientRef || 'unknown';
+    const docId  = crypto.randomUUID();
+    await fetch(`${FIRESTORE_BASE}/${COLLECTION}?documentId=${docId}`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        fields: toFields({
+          id: docId, email, is_vip: true, payment_id: '', payment_status: 'paid',
+          created_at: new Date().toISOString(), vipPaidAt: new Date().toISOString(),
+          stripeSessionId: sessionId, amount: 1, vipOnly: true,
+        }),
+      }),
+    });
+  }
+
+  return json({ received: true });
 }
 
 // ── POST / ─────────────────────────────────────────────────────────────
@@ -256,16 +484,20 @@ async function handlePost(request, env) {
     const existing = await findByEmail(email, token);
     if (existing) return json({ duplicate: true }, 409);
 
+    const utm_content = String(body.utm_content || '').slice(0, 200);
     const docId  = crypto.randomUUID();
     const putRes = await fetch(`${FIRESTORE_BASE}/${COLLECTION}?documentId=${docId}`, {
       method: 'POST',
       headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        fields: toFields({ id: docId, email, is_vip: false, payment_id: '', payment_status: 'none', created_at: new Date().toISOString() }),
+        fields: toFields({
+          id: docId, email, is_vip: false, payment_id: '', payment_status: 'none',
+          created_at: new Date().toISOString(), utm_content,
+        }),
       }),
     });
     if (!putRes.ok) return json({ error: 'Failed to save signup' }, 500);
-    return json({ success: true });
+    return json({ success: true, docId });
   }
 
   // ── update-payment ─────────────────────────────────────────────────
@@ -297,11 +529,15 @@ export default {
 
     const url = new URL(request.url);
 
-    if (request.method === 'POST' && url.pathname === '/auth/login')           return handleLogin(request, env);
-    if (request.method === 'POST' && url.pathname === '/auth/change-password') return handleChangePassword(request, env);
-    if (request.method === 'GET'  && url.searchParams.get('action') === 'list') return handleList(request, env);
-    if (request.method === 'GET'  && url.searchParams.get('action') === 'debug-hash') {
-      const h = ((await env.ADMIN_RATE_LIMIT.get('admin:password_hash')) || env.ADMIN_PASSWORD_HASH || '').trim();
+    if (request.method === 'POST' && url.pathname === '/auth/login')            return handleLogin(request, env);
+    if (request.method === 'POST' && url.pathname === '/auth/change-password')  return handleChangePassword(request, env);
+    if (request.method === 'POST' && url.pathname === '/api/survey')            return handleSurvey(request, env);
+    if (request.method === 'POST' && url.pathname === '/api/stripe-webhook')    return handleStripeWebhook(request, env);
+    if (request.method === 'GET'  && url.searchParams.get('action') === 'list')          return handleList(request, env);
+    if (request.method === 'GET'  && url.searchParams.get('action') === 'list-surveys')  return handleListSurveys(request, env);
+
+    if (request.method === 'GET' && url.searchParams.get('action') === 'debug-hash') {
+      const h     = ((await env.ADMIN_RATE_LIMIT.get('admin:password_hash')) || env.ADMIN_PASSWORD_HASH || '').trim();
       const email = env.FIREBASE_CLIENT_EMAIL || '';
       const key   = env.FIREBASE_PRIVATE_KEY  || '';
       return json({

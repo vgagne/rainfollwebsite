@@ -39,16 +39,33 @@
       padding: 2px 10px; border-radius: 9999px;
       font-size: 0.7rem; font-weight: 600; letter-spacing: 0.03em;
     }
-    .badge-vip  { background: rgba(114,125,113,0.12); color: #4a5549; }
-    .badge-free { background: rgba(229,224,217,0.6);  color: #9a8f82; }
-    .badge-paid { background: rgba(5,206,120,0.10);   color: #048a52; }
-    .badge-none { background: rgba(229,224,217,0.6);  color: #9a8f82; }
+    .badge-vip    { background: rgba(163,145,113,0.14); color: #6D4C3D; }
+    .badge-free   { background: rgba(229,224,217,0.6);  color: #9a8f82; }
+    .badge-paid   { background: rgba(5,206,120,0.10);   color: #048a52; }
+    .badge-none   { background: rgba(229,224,217,0.6);  color: #9a8f82; }
+    .badge-survey { background: rgba(114,125,113,0.10); color: #4a5549; }
     .stat-card {
       background: #fff; border: 1px solid #ede9e3;
       border-radius: 1rem; padding: 1.25rem 1.5rem;
     }
     .sort-btn { cursor: pointer; user-select: none; }
     .sort-btn:hover { color: #4a5549; }
+
+    /* Bar chart */
+    .bar-row { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.625rem; }
+    .bar-label { font-size: 0.78rem; color: #6b7280; min-width: 140px; max-width: 140px; line-height: 1.3; }
+    .bar-track { flex: 1; background: #ede9e3; border-radius: 9999px; height: 8px; overflow: hidden; }
+    .bar-fill  { height: 100%; border-radius: 9999px; background: linear-gradient(90deg, #727D71, #A39171); transition: width 0.6s ease; }
+    .bar-pct   { font-size: 0.75rem; font-weight: 600; color: #4a5549; min-width: 36px; text-align: right; }
+
+    /* Funnel */
+    .funnel-step {
+      background: #fff; border: 1px solid #ede9e3; border-radius: 1rem;
+      padding: 1rem 1.25rem;
+      display: flex; align-items: center; gap: 1rem;
+    }
+    .funnel-num { font-size: 1.5rem; font-weight: 800; color: #1a1a1a; min-width: 4rem; }
+    .funnel-arrow { color: #d1ccc5; font-size: 1.25rem; align-self: center; }
   </style>
 </head>
 <body class="font-sans antialiased min-h-screen" x-data="adminApp()" x-init="init()">
@@ -125,12 +142,149 @@
       </div>
     </header>
 
-    <main class="max-w-6xl mx-auto px-4 sm:px-6 py-8 space-y-10">
+    <main class="max-w-6xl mx-auto px-4 sm:px-6 py-8 space-y-12">
+
+      <!-- ── VIP & REVENUE SECTION ────────────────────── -->
+      <section>
+        <h2 class="text-lg font-bold text-gray-900 mb-5">Overview</h2>
+
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
+          <div class="stat-card">
+            <p class="text-xs text-gray-400 font-medium mb-1">Total Signups</p>
+            <p class="text-2xl font-bold text-gray-900" x-text="stats.total"></p>
+          </div>
+          <div class="stat-card">
+            <p class="text-xs text-gray-400 font-medium mb-1">VIPs</p>
+            <p class="text-2xl font-bold text-gray-900" x-text="stats.vip"></p>
+            <p class="text-xs text-gray-400 mt-0.5" x-text="stats.total ? (Math.round(stats.vip / stats.total * 100) + '% conversion') : '—'"></p>
+          </div>
+          <div class="stat-card">
+            <p class="text-xs text-gray-400 font-medium mb-1">Revenue</p>
+            <p class="text-2xl font-bold text-gray-900" x-text="'$' + stats.vip"></p>
+            <p class="text-xs text-gray-400 mt-0.5">from $1 VIP deposits</p>
+          </div>
+          <div class="stat-card">
+            <p class="text-xs text-gray-400 font-medium mb-1">Surveys Completed</p>
+            <p class="text-2xl font-bold text-gray-900" x-text="surveys.length"></p>
+            <p class="text-xs text-gray-400 mt-0.5" x-text="surveys.filter(s => s.vip).length + ' VIP / ' + surveys.filter(s => !s.vip).length + ' free'"></p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── FUNNEL SECTION ───────────────────────────── -->
+      <section>
+        <h2 class="text-lg font-bold text-gray-900 mb-2">Funnel</h2>
+        <p class="text-xs text-gray-400 mb-5">Signups → VIP offers shown* → VIPs → surveys completed. *Offer views are not tracked server-side; shown = signups.</p>
+
+        <div class="space-y-2">
+          <template x-for="(step, i) in funnelSteps" :key="i">
+            <div>
+              <div class="funnel-step">
+                <div class="funnel-num" x-text="step.count"></div>
+                <div class="flex-1">
+                  <p class="text-sm font-semibold text-gray-800" x-text="step.label"></p>
+                  <p class="text-xs text-gray-400 mt-0.5" x-text="step.note"></p>
+                </div>
+                <div class="text-right">
+                  <p class="text-sm font-bold text-brand-primary" x-text="step.pct"></p>
+                </div>
+              </div>
+              <template x-if="i < funnelSteps.length - 1">
+                <div class="flex justify-center py-1">
+                  <svg class="w-4 h-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                  </svg>
+                </div>
+              </template>
+            </div>
+          </template>
+        </div>
+      </section>
+
+      <!-- ── SURVEY RESULTS ───────────────────────────── -->
+      <section>
+        <div class="flex items-center justify-between mb-5">
+          <h2 class="text-lg font-bold text-gray-900">Survey Results</h2>
+          <div class="flex items-center gap-2">
+            <select x-model="surveyVipFilter"
+              class="border border-gray-200 rounded-xl px-3 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-brand-primary/30 text-gray-600 bg-white">
+              <option value="">All respondents</option>
+              <option value="true">VIP only</option>
+              <option value="false">Free only</option>
+            </select>
+            <span class="text-xs text-gray-400" x-text="surveyStats.total + ' response' + (surveyStats.total !== 1 ? 's' : '')"></span>
+          </div>
+        </div>
+
+        <template x-if="surveysLoading">
+          <div class="text-center py-8 text-sm text-gray-400">Loading survey data…</div>
+        </template>
+
+        <template x-if="!surveysLoading && surveys.length === 0">
+          <div class="text-center py-8 text-sm text-gray-400">No survey responses yet.</div>
+        </template>
+
+        <template x-if="!surveysLoading && surveys.length > 0">
+          <div class="grid sm:grid-cols-2 gap-6">
+            <template x-for="q in surveyStats.questions" :key="q.key">
+              <div class="bg-white border border-gray-200 rounded-2xl p-5">
+                <p class="text-sm font-semibold text-gray-800 mb-4" x-text="q.label"></p>
+                <template x-for="row in q.rows" :key="row.answer">
+                  <div class="bar-row">
+                    <span class="bar-label" x-text="row.answer"></span>
+                    <div class="bar-track">
+                      <div class="bar-fill" :style="'width:' + row.pct + '%'"></div>
+                    </div>
+                    <span class="bar-pct" x-text="row.pct + '%'"></span>
+                    <span class="text-xs text-gray-400 min-w-[24px]" x-text="'(' + row.count + ')'"></span>
+                  </div>
+                </template>
+              </div>
+            </template>
+          </div>
+        </template>
+      </section>
+
+      <!-- ── RECENT VIPs ──────────────────────────────── -->
+      <section>
+        <h2 class="text-lg font-bold text-gray-900 mb-5">Recent VIPs</h2>
+
+        <div class="bg-white border border-gray-200 rounded-2xl overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+              <thead>
+                <tr class="border-b border-gray-100">
+                  <th class="text-left px-4 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wide">Email</th>
+                  <th class="text-left px-4 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wide">VIP Since</th>
+                  <th class="text-left px-4 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wide">Survey</th>
+                  <th class="text-left px-4 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wide">Stripe Session</th>
+                </tr>
+              </thead>
+              <tbody>
+                <template x-if="recentVips.length === 0">
+                  <tr><td colspan="4" class="px-4 py-8 text-center text-sm text-gray-400">No VIPs yet.</td></tr>
+                </template>
+                <template x-for="row in recentVips" :key="row.id">
+                  <tr class="table-row border-b border-gray-50 last:border-0">
+                    <td class="px-4 py-3 text-gray-700 font-medium" x-text="row.email"></td>
+                    <td class="px-4 py-3 text-gray-500 text-xs" x-text="formatDate(row.vipPaidAt || row.created_at)"></td>
+                    <td class="px-4 py-3">
+                      <span :class="row.surveyCompleted ? 'badge badge-survey' : 'badge badge-none'"
+                            x-text="row.surveyCompleted ? 'Done' : 'Pending'"></span>
+                    </td>
+                    <td class="px-4 py-3 text-gray-400 text-xs font-mono" x-text="(row.stripeSessionId || '—').slice(0, 20) + (row.stripeSessionId?.length > 20 ? '…' : '')"></td>
+                  </tr>
+                </template>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
 
       <!-- ── SIGNUPS SECTION ───────────────────────────── -->
       <section>
         <div class="flex items-center justify-between mb-5">
-          <h2 class="text-lg font-bold text-gray-900">Signups</h2>
+          <h2 class="text-lg font-bold text-gray-900">All Signups</h2>
           <div class="flex items-center gap-3">
             <button @click="exportCSV()" :disabled="tableLoading || signups.length === 0"
               class="text-xs text-brand-primary font-medium hover:text-brand-accent1 transition flex items-center gap-1 disabled:opacity-40 disabled:cursor-not-allowed">
@@ -139,7 +293,7 @@
               </svg>
               Export CSV
             </button>
-            <button @click="loadSignups()" :disabled="tableLoading"
+            <button @click="loadAll()" :disabled="tableLoading"
               class="text-xs text-brand-primary font-medium hover:text-brand-accent1 transition flex items-center gap-1">
               <svg class="w-3.5 h-3.5" :class="tableLoading ? 'animate-spin' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
@@ -206,15 +360,16 @@
                     </span>
                   </th>
                   <th class="text-left px-4 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wide">VIP</th>
+                  <th class="text-left px-4 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wide">Survey</th>
                   <th class="text-left px-4 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wide">Payment ID</th>
                   <th class="text-left px-4 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wide">
                     <span class="sort-btn flex items-center gap-1" @click="setSort('payment_status')">
-                      Payment Status <span x-text="sortIcon('payment_status')" class="text-gray-300"></span>
+                      Payment <span x-text="sortIcon('payment_status')" class="text-gray-300"></span>
                     </span>
                   </th>
                   <th class="text-left px-4 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wide">
                     <span class="sort-btn flex items-center gap-1" @click="setSort('created_at')">
-                      Created At <span x-text="sortIcon('created_at')" class="text-gray-300"></span>
+                      Signed Up <span x-text="sortIcon('created_at')" class="text-gray-300"></span>
                     </span>
                   </th>
                 </tr>
@@ -222,7 +377,7 @@
               <tbody>
                 <template x-if="tableLoading">
                   <tr>
-                    <td colspan="5" class="px-4 py-10 text-center text-sm text-gray-400">
+                    <td colspan="6" class="px-4 py-10 text-center text-sm text-gray-400">
                       <svg class="w-5 h-5 animate-spin mx-auto mb-2 text-gray-300" fill="none" viewBox="0 0 24 24">
                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
@@ -233,14 +388,17 @@
                 </template>
                 <template x-if="!tableLoading && filteredSignups.length === 0">
                   <tr>
-                    <td colspan="5" class="px-4 py-10 text-center text-sm text-gray-400">No signups found.</td>
+                    <td colspan="6" class="px-4 py-10 text-center text-sm text-gray-400">No signups found.</td>
                   </tr>
                 </template>
                 <template x-for="row in filteredSignups" :key="row.id">
                   <tr class="table-row border-b border-gray-50 last:border-0">
                     <td class="px-4 py-3 text-gray-700 font-medium" x-text="row.email"></td>
                     <td class="px-4 py-3">
-                      <span :class="row.is_vip ? 'badge badge-vip' : 'badge badge-free'" x-text="row.is_vip ? 'Yes' : 'No'"></span>
+                      <span :class="row.is_vip ? 'badge badge-vip' : 'badge badge-free'" x-text="row.is_vip ? 'VIP' : 'Free'"></span>
+                    </td>
+                    <td class="px-4 py-3">
+                      <span :class="row.surveyCompleted ? 'badge badge-survey' : 'badge badge-none'" x-text="row.surveyCompleted ? 'Done' : '—'"></span>
                     </td>
                     <td class="px-4 py-3 text-gray-400 text-xs font-mono" x-text="row.payment_id || '—'"></td>
                     <td class="px-4 py-3">
@@ -316,7 +474,7 @@
 
     function adminApp() {
       return {
-        // auth state
+        // auth
         loggedIn: false,
         loginPassword: '',
         loginLoading: false,
@@ -333,6 +491,11 @@
         sortKey: 'created_at',
         sortDir: 'desc',
 
+        // surveys
+        surveys: [],
+        surveysLoading: false,
+        surveyVipFilter: '',
+
         // change password
         pw: { current: '', newPw: '', confirm: '', loading: false, error: '', success: false },
 
@@ -340,7 +503,7 @@
           const token = sessionStorage.getItem('admin_token');
           if (token) {
             this.loggedIn = true;
-            this.$nextTick(() => this.loadSignups());
+            this.$nextTick(() => this.loadAll());
           }
         },
 
@@ -369,7 +532,7 @@
               sessionStorage.setItem('admin_token', data.token);
               this.loggedIn = true;
               this.loginPassword = '';
-              this.$nextTick(() => this.loadSignups());
+              this.$nextTick(() => this.loadAll());
             }
           } catch (e) {
             this.loginError = 'Could not reach server. Please try again.';
@@ -382,9 +545,15 @@
           sessionStorage.removeItem('admin_token');
           this.loggedIn = false;
           this.signups = [];
+          this.surveys = [];
           this.loginPassword = '';
           this.loginError = '';
           this.loginLocked = false;
+        },
+
+        // ── LOAD ALL ───────────────────────────────────
+        async loadAll() {
+          await Promise.all([this.loadSignups(), this.loadSurveys()]);
         },
 
         // ── LOAD SIGNUPS ───────────────────────────────
@@ -400,17 +569,36 @@
             if (!res.ok) { this.tableError = 'Failed to load signups.'; this.tableLoading = false; return; }
             const data = await res.json();
             this.signups = (data.documents || []).map(doc => ({
-              id:             doc.id             || '',
-              email:          doc.email          || '',
-              is_vip:         doc.is_vip         || false,
-              payment_id:     doc.payment_id     || '',
-              payment_status: doc.payment_status || 'none',
-              created_at:     doc.created_at     || '',
+              id:              doc.id              || '',
+              email:           doc.email           || '',
+              is_vip:          doc.is_vip          || false,
+              payment_id:      doc.payment_id      || '',
+              payment_status:  doc.payment_status  || 'none',
+              created_at:      doc.created_at      || '',
+              vipPaidAt:       doc.vipPaidAt       || '',
+              stripeSessionId: doc.stripeSessionId || '',
+              surveyCompleted: doc.surveyCompleted || false,
             }));
           } catch (e) {
             this.tableError = 'Could not reach server.';
           }
           this.tableLoading = false;
+        },
+
+        // ── LOAD SURVEYS ───────────────────────────────
+        async loadSurveys() {
+          this.surveysLoading = true;
+          try {
+            const token = sessionStorage.getItem('admin_token');
+            const res = await fetch(`${WORKER_URL}/?action=list-surveys`, {
+              headers: { 'Authorization': `Bearer ${token}` }
+            });
+            if (res.ok) {
+              const data = await res.json();
+              this.surveys = (data.documents || []);
+            }
+          } catch (_) {}
+          this.surveysLoading = false;
         },
 
         // ── STATS ──────────────────────────────────────
@@ -421,6 +609,67 @@
           const dates  = this.signups.map(s => s.created_at).filter(Boolean).sort();
           const latest = dates.length ? this.formatDate(dates[dates.length - 1]) : null;
           return { total, vip, paid, latest };
+        },
+
+        // ── FUNNEL ─────────────────────────────────────
+        get funnelSteps() {
+          const total     = this.signups.length;
+          const vips      = this.signups.filter(s => s.is_vip).length;
+          const surveyAll = this.surveys.length;
+          const surveyVip = this.surveys.filter(s => s.vip).length;
+          const surveyFree = this.surveys.filter(s => !s.vip).length;
+          const pct = (n, d) => d ? Math.round(n / d * 100) + '%' : '—';
+
+          return [
+            { label: 'Email Signups',           count: total,      note: 'Submitted the early access form',          pct: '100%' },
+            { label: 'VIP Offer Shown',         count: total,      note: 'Assumed = signups (not tracked separately)', pct: '100%' },
+            { label: 'Became VIP ($1)',          count: vips,       note: 'Paid via Stripe',                           pct: pct(vips, total) },
+            { label: 'Free Survey Completed',   count: surveyFree, note: 'Declined VIP, completed free survey',       pct: pct(surveyFree, total) },
+            { label: 'VIP Survey Completed',    count: surveyVip,  note: 'VIP survey after Stripe payment',           pct: pct(surveyVip, vips || 1) },
+          ];
+        },
+
+        // ── SURVEY STATS ───────────────────────────────
+        get surveyStats() {
+          const src = this.surveyVipFilter === ''
+            ? this.surveys
+            : this.surveys.filter(s => s.vip === (this.surveyVipFilter === 'true'));
+          const total = src.length;
+
+          const breakdown = (field, label) => {
+            const counts = {};
+            for (const s of src) {
+              const v = s[field] || 'No answer';
+              counts[v] = (counts[v] || 0) + 1;
+            }
+            const rows = Object.entries(counts)
+              .map(([answer, count]) => ({ answer, count, pct: total ? Math.round(count / total * 100) : 0 }))
+              .sort((a, b) => b.count - a.count);
+            return { key: field, label, rows };
+          };
+
+          return {
+            total,
+            questions: [
+              breakdown('q1', 'Q1 — Where would you use Rainföll?'),
+              breakdown('q2', 'Q2 — Biggest frustration with current position?'),
+              breakdown('q3', 'Q3 — Who else struggles with height?'),
+              breakdown('q4', 'Q4 — Expected price range?'),
+              breakdown('q5', 'Q5 — Preferred finish? (VIP only)'),
+            ],
+          };
+        },
+
+        // ── RECENT VIPs ────────────────────────────────
+        get recentVips() {
+          return this.signups
+            .filter(s => s.is_vip)
+            .sort((a, b) => {
+              const at = a.vipPaidAt || a.created_at;
+              const bt = b.vipPaidAt || b.created_at;
+              return bt > at ? 1 : bt < at ? -1 : 0;
+            })
+            .slice(0, 20);
         },
 
         // ── FILTER + SORT ──────────────────────────────
@@ -470,19 +719,21 @@
             return s.includes(',') || s.includes('"') || s.includes('\n')
               ? `"${s.replace(/"/g, '""')}"` : s;
           };
-          const headers = ['Email', 'VIP', 'Payment ID', 'Payment Status', 'Created At'];
+          const headers = ['Email', 'VIP', 'Survey Done', 'Payment ID', 'Payment Status', 'Created At', 'VIP Paid At'];
           const rows = this.filteredSignups.map(r => [
             r.email,
             r.is_vip ? 'Yes' : 'No',
+            r.surveyCompleted ? 'Yes' : 'No',
             r.payment_id || '',
             r.payment_status || 'none',
             r.created_at || '',
+            r.vipPaidAt || '',
           ]);
           const csv = [headers, ...rows].map(r => r.map(escape).join(',')).join('\r\n');
           const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8;' });
           const url  = URL.createObjectURL(blob);
           const a    = document.createElement('a');
-          a.href     = url;
+          a.href = url;
           a.download = `rainfoll-signups-${new Date().toISOString().slice(0, 10)}.csv`;
           a.click();
           URL.revokeObjectURL(url);
@@ -499,7 +750,6 @@
 
           this.pw.loading = true;
           try {
-            // Hash new password client-side before sending
             const newHash = await new Promise((resolve, reject) => {
               dcodeIO.bcrypt.hash(newPw, 12, (err, hash) => err ? reject(err) : resolve(hash));
             });
