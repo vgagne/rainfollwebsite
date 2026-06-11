@@ -155,6 +155,31 @@ async function findById(docId, collection, token) {
   return doc.name ? doc : null;
 }
 
+async function findByStripeSessionId(sessionId, token) {
+  const res = await fetch(
+    `https://firestore.googleapis.com/v1/projects/${PROJECT_ID}/databases/(default)/documents:runQuery`,
+    {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        structuredQuery: {
+          from: [{ collectionId: COLLECTION }],
+          where: {
+            fieldFilter: {
+              field: { fieldPath: 'stripeSessionId' },
+              op: 'EQUAL',
+              value: { stringValue: sessionId },
+            },
+          },
+          limit: 1,
+        },
+      }),
+    }
+  );
+  const rows = await res.json();
+  return rows.find((r) => r.document)?.document || null;
+}
+
 // ── Session JWT (HMAC-SHA256) ─────────────────────────────────────────
 function b64url(buf) {
   return btoa(String.fromCharCode(...new Uint8Array(buf)))
@@ -380,13 +405,22 @@ async function handleSurvey(request, env) {
   try { token = await getFirestoreToken(env); }
   catch (e) { return json({ error: 'Firestore auth failed' }, 500); }
 
+  // Recover real email for VIP survey (Stripe redirect only sends session_id)
+  let resolvedEmail = email;
+  if (resolvedEmail === 'anonymous' && session_id) {
+    try {
+      const signupDoc = await findByStripeSessionId(session_id, token);
+      if (signupDoc) resolvedEmail = fromDoc(signupDoc).email || 'anonymous';
+    } catch (_) {}
+  }
+
   const docId  = crypto.randomUUID();
   const putRes = await fetch(`${FIRESTORE_BASE}/${SURVEYS_COLL}?documentId=${docId}`, {
     method: 'POST',
     headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
     body: JSON.stringify({
       fields: toFields({
-        id: docId, email, vip, cohort, session_id,
+        id: docId, email: resolvedEmail, vip, cohort, session_id,
         decline_reason, price_too_expensive, price_expensive, price_bargain, price_too_cheap,
         appeal, tenure, who_for, open_feedback,
         utm_source, utm_medium, utm_campaign, utm_content,
@@ -398,9 +432,11 @@ async function handleSurvey(request, env) {
   if (!putRes.ok) return json({ error: 'Failed to save survey' }, 500);
 
   // Mark surveyCompleted on the signup doc
-  if (email !== 'anonymous') {
+  if (resolvedEmail !== 'anonymous') {
     try {
-      const signupDoc = await findByEmail(email, token);
+      const signupDoc = vip && session_id
+        ? await findByStripeSessionId(session_id, token)
+        : await findByEmail(resolvedEmail, token);
       if (signupDoc) {
         await fetch(`${signupDoc.name}?updateMask.fieldPaths=surveyCompleted`, {
           method: 'PATCH',
