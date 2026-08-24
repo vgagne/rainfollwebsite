@@ -175,6 +175,26 @@
       box-shadow: 0 12px 32px rgba(0,0,0,0.1);
     }
 
+    .benefit-media-wrap {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 1rem;
+    }
+    .benefit-media {
+      width: 50vw;
+      height: auto;
+      display: block;
+      border-radius: 0.75rem;
+      overflow: hidden;
+    }
+    .benefit-slideshow {
+      position: relative;
+      aspect-ratio: 9 / 16;
+    }
+    @media (min-width: 640px) {
+      .benefit-media { width: 10vw; }
+    }
+
     .step-ghost {
       font-size: 8rem;
       font-weight: 800;
@@ -494,29 +514,29 @@
 
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 stagger-children">
         <div class="benefit-card">
-          <div class="w-12 h-12 rounded-xl bg-brand-accent2/20 flex items-center justify-center mb-4">
-            <svg class="w-6 h-6 text-brand-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/></svg>
+          <div class="benefit-media-wrap">
+            <video src="assets/videos/See it moving.mp4" class="benefit-media" autoplay muted loop playsinline></video>
           </div>
           <h3 class="text-xl font-bold text-gray-900 mb-2">Use Your Whole Shower</h3>
           <p class="text-gray-600">Stop being stuck in one spot. Slide the head anywhere — left, center, right. Your whole shower is now yours.</p>
         </div>
         <div class="benefit-card">
-          <div class="w-12 h-12 rounded-xl bg-brand-secondary/30 flex items-center justify-center mb-4">
-            <svg class="w-6 h-6 text-brand-tertiary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          <div class="benefit-media-wrap">
+            <video src="assets/videos/Quick Install demo - girl.mp4" class="benefit-media" autoplay muted loop playsinline></video>
           </div>
           <h3 class="text-xl font-bold text-gray-900 mb-2">Install in Minutes</h3>
           <p class="text-gray-600">No power tools. No permanent changes. Twist the tension bar between your walls, connect the hose, turn it on.</p>
         </div>
         <div class="benefit-card">
-          <div class="w-12 h-12 rounded-xl bg-brand-primary/10 flex items-center justify-center mb-4">
-            <svg class="w-6 h-6 text-brand-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>
+          <div class="benefit-media-wrap">
+            <div id="slideshow-luxury" class="benefit-media benefit-slideshow"></div>
           </div>
           <h3 class="text-xl font-bold text-gray-900 mb-2">Feels Like a Luxury Upgrade</h3>
           <p class="text-gray-600">Two premium finishes. Overhead rainfall from above. Hotel experience — without the renovation cost.</p>
         </div>
         <div class="benefit-card">
-          <div class="w-12 h-12 rounded-xl bg-brand-accent1/10 flex items-center justify-center mb-4">
-            <svg class="w-6 h-6 text-brand-accent1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+          <div class="benefit-media-wrap">
+            <video src="assets/videos/Adjusts to any height.mp4" class="benefit-media" autoplay muted loop playsinline></video>
           </div>
           <h3 class="text-xl font-bold text-gray-900 mb-2">Built for Real Comfort</h3>
           <p class="text-gray-600">Dual shower heads with full pressure. Whether you're 5'4" or 6'4" — it fits everyone.</p>
@@ -563,6 +583,16 @@
 
       <script>
         const slideshows = [
+          {
+            id: 'slideshow-luxury',
+            interval: 3800,
+            images: [
+              'assets/images/products/chrome/Chrome - New/Rainfoll-Render-Chrome-3.jpg',
+              'assets/images/products/matte/Black - New/Rainfoll-Render-6.jpg',
+              'assets/images/products/chrome/Chrome - New/Rainfoll-Render-Chrome-5.jpg',
+              'assets/images/products/matte/Black - New/Rainfoll-Render-5.jpg',
+            ]
+          },
           {
             id: 'slideshow-chrome',
             interval: 3200,
