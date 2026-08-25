@@ -1,0 +1,12 @@
+instructions for updating wrangler if ever asked by Claude Code:
+
+
+go to CMD run as admin
+
+type: cd C:\Users\vgagn\OneDrive\Documents\GitHub\rainfollwebsite
+
+type: git pull
+
+type: cd rainfoll-worker
+
+type whatever claude code tells you to update it with. 

@@ -11,35 +11,9 @@
   </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Quick Survey – Rainföll</title>
+  <title>Help Set the Price – Rainföll</title>
   <meta name="robots" content="noindex, nofollow">
   <link rel="icon" type="image/png" sizes="32x32" href="../assets/icons/Favicon.png">
-
-  <!-- TikTok Pixel -->
-  <script>
-  !function (w, d, t) {
-    w.TiktokAnalyticsObject=t;var ttq=w[t]=w[t]||[];ttq.methods=["page","track","identify","instances","debug","on","off","once","ready","alias","group","enableCookie","disableCookie","holdConsent","revokeConsent","grantConsent"],ttq.setAndDefer=function(t,e){t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}};for(var i=0;i<ttq.methods.length;i++)ttq.setAndDefer(ttq,ttq.methods[i]);ttq.instance=function(t){for(
-  var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n]);return e},ttq.load=function(e,n){var r="https://analytics.tiktok.com/i18n/pixel/events.js",o=n&&n.partner;ttq._i=ttq._i||{},ttq._i[e]=[],ttq._i[e]._u=r,ttq._t=ttq._t||{},ttq._t[e]=+new Date,ttq._o=ttq._o||{},ttq._o[e]=n||{};n=document.createElement("script")
-  ;n.type="text/javascript",n.async=!0,n.src=r+"?sdkid="+e+"&lib="+t;e=document.getElementsByTagName("script")[0];e.parentNode.insertBefore(n,e)};
-    ttq.load('D8HHN53C77UDLID68NHG');
-    ttq.page();
-  }(window, document, 'ttq');
-  </script>
-  <!-- Meta Pixel -->
-  <script>
-  !function(f,b,e,v,n,t,s)
-  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-  n.queue=[];t=b.createElement(e);t.async=!0;
-  t.src=v;s=b.getElementsByTagName(e)[0];
-  s.parentNode.insertBefore(t,s)}(window, document,'script',
-  'https://connect.facebook.net/en_US/fbevents.js');
-  fbq('init', '971805995701381');
-  fbq('track', 'PageView');
-  </script>
-  <noscript><img height="1" width="1" style="display:none"
-  src="https://www.facebook.com/tr?id=971805995701381&ev=PageView&noscript=1"/></noscript>
 
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -57,9 +31,11 @@
 
   <script>
     const WORKER_URL = 'https://square-violet-0b51.vgagne11.workers.dev';
+    const STRIPE_PAYMENT_LINK = 'https://buy.stripe.com/test_eVq14n9oLbGm0IB7tI1B600';
 
     const _qp = new URLSearchParams(window.location.search);
     const _email       = (_qp.get('email') || '').trim().toLowerCase();
+    const _docId       = _qp.get('docId') || '';
     const _utmSource   = _qp.get('utm_source')   || sessionStorage.getItem('utm_source')   || '';
     const _utmMedium   = _qp.get('utm_medium')   || sessionStorage.getItem('utm_medium')   || '';
     const _utmCampaign = _qp.get('utm_campaign') || sessionStorage.getItem('utm_campaign') || '';
@@ -68,28 +44,25 @@
     document.addEventListener('alpine:init', () => {
       Alpine.data('surveyForm', () => ({
         // Navigation
-        step: 'q1',   // q1 | pricing-intro | pricing | q6 | q7 | q8 | q9 | done
+        step: 'pricing-intro',   // pricing-intro | pricing | q2 | done
 
         // Prefilled
         email: _email,
+        docId: _docId,
         utmSource: _utmSource,
         utmMedium: _utmMedium,
         utmCampaign: _utmCampaign,
         utmContent: _utmContent,
-        cohort: 'declined',
 
         // Answers
-        decline_reason: '',
-        decline_reason_other: '',
         price_too_expensive: '',
         price_expensive: '',
         price_bargain: '',
         price_too_cheap: '',
+        priceOrderWarned: false,
         appeal: [],
         appeal_other: '',
         tenure: '',
-        who_for: '',
-        open_feedback: '',
 
         // Honeypot
         website: '',
@@ -113,17 +86,15 @@
           return val !== '' && !isNaN(n) && n >= 1 && n <= 2000;
         },
 
-        // ── Step navigation ────────────────────────────────
-        nextQ1() {
-          if (!this.decline_reason) { this.error = 'Please select an option.'; return; }
-          if (this.decline_reason === 'Other' && !this.decline_reason_other.trim()) {
-            this.error = 'Please tell us a bit more.'; return;
-          }
-          this.error = '';
-          this.step = 'pricing-intro';
-          window.scrollTo(0, 0);
+        priceOrderOk() {
+          const tc = Number(this.price_too_cheap);
+          const b  = Number(this.price_bargain);
+          const e  = Number(this.price_expensive);
+          const te = Number(this.price_too_expensive);
+          return tc < b && b < e && e < te;
         },
 
+        // ── Step navigation ────────────────────────────────
         nextPricingIntro() {
           this.step = 'pricing';
           window.scrollTo(0, 0);
@@ -139,36 +110,29 @@
           for (const f of fields) {
             if (!this.validatePrice(f.val)) {
               this.error = `Please enter a valid price (between $1–$2000) for the "${f.label}" question.`;
+              this.priceOrderWarned = false;
               return;
             }
           }
+          if (!this.priceOrderOk() && !this.priceOrderWarned) {
+            this.priceOrderWarned = true;
+            this.error = 'These don\'t quite line up — "too cheap" should be the lowest price and "too expensive" the highest. Take another look, or continue as-is.';
+            return;
+          }
           this.error = '';
-          this.step = 'q6';
+          this.priceOrderWarned = false;
+          this.step = 'q2';
           window.scrollTo(0, 0);
         },
 
-        nextQ6() {
+        nextQ2() {
           if (this.appeal.length === 0) { this.error = 'Please select at least one option.'; return; }
           if (this.appeal.includes('Other') && !this.appeal_other.trim()) {
             this.error = 'Please tell us a bit more about what appeals to you.'; return;
           }
+          if (!this.tenure) { this.error = 'Please select an option below.'; return; }
           this.error = '';
-          this.step = 'q7';
-          window.scrollTo(0, 0);
-        },
-
-        nextQ7() {
-          if (!this.tenure) { this.error = 'Please select an option.'; return; }
-          this.error = '';
-          this.step = 'q8';
-          window.scrollTo(0, 0);
-        },
-
-        nextQ8() {
-          if (!this.who_for) { this.error = 'Please select an option.'; return; }
-          this.error = '';
-          this.step = 'q9';
-          window.scrollTo(0, 0);
+          this.submit();
         },
 
         async submit() {
@@ -180,23 +144,16 @@
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
                 email: this.email,
-                vip: false,
-                cohort: this.cohort,
                 utm_source: this.utmSource,
                 utm_medium: this.utmMedium,
                 utm_campaign: this.utmCampaign,
                 utm_content: this.utmContent,
-                decline_reason: this.decline_reason === 'Other'
-                  ? 'Other: ' + this.decline_reason_other
-                  : this.decline_reason,
-                price_too_expensive: this.price_too_expensive,
-                price_expensive:     this.price_expensive,
-                price_bargain:       this.price_bargain,
-                price_too_cheap:     this.price_too_cheap,
-                appeal: this.appeal.map(a => a === 'Other' ? 'Other: ' + this.appeal_other : a).join(', '),
-                tenure:        this.tenure,
-                who_for:       this.who_for,
-                open_feedback: this.open_feedback,
+                price_too_expensive: Number(this.price_too_expensive),
+                price_expensive:     Number(this.price_expensive),
+                price_bargain:       Number(this.price_bargain),
+                price_too_cheap:     Number(this.price_too_cheap),
+                appeal: this.appeal.map(a => a === 'Other' ? 'Other: ' + this.appeal_other : a),
+                tenure: this.tenure,
                 website: this.website,
               })
             });
@@ -208,14 +165,30 @@
             }
             if (!data.test) {
               if (typeof fbq !== 'undefined') fbq('trackCustom', 'SurveyComplete');
-              if (typeof ttq !== 'undefined') ttq.track('SubmitForm', { content_name: 'FreeSurvey' });
+              if (typeof ttq !== 'undefined') ttq.track('SubmitForm', { content_name: 'Survey' });
             }
             this.step = 'done';
+            window.scrollTo(0, 0);
           } catch (e) {
             this.error = 'Something went wrong. Please try again.';
           }
           this.loading = false;
-        }
+        },
+
+        goVip() {
+          if (typeof fbq !== 'undefined') fbq('track', 'InitiateCheckout');
+          if (typeof ttq !== 'undefined') ttq.track('InitiateCheckout');
+
+          const email = encodeURIComponent(this.email.trim().toLowerCase());
+          const ref   = encodeURIComponent(this.docId || this.email.trim().toLowerCase());
+          const utmParams = new URLSearchParams();
+          if (this.utmSource)   utmParams.set('utm_source', this.utmSource);
+          if (this.utmMedium)   utmParams.set('utm_medium', this.utmMedium);
+          if (this.utmCampaign) utmParams.set('utm_campaign', this.utmCampaign);
+          if (this.utmContent)  utmParams.set('utm_content', this.utmContent);
+          const utmQuery = utmParams.toString() ? `&${utmParams.toString()}` : '';
+          window.location.href = `${STRIPE_PAYMENT_LINK}?prefilled_email=${email}&client_reference_id=${ref}${utmQuery}`;
+        },
       }));
     });
   </script>
@@ -305,16 +278,6 @@
     .price-input:focus { border-color: #727D71; box-shadow: 0 0 0 3px rgba(114,125,113,0.15); background: #fff; }
     .price-input.invalid { border-color: #f87171; }
 
-    /* Open text */
-    .open-input {
-      width: 100%; padding: 0.75rem 1rem;
-      border: 1.5px solid #e5e0d9; border-radius: 0.75rem;
-      background: #faf9f7; font-size: 0.9375rem; font-family: 'Inter', sans-serif;
-      color: #1a1a1a; outline: none; transition: border-color 0.2s, box-shadow 0.2s;
-      resize: vertical; min-height: 80px;
-    }
-    .open-input:focus { border-color: #727D71; box-shadow: 0 0 0 3px rgba(114,125,113,0.15); background: #fff; }
-
     .other-input {
       width: 100%; margin-top: 0.5rem; padding: 0.625rem 0.875rem;
       border: 1.5px solid #e5e0d9; border-radius: 0.625rem;
@@ -360,59 +323,18 @@
     </header>
 
     <!-- ── PROGRESS BAR ──────────────────────────── -->
-    <div class="mb-6 progress-track" x-show="step !== 'done'">
-      <div class="progress-fill" :style="'width:' + {
-        'q1':14, 'pricing-intro':28, 'pricing':42, 'q6':56, 'q7':70, 'q8':84, 'q9':95
-      }[step] + '%'"></div>
-    </div>
-
-    <!-- ════════════════════════════════════════════
-         Q1 — Decline reason
-    ════════════════════════════════════════════════ -->
-    <div x-show="step === 'q1'">
-      <div class="mb-5">
-        <p class="text-xs font-bold uppercase tracking-widest text-brand-tertiary mb-2">Help us improve</p>
-        <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 leading-tight mb-2">No problem — you can still shape Rainföll.</h1>
-        <p class="text-gray-500 text-sm leading-relaxed">This takes about 2 minutes, and your answers directly influence the final product and price.</p>
-      </div>
-
-      <div class="survey-card">
-        <span class="q-label">What's the main reason you didn't reserve a VIP spot today?</span>
-        <div class="space-y-2">
-          <template x-for="opt in [
-            'I\'d want to know the final price first',
-            'I want to see reviews from real customers first',
-            'I\'m not sure it will fit my shower',
-            'I don\'t want to pay anything before the product actually launches',
-            'I don\'t need it right now / just browsing',
-            'I didn\'t understand what the $1 reservation gets me',
-            'Other'
-          ]" :key="opt">
-            <div>
-              <button type="button" class="choice-btn" :class="decline_reason === opt ? 'selected' : ''"
-                @click="decline_reason = opt; error = ''">
-                <span class="radio"></span><span x-text="opt"></span>
-              </button>
-              <div x-show="opt === 'Other' && decline_reason === 'Other'" x-cloak>
-                <input type="text" class="other-input" x-model="decline_reason_other"
-                  placeholder="Tell us a bit more…" @click.stop @input="error = ''">
-              </div>
-            </div>
-          </template>
-        </div>
-
-        <div x-show="error" x-text="error" class="mt-4 text-red-500 text-sm bg-red-50 border border-red-100 rounded-xl px-4 py-3"></div>
-        <button type="button" class="next-btn mt-6" @click="nextQ1()">Continue →</button>
-      </div>
+    <div class="mb-6 progress-track" x-show="step === 'pricing' || step === 'q2'">
+      <div class="progress-fill" :style="'width:' + { 'pricing':50, 'q2':100 }[step] + '%'"></div>
     </div>
 
     <!-- ════════════════════════════════════════════
          PRICING INTRO — video + description
     ════════════════════════════════════════════════ -->
-    <div x-show="step === 'pricing-intro'" x-cloak>
+    <div x-show="step === 'pricing-intro'">
       <div class="mb-5">
-        <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 leading-tight mb-2">A quick reminder of what Rainföll is.</h2>
-        <p class="text-gray-500 text-sm leading-relaxed">Then we'll ask four quick questions about pricing. Go with your gut — there are no wrong answers. All prices in USD.</p>
+        <p class="text-xs font-bold uppercase tracking-widest text-brand-tertiary mb-2">Help set the price</p>
+        <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 leading-tight mb-2">A quick reminder of what Rainföll is.</h1>
+        <p class="text-gray-500 text-sm leading-relaxed">Then we'll ask a few quick questions about pricing. Go with your gut — there are no wrong answers.</p>
       </div>
 
       <!-- Hero video — portrait on mobile, landscape on desktop -->
@@ -447,15 +369,16 @@
     </div>
 
     <!-- ════════════════════════════════════════════
-         PRICING — Van Westendorp Q2–Q5
+         PRICING — Van Westendorp, one page
     ════════════════════════════════════════════════ -->
     <div x-show="step === 'pricing'" x-cloak>
       <div class="mb-5">
         <h2 class="text-2xl font-bold text-gray-900 leading-tight mb-2">What should Rainföll cost?</h2>
-        <p class="text-gray-500 text-sm leading-relaxed">Four quick questions — go with your gut. There are no wrong answers. All prices in USD.</p>
+        <p class="text-gray-500 text-sm leading-relaxed">Four quick questions — go with your gut. There are no wrong answers.</p>
       </div>
 
       <div class="survey-card">
+        <p class="text-xs font-semibold uppercase tracking-wide text-gray-400 mb-5">All prices in US dollars.</p>
         <div class="space-y-6">
 
           <div>
@@ -504,19 +427,19 @@
     </div>
 
     <!-- ════════════════════════════════════════════
-         Q6 — Appeal (multi-select, up to 2)
+         Q2 — Appeal (multi-select, up to 2) + Rent/own
     ════════════════════════════════════════════════ -->
-    <div x-show="step === 'q6'" x-cloak>
+    <div x-show="step === 'q2'" x-cloak>
       <div class="mb-5">
         <h2 class="text-xl font-bold text-gray-900 leading-tight mb-1">Almost done.</h2>
-        <p class="text-gray-500 text-sm">Three more quick questions.</p>
+        <p class="text-gray-500 text-sm">Two more quick questions.</p>
       </div>
 
       <div class="survey-card">
         <span class="q-label">What appeals to you most about Rainföll?
           <span class="q-sub">Select up to two.</span>
         </span>
-        <div class="space-y-2">
+        <div class="space-y-2 mb-8">
           <template x-for="opt in [
             'No tools or plumbing — works even if you rent',
             'The overhead rainfall shower experience itself',
@@ -543,16 +466,9 @@
             </div>
           </template>
         </div>
-        <div x-show="error" x-text="error" class="mt-4 text-red-500 text-sm bg-red-50 border border-red-100 rounded-xl px-4 py-3"></div>
-        <button type="button" class="next-btn mt-6" @click="nextQ6()">Continue →</button>
-      </div>
-    </div>
 
-    <!-- ════════════════════════════════════════════
-         Q7 — Rent or own
-    ════════════════════════════════════════════════ -->
-    <div x-show="step === 'q7'" x-cloak>
-      <div class="survey-card">
+        <hr class="divider mb-8">
+
         <span class="q-label">Do you rent or own your home?</span>
         <div class="space-y-2">
           <template x-for="opt in ['Rent','Own','Other (living with family, dorm, etc.)']" :key="opt">
@@ -561,59 +477,22 @@
             </button>
           </template>
         </div>
-        <div x-show="error" x-text="error" class="mt-4 text-red-500 text-sm bg-red-50 border border-red-100 rounded-xl px-4 py-3"></div>
-        <button type="button" class="next-btn mt-6" @click="nextQ7()">Continue →</button>
-      </div>
-    </div>
 
-    <!-- ════════════════════════════════════════════
-         Q8 — Who for
-    ════════════════════════════════════════════════ -->
-    <div x-show="step === 'q8'" x-cloak>
-      <div class="survey-card">
-        <span class="q-label">Who would Rainföll be for?</span>
-        <div class="space-y-2">
-          <template x-for="opt in ['Just me','My partner and I','A rental / Airbnb property I manage','A gift for someone else']" :key="opt">
-            <button type="button" class="choice-btn" :class="who_for === opt ? 'selected' : ''" @click="who_for = opt; error = ''">
-              <span class="radio"></span><span x-text="opt"></span>
-            </button>
-          </template>
-        </div>
         <div x-show="error" x-text="error" class="mt-4 text-red-500 text-sm bg-red-50 border border-red-100 rounded-xl px-4 py-3"></div>
-        <button type="button" class="next-btn mt-6" @click="nextQ8()">Continue →</button>
-      </div>
-    </div>
-
-    <!-- ════════════════════════════════════════════
-         Q9 — Open text (optional)
-    ════════════════════════════════════════════════ -->
-    <div x-show="step === 'q9'" x-cloak>
-      <div class="survey-card">
-        <span class="q-label">What would need to be true for you to buy Rainföll?
-          <span class="q-sub">Optional — skip if nothing comes to mind.</span>
-        </span>
-        <textarea class="open-input" x-model="open_feedback" placeholder="e.g. see it in a store, watch a video review, know the final price…"></textarea>
-        <div x-show="error" x-text="error" class="mt-3 text-red-500 text-sm bg-red-50 border border-red-100 rounded-xl px-4 py-3"></div>
-        <button type="button" class="next-btn mt-5" @click="submit()" :disabled="loading">
+        <button type="button" class="next-btn mt-6" @click="nextQ2()" :disabled="loading">
           <span x-show="!loading">Submit →</span>
           <span x-show="loading" class="flex items-center justify-center gap-2">
             <svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
             Submitting…
           </span>
         </button>
-        <div class="text-center mt-3">
-          <button type="button" @click="open_feedback = ''; submit()"
-            class="text-xs text-gray-400 underline underline-offset-2 hover:text-gray-600 transition bg-transparent border-none cursor-pointer">
-            Skip this question
-          </button>
-        </div>
       </div>
     </div>
 
     <!-- ════════════════════════════════════════════
-         DONE
+         DONE — thank-you, then a separate VIP offer
     ════════════════════════════════════════════════ -->
-    <div x-show="step === 'done'" x-cloak class="py-16 text-center">
+    <div x-show="step === 'done'" x-cloak class="py-10 text-center">
       <div class="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6" style="background:rgba(114,125,113,0.10);">
         <svg class="w-8 h-8" fill="none" stroke="#727D71" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
@@ -621,10 +500,16 @@
       </div>
       <h2 class="text-2xl font-bold text-gray-900 mb-3">Thanks — this genuinely shapes what we build.</h2>
       <p class="text-gray-500 text-sm leading-relaxed max-w-sm mx-auto mb-8">You're on the list and you'll hear from us at launch.</p>
-      <a href="/" class="inline-flex items-center gap-2 text-sm font-medium text-brand-primary hover:text-brand-accent1 transition-colors">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
-        Back to Rainföll
-      </a>
+
+      <div class="survey-card text-left">
+        <p class="text-sm text-gray-600 leading-relaxed mb-4">
+          Appreciate you taking the time — this actually informs our pricing decisions. Before you go, one more thing.
+        </p>
+        <p class="text-sm leading-relaxed mb-6 text-gray-700">
+          Become a VIP for <strong class="text-gray-900">$1</strong>. VIPs get our best launch pricing — before anyone else — and you're first to receive the product when we go live. Your $1 is credited toward your order. Fully refundable anytime.
+        </p>
+        <button type="button" class="next-btn" @click="goVip()">Become a VIP — $1</button>
+      </div>
     </div>
 
     <footer class="border-t border-gray-200 pt-6 pb-4 mt-8" x-show="step !== 'done'">

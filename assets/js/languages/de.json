@@ -1,0 +1,213 @@
+{
+  "meta": {
+    "title": "Rainföll | Luxus Regendusche - Entwickelt für Lange Duschen",
+    "description": "Verwandeln Sie Ihr tägliches Ritual in reinen Luxus. Premium Regendusche-System entwickelt für intime Momente—allein oder zusammen. Keine Werkzeuge erforderlich."
+  },
+  "nav": {
+    "home": "Startseite",
+    "experience": "Erfahrung",
+    "howItWorks": "Wie es Funktioniert",
+    "lifestyle": "Lebensstil",
+    "finishes": "Oberflächen",
+    "reviews": "Bewertungen",
+    "faq": "FAQ",
+    "contact": "Kontaktieren Sie uns",
+    "shopNow": "Jetzt Kaufen"
+  },
+  "hero": {
+    "title": "Luxus für Alle.",
+    "subtitle": "Allein oder zusammen. Luxus Regenerfahrung ohne Renovierung.",
+    "shopButton": "Jetzt Kaufen"
+  },
+  "transformation": {
+    "title": "Ihr Tägliches Ritual, Neu Erfunden",
+    "subtitle": "Verwandeln Sie das Alltägliche ins Magnificent. Jede Dusche wird zur Flucht.",
+    "morning": {
+      "title": "Morgendliches Erwachen",
+      "description": "Beginnen Sie Ihren Tag umhüllt von warmem Regen. Ein sanftes, luxuriöses Erwachen, das Ihre Seele energisiert und Sie auf alles vorbereitet, was kommt."
+    },
+    "evening": {
+      "title": "Abendliche Entspannung",
+      "description": "Waschen Sie den Stress des Tages in Ihrem privaten Heiligtum ab. Lassen Sie das kaskadierende Wasser Sie in einen Zustand reiner Ruhe und Frieden transportieren."
+    },
+    "intimate": {
+      "title": "Intime Verbindung",
+      "description": "Teilen Sie Momente reinen Glücks zusammen. Doppelte Duschköpfe schaffen Möglichkeiten für Verbindung während sie individuellen Komfort und Raum erhalten."
+    }
+  },
+  "positioning": {
+    "title": "Positioniert für Perfektion",
+    "subtitle": "Der Regenduschkopf kann überall in Ihrem Duschraum platziert werden.",
+    "leftPosition": "Linke Position",
+    "centerPosition": "Mittlere Position",
+    "rightPosition": "Rechte Position",
+    "perfectPositioning": "Perfekte Positionierung für Ihren Duschraum"
+  },
+  "howItWorks": {
+    "title": "Luxus in Minuten",
+    "subtitle": "Keine Werkzeuge. Kein Bohren. Nur reine Genuss.",
+    "step1": {
+      "badge": "Schritt 1",
+      "title": "Spannstange in Position Drehen",
+      "description": "Spannen Sie die Spannstange zwischen Ihren Duschwänden (funktioniert mit Abständen von 56-80 Zoll Breite) und drehen Sie, bis sie fest gesichert ist. Kein Bohren erforderlich."
+    },
+    "step2": {
+      "badge": "Schritt 2",
+      "title": "Sicherheitshüllen Schließen",
+      "description": "Schieben Sie die Sicherheitshüllen in Position, um das System sicher zu verriegeln. Dies stellt sicher, dass alles während des Gebrauchs stabil bleibt."
+    },
+    "step3": {
+      "badge": "Schritt 3",
+      "title": "Duschschlauch Anschließen",
+      "description": "Befestigen Sie den Schlauch an Ihrer vorhandenen Installation—handfest, keine Werkzeuge erforderlich. Drehen Sie das Wasser auf und beginnen Sie, Ihre neue luxuriöse Regendusche zu genießen."
+    },
+    "compatibility": "Funktioniert in Duschen mit gegenüberliegenden Wänden 56–80 Zoll voneinander entfernt"
+  },
+  "lifestyle": {
+    "title": "Entworfen für Ihr Leben",
+    "subtitle": "Ob Sie mieten oder besitzen, Luxus sollte mühelos sein.",
+    "renters": {
+      "title": "Heiligtum des Mieters",
+      "description": "Heben Sie Ihren Raum ohne Kompromisse. Luxus, der keine Spuren hinterlässt—perfekt für den anspruchsvollen Mieter."
+    },
+    "tall": {
+      "title": "Uneingeschränkte Höhe",
+      "description": "Endlich eine Dusche, die Ihre Statur ehrt. Authentischer Regen von oben—nicht mehr Ihren Kompromiss eingehen."
+    },
+    "couples": {
+      "title": "Intime Momente",
+      "description": "Entworfen für Verbindung. Doppelte Duschköpfe mit vollem Druck—weil die besten Rituale geteilt werden sollen."
+    },
+    "luxury": {
+      "title": "Tägliche Genuss",
+      "description": "Verwandeln Sie das Alltägliche ins Magnificent. Hotelqualität Regen, die jeden Morgen wie einen Rückzug fühlen lässt."
+    }
+  },
+  "finishes": {
+    "title": "Wählen Sie Ihre Oberfläche",
+    "subtitle": "Vier Premium-Oberflächen zur Ergänzung Ihres Heiligtums.",
+    "chrome": "Chrom",
+    "gold": "Gold",
+    "matteBlack": "Matt Schwarz",
+    "roseGold": "Roségold",
+    "pressureInfo": {
+      "title": "Voller Druck, Selbst Zusammen",
+      "description": "Beide Duschköpfe halten konstanten, hohen Druck bei gleichzeitiger Verwendung. Keine Umleiterkompromisse—nur kraftvoller, luxuriöser Wasserfluss von beiden Köpfen auf einmal."
+    }
+  },
+  "reviews": {
+    "title": "Geliebt von Mietern und Hausbesitzern",
+    "subtitle": "Sehen Sie, was unsere Kunden sagen.",
+    "featuredIn": "Vorgestellt in",
+    "verifiedCustomer": "Verifizierter Kunde"
+  },
+  "cta": {
+    "title": "Verwandeln Sie Ihre Dusche Heute",
+    "subtitle": "Schließen Sie sich Tausenden an, die zum Luxus aufgestiegen sind—ohne Renovierung.",
+    "installsInMinutes": "Installiert in Minuten",
+    "noToolsRequired": "Keine Werkzeuge Erforderlich",
+    "shopButton": "Rainföll Kaufen"
+  },
+  "footer": {
+    "tagline": "Die luxuriöse Regendusche von Rainföll. Installiert in Minuten—keine Werkzeuge, kein Bohren, keine Spuren.",
+    "quickLinks": "Schnelllinks",
+    "support": "Support",
+    "followUs": "Folgen Sie uns",
+    "benefits": "Vorteile",
+    "howItWorks": "Wie es Funktioniert",
+    "finishes": "Oberflächen",
+    "reviews": "Bewertungen",
+    "faq": "FAQ",
+    "contactUs": "Kontaktieren Sie uns",
+    "privacyPolicy": "Datenschutzerklärung",
+    "termsOfService": "Nutzungsbedingungen",
+    "copyright": "© 2026 Rainföll Inc. Alle Rechte vorbehalten."
+  },
+  "contact": {
+    "title": "Kontaktieren Sie uns",
+    "subtitle": "Haben Sie Fragen zu Rainföll? Wir sind hier, um Ihnen zu helfen, Ihre Duscherfahrung zu verwandeln.",
+    "sendMessage": "Senden Sie uns eine Nachricht",
+    "fullName": "Vollständiger Name *",
+    "emailAddress": "E-Mail-Adresse *",
+    "phoneNumber": "Telefonnummer",
+    "subject": "Betreff *",
+    "selectTopic": "Wählen Sie ein Thema",
+    "productQuestion": "Produktfrage",
+    "installation": "Installationshilfe",
+    "orderStatus": "Bestellstatus",
+    "warranty": "Garantieinformationen",
+    "partnership": "Partnerschaftsanfrage",
+    "other": "Andere",
+    "message": "Nachricht *",
+    "messagePlaceholder": "Erzählen Sie uns, wie wir Ihnen helfen können...",
+    "sendButton": "Nachricht Senden",
+    "successMessage": "Vielen Dank für Ihre Nachricht! Wir werden uns innerhalb von 24 Stunden bei Ihnen melden.",
+    "contactInfo": "Kontaktinformationen",
+    "email": "E-Mail",
+    "phone": "Telefon",
+    "headquarters": "Hauptsitz",
+    "weRespond": "Wir antworten innerhalb von 24 Stunden",
+    "businessHours": "Mo-Fr: 9-18 Uhr EST",
+    "quickQuestion": "Haben Sie eine schnelle Frage?",
+    "quickQuestionText": "Schauen Sie auf unserer FAQ-Seite nach Antworten auf häufige Fragen.",
+    "viewFAQ": "FAQ Ansehen"
+  },
+  "faq": {
+    "title": "Häufig Gestellte Fragen",
+    "subtitle": "Alles, was Sie über Rainföll luxuriöse Regendusche-Systeme wissen müssen.",
+    "allQuestions": "Alle Fragen",
+    "installation": "Installation",
+    "compatibility": "Kompatibilität",
+    "product": "Produkt",
+    "maintenance": "Wartung",
+    "questions": {
+      "installTime": {
+        "q": "Wie lange dauert die Installation?",
+        "a": "Die meisten Kunden schließen die Installation in weniger als 10 Minuten ab. Der Prozess umfasst drei einfache Schritte: Spannstange in Position drehen, Sicherheitshüllen schließen und Duschschlauch anschließen. Keine Werkzeuge oder Bohren erforderlich."
+      },
+      "toolsNeeded": {
+        "q": "Benötige ich Werkzeuge für die Installation?",
+        "a": "Keine Werkzeuge erforderlich! Das Rainföll-System verwendet eine spannungsbasierte Konstruktion, die kein Bohren, Schrauben oder spezielle Werkzeuge erfordert. Alles, was Sie benötigen, ist in der Box enthalten."
+      },
+      "renterFriendly": {
+        "q": "Kann ich es installieren, wenn ich meine Wohnung miete?",
+        "a": "Absolut! Rainföll ist perfekt für Mieter, da es kein Bohren oder permanente Modifikationen erfordert. Wenn Sie ausziehen, können Sie es leicht entfernen, ohne Spuren zu hinterlassen."
+      },
+      "showerSizes": {
+        "q": "Welche Duschgrößen sind kompatibel?",
+        "a": "Rainföll funktioniert in Duschen mit gegenüberliegenden Wänden 56-80 Zoll voneinander entfernt. Dies deckt die meisten Standard-Duschgrößen ab. Die Spannstange ist einstellbar, um eine perfekte Passform zu gewährleisten."
+      },
+      "plumbing": {
+        "q": "Funktioniert es mit meiner vorhandenen Installation?",
+        "a": "Ja! Rainföll verbindet sich mit Ihrer vorhandenen Duschinstallation mit Standardanschlüssen. Der mitgelieferte Schlauch wird an Ihrem aktuellen Duscharm oder Umleitungsventil befestigt."
+      },
+      "finishes": {
+        "q": "Welche Oberflächen sind verfügbar?",
+        "a": "Rainföll ist in vier Premium-Oberflächen erhältlich: Chrom, Matt Schwarz, Gold und Roségold. Jede Oberfläche ist sorgfältig ausgewählt, um moderne Baddesigns zu ergänzen."
+      },
+      "dualHeads": {
+        "q": "Können beide Duschköpfe gleichzeitig verwendet werden?",
+        "a": "Ja! Beide Duschköpfe halten vollen Druck bei gleichzeitiger Verwendung. Es gibt kein Umleitungsventil, das den Wasserfluss kompromittiert—beide Köpfe liefern kraftvollen, luxuriösen Wasserfluss auf einmal."
+      },
+      "whatsIncluded": {
+        "q": "Was ist in der Box enthalten?",
+        "a": "Jedes Rainföll-System enthält: Spannstange, zwei Regenduschköpfe, Sicherheitshüllen, Verbindungsschläuche und alle notwendigen Anschlüsse. Alles, was Sie für die Installation benötigen, ist enthalten."
+      },
+      "cleaning": {
+        "q": "Wie reinige ich die Duschköpfe?",
+        "a": "Wischen Sie einfach die Duschköpfe mit einem weichen Tuch und milder Seife ab. Bei Mineralablagerungen weichen Sie die Düsen 30 Minuten in einer Lösung aus gleichen Teilen weißem Essig und Wasser ein, dann gründlich spülen."
+      },
+      "warranty": {
+        "q": "Was ist die Garantie?",
+        "a": "Rainföll kommt mit einer 2-jährigen begrenzten Garantie, die Herstellungsfehler und Handwerksleistung abdeckt. Erweiterte Garantieoptionen sind an der Kasse verfügbar."
+      }
+    },
+    "stillHaveQuestions": "Haben Sie noch Fragen?",
+    "stillHaveQuestionsText": "Können Sie die Antwort, die Sie suchen, nicht finden? Unser Kundensupport-Team ist hier, um zu helfen.",
+    "contactSupport": "Support Kontaktieren",
+    "dmInstagram": "DM auf Instagram"
+  },
+  "language": {
+    "changeLanguage": "Sprache Ändern"
+  }
+}

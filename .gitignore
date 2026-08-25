@@ -43,3 +43,6 @@ pids
 # Temporary folders
 tmp/
 temp/
+
+# Wrangler local cache
+.wrangler/

@@ -1,0 +1,213 @@
+{
+  "meta": {
+    "title": "Rainföll | Luxury Rainfall Shower - Made for Long Showers",
+    "description": "Transform your daily ritual into pure luxury. Premium rainfall shower system designed for intimate moments—alone or together. No tools required."
+  },
+  "nav": {
+    "home": "Home",
+    "experience": "Experience",
+    "howItWorks": "How It Works",
+    "lifestyle": "Lifestyle",
+    "finishes": "Finishes",
+    "reviews": "Reviews",
+    "faq": "FAQ",
+    "contact": "Contact Us",
+    "shopNow": "Shop Now"
+  },
+  "hero": {
+    "title": "Luxury, For Everyone.",
+    "subtitle": "Alone or together. Luxury rainfall experience without renovation.",
+    "shopButton": "Shop Now"
+  },
+  "transformation": {
+    "title": "Your Daily Ritual, Reimagined",
+    "subtitle": "Transform the mundane into the magnificent. Every shower becomes an escape.",
+    "morning": {
+      "title": "Morning Awakening",
+      "description": "Start your day enveloped in warm rainfall. A gentle, luxurious awakening that energizes your soul and prepares you for whatever lies ahead."
+    },
+    "evening": {
+      "title": "Evening Unwind",
+      "description": "Wash away the day's stress in your private sanctuary. Let the cascading water transport you to a state of pure tranquility and peace."
+    },
+    "intimate": {
+      "title": "Intimate Connection",
+      "description": "Share moments of pure bliss together. Dual shower heads create opportunities for connection while maintaining individual comfort and space."
+    }
+  },
+  "positioning": {
+    "title": "Positioned for Perfection",
+    "subtitle": "The rainfall shower head can be placed anywhere in your shower space.",
+    "leftPosition": "Left Position",
+    "centerPosition": "Center Position",
+    "rightPosition": "Right Position",
+    "perfectPositioning": "Perfect positioning for your shower space"
+  },
+  "howItWorks": {
+    "title": "Luxury in Minutes",
+    "subtitle": "No tools. No drilling. Just pure indulgence.",
+    "step1": {
+      "badge": "Step 1",
+      "title": "Twist Tension Bar Into Place",
+      "description": "Extend the tension bar between your shower walls (works with spaces 56-80 inches wide) and twist until firmly secured. No drilling required."
+    },
+    "step2": {
+      "badge": "Step 2",
+      "title": "Close Safety Sheaths",
+      "description": "Slide the safety sheaths into position to lock the system securely in place. This ensures everything stays stable during use."
+    },
+    "step3": {
+      "badge": "Step 3",
+      "title": "Connect Shower Hose",
+      "description": "Attach the hose to your existing plumbing—hand tight, no tools needed. Turn on the water and start enjoying your new luxury rainfall shower."
+    },
+    "compatibility": "Works in showers with opposing walls 56–80 inches apart"
+  },
+  "lifestyle": {
+    "title": "Designed for Your Life",
+    "subtitle": "Whether you rent or own, luxury should be effortless.",
+    "renters": {
+      "title": "Renter's Sanctuary",
+      "description": "Elevate your space without compromise. Luxury that leaves no trace—perfect for the discerning renter."
+    },
+    "tall": {
+      "title": "Unrestricted Height",
+      "description": "Finally, a shower that honors your stature. Authentic rainfall from above—no more compromising your comfort."
+    },
+    "couples": {
+      "title": "Intimate Moments",
+      "description": "Designed for connection. Dual shower heads with full pressure—because the best rituals are meant to be shared."
+    },
+    "luxury": {
+      "title": "Daily Indulgence",
+      "description": "Transform the mundane into the magnificent. Hotel-quality rainfall that makes every morning feel like a retreat."
+    }
+  },
+  "finishes": {
+    "title": "Select Your Finish",
+    "subtitle": "Four premium finishes to complement your sanctuary.",
+    "chrome": "Chrome",
+    "gold": "Gold",
+    "matteBlack": "Matte Black",
+    "roseGold": "Rose Gold",
+    "pressureInfo": {
+      "title": "Full Pressure, Even Together",
+      "description": "Both shower heads maintain consistent, high pressure when used simultaneously. No diverter compromises—just powerful, luxurious water flow from both heads at once."
+    }
+  },
+  "reviews": {
+    "title": "Loved by Renters & Homeowners",
+    "subtitle": "See what our customers are saying.",
+    "featuredIn": "As Featured In",
+    "verifiedCustomer": "Verified Customer"
+  },
+  "cta": {
+    "title": "Transform Your Shower Today",
+    "subtitle": "Join thousands who've upgraded to luxury—without renovation.",
+    "installsInMinutes": "Installs in Minutes",
+    "noToolsRequired": "No Tools Required",
+    "shopButton": "Shop Rainföll"
+  },
+  "footer": {
+    "tagline": "The luxury rainfall shower by Rainföll. Installs in minutes—no tools, no drilling, no trace.",
+    "quickLinks": "Quick Links",
+    "support": "Support",
+    "followUs": "Follow Us",
+    "benefits": "Benefits",
+    "howItWorks": "How It Works",
+    "finishes": "Finishes",
+    "reviews": "Reviews",
+    "faq": "FAQ",
+    "contactUs": "Contact Us",
+    "privacyPolicy": "Privacy Policy",
+    "termsOfService": "Terms of Service",
+    "copyright": "© 2026 Rainföll Inc. All rights reserved."
+  },
+  "contact": {
+    "title": "Get in Touch",
+    "subtitle": "Have questions about Rainföll? We're here to help you transform your shower experience.",
+    "sendMessage": "Send us a Message",
+    "fullName": "Full Name *",
+    "emailAddress": "Email Address *",
+    "phoneNumber": "Phone Number",
+    "subject": "Subject *",
+    "selectTopic": "Select a topic",
+    "productQuestion": "Product Question",
+    "installation": "Installation Help",
+    "orderStatus": "Order Status",
+    "warranty": "Warranty Information",
+    "partnership": "Partnership Inquiry",
+    "other": "Other",
+    "message": "Message *",
+    "messagePlaceholder": "Tell us how we can help you...",
+    "sendButton": "Send Message",
+    "successMessage": "Thank you for your message! We'll get back to you within 24 hours.",
+    "contactInfo": "Contact Information",
+    "email": "Email",
+    "phone": "Phone",
+    "headquarters": "Headquarters",
+    "weRespond": "We respond within 24 hours",
+    "businessHours": "Mon-Fri: 9am-6pm EST",
+    "quickQuestion": "Have a quick question?",
+    "quickQuestionText": "Check out our FAQ page for answers to common questions.",
+    "viewFAQ": "View FAQ"
+  },
+  "faq": {
+    "title": "Frequently Asked Questions",
+    "subtitle": "Everything you need to know about Rainföll luxury rainfall shower systems.",
+    "allQuestions": "All Questions",
+    "installation": "Installation",
+    "compatibility": "Compatibility",
+    "product": "Product",
+    "maintenance": "Maintenance",
+    "questions": {
+      "installTime": {
+        "q": "How long does installation take?",
+        "a": "Most customers complete installation in under 10 minutes. The process involves three simple steps: twist tension bar into place, close safety sheaths, and connect shower hose. No tools or drilling required."
+      },
+      "toolsNeeded": {
+        "q": "Do I need any tools for installation?",
+        "a": "No tools required! The Rainföll system uses a tension-based design that requires no drilling, screws, or special tools. Everything you need is included in box."
+      },
+      "renterFriendly": {
+        "q": "Can I install it if I rent my apartment?",
+        "a": "Absolutely! Rainföll is perfect for renters because it requires no drilling or permanent modifications. When you move out, you can easily remove it without leaving any trace."
+      },
+      "showerSizes": {
+        "q": "What shower sizes are compatible?",
+        "a": "Rainföll works in showers with opposing walls 56-80 inches apart. This covers most standard shower sizes. The tension bar is adjustable to ensure a perfect fit."
+      },
+      "plumbing": {
+        "q": "Does it work with my existing plumbing?",
+        "a": "Yes! Rainföll connects to your existing shower plumbing with standard fittings. The included hose attaches to your current shower arm or diverter valve."
+      },
+      "finishes": {
+        "q": "What finishes are available?",
+        "a": "Rainföll is available in four premium finishes: Chrome, Matte Black, Gold, and Rose Gold. Each finish is carefully selected to complement modern bathroom designs."
+      },
+      "dualHeads": {
+        "q": "Can both shower heads be used simultaneously?",
+        "a": "Yes! Both shower heads maintain full pressure when used simultaneously. There's no diverter valve that compromises water flow—both heads deliver powerful, luxurious water flow at once."
+      },
+      "whatsIncluded": {
+        "q": "What's included in box?",
+        "a": "Each Rainföll system includes: tension bar, two rainfall shower heads, safety sheaths, connecting hoses, and all necessary fittings. Everything you need for installation is included."
+      },
+      "cleaning": {
+        "q": "How do I clean the shower heads?",
+        "a": "Simply wipe the shower heads with a soft cloth and mild soap. For mineral buildup, soak the nozzles in a solution of equal parts white vinegar and water for 30 minutes, then rinse thoroughly."
+      },
+      "warranty": {
+        "q": "What is the warranty?",
+        "a": "Rainföll comes with a 2-year limited warranty covering manufacturing defects and workmanship. Extended warranty options are available at checkout."
+      }
+    },
+    "stillHaveQuestions": "Still have questions?",
+    "stillHaveQuestionsText": "Can't find the answer you're looking for? Our customer support team is here to help.",
+    "contactSupport": "Contact Support",
+    "dmInstagram": "DM on Instagram"
+  },
+  "language": {
+    "changeLanguage": "Change Language"
+  }
+}

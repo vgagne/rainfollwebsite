@@ -76,7 +76,8 @@ function toFields(obj) {
   const fields = {};
   for (const [k, v] of Object.entries(obj)) {
     if (v === null || v === undefined) continue;
-    if (typeof v === 'string')        fields[k] = { stringValue: v };
+    if (Array.isArray(v))             fields[k] = { arrayValue: { values: v.map(s => ({ stringValue: String(s) })) } };
+    else if (typeof v === 'string')   fields[k] = { stringValue: v };
     else if (typeof v === 'boolean')  fields[k] = { booleanValue: v };
     else if (typeof v === 'number')   fields[k] = { doubleValue: v };
   }
@@ -110,17 +111,14 @@ function fromSurvey(doc) {
     id:                  doc.name?.split('/').pop(),
     email:               f.email?.stringValue               || '',
     vip:                 f.vip?.booleanValue                || false,
-    cohort:              f.cohort?.stringValue              || '',
     session_id:          f.session_id?.stringValue          || '',
-    decline_reason:      f.decline_reason?.stringValue      || '',
-    price_too_expensive: f.price_too_expensive?.stringValue || '',
-    price_expensive:     f.price_expensive?.stringValue     || '',
-    price_bargain:       f.price_bargain?.stringValue       || '',
-    price_too_cheap:     f.price_too_cheap?.stringValue     || '',
-    appeal:              f.appeal?.stringValue              || '',
+    survey_version:      f.survey_version?.stringValue      || '',
+    price_too_expensive: f.price_too_expensive?.doubleValue ?? null,
+    price_expensive:     f.price_expensive?.doubleValue     ?? null,
+    price_bargain:       f.price_bargain?.doubleValue       ?? null,
+    price_too_cheap:     f.price_too_cheap?.doubleValue     ?? null,
+    appeal:              (f.appeal?.arrayValue?.values || []).map(v => v.stringValue),
     tenure:              f.tenure?.stringValue              || '',
-    who_for:             f.who_for?.stringValue             || '',
-    open_feedback:       f.open_feedback?.stringValue       || '',
     utm_source:          f.utm_source?.stringValue          || '',
     utm_medium:          f.utm_medium?.stringValue          || '',
     utm_campaign:        f.utm_campaign?.stringValue        || '',
@@ -163,7 +161,7 @@ async function findById(docId, collection, token) {
   return doc.name ? doc : null;
 }
 
-async function findByStripeSessionId(sessionId, token) {
+async function findLatestSurveyByEmail(email, token) {
   const res = await fetch(
     `https://firestore.googleapis.com/v1/projects/${PROJECT_ID}/databases/(default)/documents:runQuery`,
     {
@@ -171,14 +169,15 @@ async function findByStripeSessionId(sessionId, token) {
       headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({
         structuredQuery: {
-          from: [{ collectionId: COLLECTION }],
+          from: [{ collectionId: SURVEYS_COLL }],
           where: {
             fieldFilter: {
-              field: { fieldPath: 'stripeSessionId' },
+              field: { fieldPath: 'email' },
               op: 'EQUAL',
-              value: { stringValue: sessionId },
+              value: { stringValue: email },
             },
           },
+          orderBy: [{ field: { fieldPath: 'submitted_at' }, direction: 'DESCENDING' }],
           limit: 1,
         },
       }),
@@ -511,36 +510,26 @@ async function handleSurvey(request, env) {
   if (await checkSurveyRateLimit(ip, env))
     return json({ error: 'Too many submissions' }, 429);
 
-  const email              = surveyEmail;
-  const vip                = !!body.vip;
-  const cohort             = String(body.cohort      || '').slice(0, 50);
-  const session_id         = String(body.session_id  || '').slice(0, 200);
-  const decline_reason     = String(body.decline_reason      || '').slice(0, 500);
-  const price_too_expensive = String(body.price_too_expensive || '').slice(0, 20);
-  const price_expensive    = String(body.price_expensive     || '').slice(0, 20);
-  const price_bargain      = String(body.price_bargain       || '').slice(0, 20);
-  const price_too_cheap    = String(body.price_too_cheap     || '').slice(0, 20);
-  const appeal             = String(body.appeal     || '').slice(0, 500);
-  const tenure             = String(body.tenure     || '').slice(0, 100);
-  const who_for            = String(body.who_for    || '').slice(0, 100);
-  const open_feedback      = String(body.open_feedback || '').slice(0, 1000);
-  const utm_source         = String(body.utm_source   || '').slice(0, 200);
-  const utm_medium         = String(body.utm_medium   || '').slice(0, 200);
-  const utm_campaign       = String(body.utm_campaign || '').slice(0, 200);
-  const utm_content        = String(body.utm_content  || '').slice(0, 200);
+  const email = surveyEmail;
+
+  const price_too_expensive = Number(body.price_too_expensive);
+  const price_expensive     = Number(body.price_expensive);
+  const price_bargain       = Number(body.price_bargain);
+  const price_too_cheap     = Number(body.price_too_cheap);
+  for (const n of [price_too_expensive, price_expensive, price_bargain, price_too_cheap]) {
+    if (!Number.isFinite(n) || n < 1 || n > 2000) return json({ error: 'Invalid price values' }, 400);
+  }
+
+  const appeal        = Array.isArray(body.appeal) ? body.appeal.map(a => String(a).slice(0, 200)).slice(0, 2) : [];
+  const tenure         = String(body.tenure     || '').slice(0, 100);
+  const utm_source     = String(body.utm_source   || '').slice(0, 200);
+  const utm_medium     = String(body.utm_medium   || '').slice(0, 200);
+  const utm_campaign   = String(body.utm_campaign || '').slice(0, 200);
+  const utm_content    = String(body.utm_content  || '').slice(0, 200);
 
   let token;
   try { token = await getFirestoreToken(env); }
   catch (e) { return json({ error: 'Firestore auth failed' }, 500); }
-
-  // Recover real email for VIP survey (Stripe redirect only sends session_id)
-  let resolvedEmail = email;
-  if (resolvedEmail === 'anonymous' && session_id) {
-    try {
-      const signupDoc = await findByStripeSessionId(session_id, token);
-      if (signupDoc) resolvedEmail = fromDoc(signupDoc).email || 'anonymous';
-    } catch (_) {}
-  }
 
   const docId  = crypto.randomUUID();
   const putRes = await fetch(`${FIRESTORE_BASE}/${SURVEYS_COLL}?documentId=${docId}`, {
@@ -548,9 +537,9 @@ async function handleSurvey(request, env) {
     headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
     body: JSON.stringify({
       fields: toFields({
-        id: docId, email: resolvedEmail, vip, cohort, session_id,
-        decline_reason, price_too_expensive, price_expensive, price_bargain, price_too_cheap,
-        appeal, tenure, who_for, open_feedback,
+        id: docId, email, vip: false, session_id: '', survey_version: 'v3_pre_offer',
+        price_too_expensive, price_expensive, price_bargain, price_too_cheap,
+        appeal, tenure,
         utm_source, utm_medium, utm_campaign, utm_content,
         submitted_at: new Date().toISOString(),
       }),
@@ -560,11 +549,9 @@ async function handleSurvey(request, env) {
   if (!putRes.ok) return json({ error: 'Failed to save survey' }, 500);
 
   // Mark surveyCompleted on the signup doc
-  if (resolvedEmail !== 'anonymous') {
+  if (email !== 'anonymous') {
     try {
-      const signupDoc = vip && session_id
-        ? await findByStripeSessionId(session_id, token)
-        : await findByEmail(resolvedEmail, token);
+      const signupDoc = await findByEmail(email, token);
       if (signupDoc) {
         await fetch(`${signupDoc.name}?updateMask.fieldPaths=surveyCompleted`, {
           method: 'PATCH',
@@ -670,6 +657,20 @@ async function handleStripeWebhook(request, env) {
       }, env),
       sendMetaPurchaseEvent({ email: vipEmail, sessionId, amount: 1 }, env),
       sendTikTokPurchaseEvent({ email: vipEmail, sessionId, amount: 1 }, env),
+      (async () => {
+        try {
+          const surveyDoc = await findLatestSurveyByEmail(vipEmail, token);
+          if (!surveyDoc) return; // No survey on file for this email — nothing to update
+          const mask = ['vip', 'session_id'].map(f => `updateMask.fieldPaths=${f}`).join('&');
+          await fetch(`${surveyDoc.name}?${mask}`, {
+            method: 'PATCH',
+            headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+            body: JSON.stringify({ fields: toFields({ vip: true, session_id: sessionId }) }),
+          });
+        } catch (e) {
+          console.error('Failed to write back VIP status to survey doc:', e.message);
+        }
+      })(),
     ]);
   }
 

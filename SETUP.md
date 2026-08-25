@@ -26,6 +26,17 @@ Existing secrets still required (unchanged):
 - `JWT_SECRET`
 - `ADMIN_PASSWORD_HASH`
 
+New secrets for transactional email and server-side conversion tracking:
+- `RESEND_API_KEY` — Resend API key (domain `rainfoll.ca` must be verified in Resend first)
+- `META_CAPI_ACCESS_TOKEN` — Meta Conversions API access token (Meta Events Manager → pixel `971805995701381`)
+- `TIKTOK_EVENTS_API_ACCESS_TOKEN` — TikTok Events API access token (TikTok Events Manager → pixel `D8HHN53C77UDLID68NHG`)
+
+```bash
+wrangler secret put RESEND_API_KEY
+wrangler secret put META_CAPI_ACCESS_TOKEN
+wrangler secret put TIKTOK_EVENTS_API_ACCESS_TOKEN
+```
+
 ---
 
 ## 2. Stripe Payment Link

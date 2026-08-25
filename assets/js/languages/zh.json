@@ -1,0 +1,213 @@
+{
+  "meta": {
+    "title": "Rainföll | 奢华雨淋淋浴 - 为长时间淋浴而设计",
+    "description": "将您的日常仪式转化为纯粹奢华。为亲密时刻设计的优质雨淋淋浴系统——独自或共享。无需工具。"
+  },
+  "nav": {
+    "home": "首页",
+    "experience": "体验",
+    "howItWorks": "工作原理",
+    "lifestyle": "生活方式",
+    "finishes": "表面处理",
+    "reviews": "评价",
+    "faq": "常见问题",
+    "contact": "联系我们",
+    "shopNow": "立即购买"
+  },
+  "hero": {
+    "title": "奢华，属于每一个人。",
+    "subtitle": "独自或共享。无需翻新的奢华雨淋体验。",
+    "shopButton": "立即购买"
+  },
+  "transformation": {
+    "title": "重新构想您的日常仪式",
+    "subtitle": "将平凡转化为非凡。每一次淋浴都成为一次逃离。",
+    "morning": {
+      "title": "清晨唤醒",
+      "description": "在温暖的雨淋中开始新的一天。温柔奢华的唤醒方式，为您的灵魂注入活力，为即将到来的一切做好准备。"
+    },
+    "evening": {
+      "title": "夜晚放松",
+      "description": "在您的私人圣殿中洗去一天的疲惫。让倾泻的水流将您带入纯粹宁静与平和的状态。"
+    },
+    "intimate": {
+      "title": "亲密连接",
+      "description": "分享纯粹幸福的时刻。双淋浴头创造连接的机会，同时保持个人舒适和空间。"
+    }
+  },
+  "positioning": {
+    "title": "完美定位",
+    "subtitle": "雨淋淋浴头可以放置在您淋浴空间的任何位置。",
+    "leftPosition": "左侧位置",
+    "centerPosition": "中央位置",
+    "rightPosition": "右侧位置",
+    "perfectPositioning": "为您的淋浴空间提供完美定位"
+  },
+  "howItWorks": {
+    "title": "分钟内享受奢华",
+    "subtitle": "无需工具。无需钻孔。纯粹享受。",
+    "step1": {
+      "badge": "步骤 1",
+      "title": "将张力杆拧入位置",
+      "description": "在您的淋浴墙之间伸展张力杆（适用于56-80英寸宽的空间）并拧紧直至牢固固定。无需钻孔。"
+    },
+    "step2": {
+      "badge": "步骤 2",
+      "title": "关闭安全护套",
+      "description": "将安全护套滑入位置以牢固锁定系统。这确保使用期间一切保持稳定。"
+    },
+    "step3": {
+      "badge": "步骤 3",
+      "title": "连接淋浴软管",
+      "description": "将软管连接到您现有的管道系统——手动拧紧，无需工具。打开水龙头，开始享受您全新的奢华雨淋淋浴。"
+    },
+    "compatibility": "适用于相对墙壁56-80英寸的淋浴间"
+  },
+  "lifestyle": {
+    "title": "为您的生活而设计",
+    "subtitle": "无论您是租房还是拥有，奢华都应该是轻松的。",
+    "renters": {
+      "title": "租客圣殿",
+      "description": "无妥协地提升您的空间。不留痕迹的奢华——完美适合挑剔的租客。"
+    },
+    "tall": {
+      "title": "无限制高度",
+      "description": "终于，有一个尊重您身高的淋浴。来自上方的真实雨淋——不再妥协您的舒适。"
+    },
+    "couples": {
+      "title": "亲密时刻",
+      "description": "为连接而设计。具有全压的双淋浴头——因为最好的仪式应该被分享。"
+    },
+    "luxury": {
+      "title": "日常享受",
+      "description": "将平凡转化为非凡。酒店品质的雨淋，让每个早晨都感觉像度假。"
+    }
+  },
+  "finishes": {
+    "title": "选择您的表面处理",
+    "subtitle": "四种优质表面处理以补充您的圣殿。",
+    "chrome": "铬",
+    "gold": "金",
+    "matteBlack": "哑光黑",
+    "roseGold": "玫瑰金",
+    "pressureInfo": {
+      "title": "全压，即使同时使用",
+      "description": "两个淋浴头在同时使用时保持一致的高压。无分流器妥协——只是两个淋浴头同时提供强大、奢华的水流。"
+    }
+  },
+  "reviews": {
+    "title": "受租客和房主喜爱",
+    "subtitle": "看看我们的客户在说什么。",
+    "featuredIn": "特色报道",
+    "verifiedCustomer": "已验证客户"
+  },
+  "cta": {
+    "title": "今天改变您的淋浴",
+    "subtitle": "加入数千名无需翻新就升级到奢华的人。",
+    "installsInMinutes": "分钟内安装",
+    "noToolsRequired": "无需工具",
+    "shopButton": "购买 Rainföll"
+  },
+  "footer": {
+    "tagline": "Rainföll奢华雨淋淋浴。分钟内安装——无需工具，无需钻孔，无痕迹。",
+    "quickLinks": "快速链接",
+    "support": "支持",
+    "followUs": "关注我们",
+    "benefits": "好处",
+    "howItWorks": "工作原理",
+    "finishes": "表面处理",
+    "reviews": "评价",
+    "faq": "常见问题",
+    "contactUs": "联系我们",
+    "privacyPolicy": "隐私政策",
+    "termsOfService": "服务条款",
+    "copyright": "© 2026 Rainföll Inc. 保留所有权利。"
+  },
+  "contact": {
+    "title": "联系我们",
+    "subtitle": "对Rainföll有疑问吗？我们在这里帮助您改变您的淋浴体验。",
+    "sendMessage": "发送消息给我们",
+    "fullName": "全名 *",
+    "emailAddress": "电子邮件地址 *",
+    "phoneNumber": "电话号码",
+    "subject": "主题 *",
+    "selectTopic": "选择主题",
+    "productQuestion": "产品问题",
+    "installation": "安装帮助",
+    "orderStatus": "订单状态",
+    "warranty": "保修信息",
+    "partnership": "合作咨询",
+    "other": "其他",
+    "message": "消息 *",
+    "messagePlaceholder": "告诉我们如何帮助您...",
+    "sendButton": "发送消息",
+    "successMessage": "感谢您的消息！我们将在24小时内回复您。",
+    "contactInfo": "联系信息",
+    "email": "电子邮件",
+    "phone": "电话",
+    "headquarters": "总部",
+    "weRespond": "我们在24小时内回复",
+    "businessHours": "周一至周五：上午9点-下午6点 EST",
+    "quickQuestion": "有快速问题吗？",
+    "quickQuestionText": "查看我们的常见问题页面获取常见问题的答案。",
+    "viewFAQ": "查看常见问题"
+  },
+  "faq": {
+    "title": "常见问题",
+    "subtitle": "关于Rainföll奢华雨淋淋浴系统您需要知道的一切。",
+    "allQuestions": "所有问题",
+    "installation": "安装",
+    "compatibility": "兼容性",
+    "product": "产品",
+    "maintenance": "维护",
+    "questions": {
+      "installTime": {
+        "q": "安装需要多长时间？",
+        "a": "大多数客户在10分钟内完成安装。过程包括三个简单步骤：将张力杆拧入位置，关闭安全护套，连接淋浴软管。无需工具或钻孔。"
+      },
+      "toolsNeeded": {
+        "q": "我需要工具进行安装吗？",
+        "a": "无需工具！Rainföll系统使用基于张力的设计，无需钻孔、螺丝或特殊工具。您需要的一切都包含在盒子中。"
+      },
+      "renterFriendly": {
+        "q": "如果我租公寓，可以安装吗？",
+        "a": "绝对可以！Rainföll非常适合租客，因为它无需钻孔或永久性修改。当您搬出时，您可以轻松移除它而不留下任何痕迹。"
+      },
+      "showerSizes": {
+        "q": "哪些淋浴尺寸兼容？",
+        "a": "Rainföll适用于相对墙壁56-80英寸的淋浴间。这涵盖了大多数标准淋浴尺寸。张力杆是可调节的，以确保完美贴合。"
+      },
+      "plumbing": {
+        "q": "它适用于我现有的管道系统吗？",
+        "a": "是的！Rainföll使用标准配件连接到您现有的淋浴管道系统。包含的软管连接到您当前的淋浴臂或分流阀。"
+      },
+      "finishes": {
+        "q": "有哪些表面处理可用？",
+        "a": "Rainföll有四种优质表面处理：铬、哑光黑、金和玫瑰金。每种表面处理都经过精心选择，以补充现代浴室设计。"
+      },
+      "dualHeads": {
+        "q": "两个淋浴头可以同时使用吗？",
+        "a": "是的！两个淋浴头在同时使用时保持全压。没有分流器妥协——两个淋浴头同时提供强大、奢华的水流。"
+      },
+      "whatsIncluded": {
+        "q": "盒子里有什么？",
+        "a": "每个Rainföll系统包括：张力杆、两个雨淋淋浴头、安全护套、连接软管和所有必要的配件。安装所需的一切都包含在内。"
+      },
+      "cleaning": {
+        "q": "如何清洁淋浴头？",
+        "a": "只需用软布和温和肥皂清洁淋浴头。对于矿物质积聚，将喷嘴浸泡在等量白醋和水的溶液中30分钟，然后彻底冲洗。"
+      },
+      "warranty": {
+        "q": "保修是什么？",
+        "a": "Rainföll提供2年有限保修，涵盖制造缺陷和工艺质量。结账时可选择延长保修选项。"
+      }
+    },
+    "stillHaveQuestions": "还有问题吗？",
+    "stillHaveQuestionsText": "找不到您要找的答案吗？我们的客户支持团队在这里帮助。",
+    "contactSupport": "联系支持",
+    "dmInstagram": "Instagram私信"
+  },
+  "language": {
+    "changeLanguage": "更改语言"
+  }
+}

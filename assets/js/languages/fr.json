@@ -1,0 +1,213 @@
+{
+  "meta": {
+    "title": "Rainföll | Douche de Pluie de Luxe - Conçue pour les Longues Douches",
+    "description": "Transformez votre rituel quotidien en pur luxe. Système de douche de pluie premium conçu pour les moments intimes—seul ou ensemble. Aucun outil requis."
+  },
+  "nav": {
+    "home": "Accueil",
+    "experience": "Expérience",
+    "howItWorks": "Comment Ça Marche",
+    "lifestyle": "Style de Vie",
+    "finishes": "Finitions",
+    "reviews": "Avis",
+    "faq": "FAQ",
+    "contact": "Contactez-nous",
+    "shopNow": "Acheter Maintenant"
+  },
+  "hero": {
+    "title": "Le Luxe pour Tous.",
+    "subtitle": "Seul ou ensemble. Expérience de douche de pluie sans rénovation.",
+    "shopButton": "Acheter Maintenant"
+  },
+  "transformation": {
+    "title": "Votre Rituel Quotidien, Réimaginé",
+    "subtitle": "Transformez le banal en magnifique. Chaque douche devient une évasion.",
+    "morning": {
+      "title": "Réveil Matinal",
+      "description": "Commencez votre journée enveloppé de pluie chaude. Un réveil doux et luxueux qui énergise votre âme et vous prépare à tout ce qui vous attend."
+    },
+    "evening": {
+      "title": "Détente Soirée",
+      "description": "Lavez le stress de la journée dans votre sanctuaire privé. Laissez l'eau en cascade vous transporter dans un état de pure tranquillité et paix."
+    },
+    "intimate": {
+      "title": "Connexion Intime",
+      "description": "Partagez des moments de pur bonheur ensemble. Les pommeaux de douche doubles créent des opportunités de connexion tout en maintenant le confort et l'espace individuels."
+    }
+  },
+  "positioning": {
+    "title": "Positionné pour la Perfection",
+    "subtitle": "Le pommeau de douche de pluie peut être placé n'importe où dans votre espace de douche.",
+    "leftPosition": "Position Gauche",
+    "centerPosition": "Position Centre",
+    "rightPosition": "Position Droite",
+    "perfectPositioning": "Positionnement parfait pour votre espace de douche"
+  },
+  "howItWorks": {
+    "title": "Le Luxe en Minutes",
+    "subtitle": "Aucun outil. Aucun perçage. Juste de la pure indulgence.",
+    "step1": {
+      "badge": "Étape 1",
+      "title": "Tournez la Barre de Tension en Place",
+      "description": "Étendez la barre de tension entre les murs de votre douche (fonctionne avec des espaces de 56-80 pouces de large) et tournez jusqu'à ce qu'elle soit fermement sécurisée. Aucun perçage requis."
+    },
+    "step2": {
+      "badge": "Étape 2",
+      "title": "Fermez les Gaines de Sécurité",
+      "description": "Faites glisser les gaines de sécurité en position pour verrouiller le système fermement en place. Cela assure que tout reste stable pendant l'utilisation."
+    },
+    "step3": {
+      "badge": "Étape 3",
+      "title": "Connectez le Tuyau de Douche",
+      "description": "Attachez le tuyau à votre plomberie existante—à la main, aucun outil nécessaire. Ouvrez l'eau et commencez à profiter de votre nouvelle douche de pluie de luxe."
+    },
+    "compatibility": "Fonctionne dans les douches avec des murs opposés à 56–80 pouces de distance"
+  },
+  "lifestyle": {
+    "title": "Conçu pour Votre Vie",
+    "subtitle": "Que vous louiez ou possédiez, le luxe devrait être sans effort.",
+    "renters": {
+      "title": "Sanctuaire du Locataire",
+      "description": "Élevez votre espace sans compromis. Le luxe qui ne laisse aucune trace—parfait pour le locataire exigeant."
+    },
+    "tall": {
+      "title": "Hauteur Sans Restriction",
+      "description": "Finalement, une douche qui honore votre stature. Pluie authentique d'en haut—plus besoin de compromettre votre confort."
+    },
+    "couples": {
+      "title": "Moments Intimes",
+      "description": "Conçu pour la connexion. Pommeaux de douche doubles avec pleine pression—parce que les meilleurs rituels sont faits pour être partagés."
+    },
+    "luxury": {
+      "title": "Indulgence Quotidienne",
+      "description": "Transformez le banal en magnifique. Qualité de pluie d'hôtel qui fait que chaque matin se sent comme une retraite."
+    }
+  },
+  "finishes": {
+    "title": "Sélectionnez Votre Finition",
+    "subtitle": "Quatre finitions premium pour compléter votre sanctuaire.",
+    "chrome": "Chrome",
+    "gold": "Or",
+    "matteBlack": "Noir Mat",
+    "roseGold": "Or Rose",
+    "pressureInfo": {
+      "title": "Pleine Pression, Même Ensemble",
+      "description": "Les deux pommeaux de douche maintiennent une pression élevée et constante lorsqu'ils sont utilisés simultanément. Aucun compromis de déviateur—juste un flux d'eau puissant et luxueux des deux pommeaux à la fois."
+    }
+  },
+  "reviews": {
+    "title": "Aimé par les Locataires et Propriétaires",
+    "subtitle": "Voyez ce que disent nos clients.",
+    "featuredIn": "Présenté dans",
+    "verifiedCustomer": "Client Vérifié"
+  },
+  "cta": {
+    "title": "Transformez Votre Douche Aujourd'hui",
+    "subtitle": "Rejoignez des milliers qui ont fait évoluer vers le luxe—sans rénovation.",
+    "installsInMinutes": "S'installe en Minutes",
+    "noToolsRequired": "Aucun Outil Requis",
+    "shopButton": "Acheter Rainföll"
+  },
+  "footer": {
+    "tagline": "La douche de pluie de luxe par Rainföll. S'installe en minutes—sans outils, sans perçage, sans trace.",
+    "quickLinks": "Liens Rapides",
+    "support": "Support",
+    "followUs": "Suivez-nous",
+    "benefits": "Avantages",
+    "howItWorks": "Comment Ça Marche",
+    "finishes": "Finitions",
+    "reviews": "Avis",
+    "faq": "FAQ",
+    "contactUs": "Contactez-nous",
+    "privacyPolicy": "Politique de Confidentialité",
+    "termsOfService": "Conditions d'Utilisation",
+    "copyright": "© 2026 Rainföll Inc. Tous droits réservés."
+  },
+  "contact": {
+    "title": "Contactez-nous",
+    "subtitle": "Avez-vous des questions sur Rainföll? Nous sommes là pour vous aider à transformer votre expérience de douche.",
+    "sendMessage": "Envoyez-nous un Message",
+    "fullName": "Nom Complet *",
+    "emailAddress": "Adresse Email *",
+    "phoneNumber": "Numéro de Téléphone",
+    "subject": "Sujet *",
+    "selectTopic": "Sélectionnez un sujet",
+    "productQuestion": "Question sur le Produit",
+    "installation": "Aide à l'Installation",
+    "orderStatus": "Statut de Commande",
+    "warranty": "Informations de Garantie",
+    "partnership": "Demande de Partenariat",
+    "other": "Autre",
+    "message": "Message *",
+    "messagePlaceholder": "Dites-nous comment nous pouvons vous aider...",
+    "sendButton": "Envoyer le Message",
+    "successMessage": "Merci pour votre message! Nous vous répondrons dans les 24 heures.",
+    "contactInfo": "Informations de Contact",
+    "email": "Email",
+    "phone": "Téléphone",
+    "headquarters": "Siège Social",
+    "weRespond": "Nous répondons dans les 24 heures",
+    "businessHours": "Lun-Ven: 9h-18h HNE",
+    "quickQuestion": "Avez-vous une question rapide?",
+    "quickQuestionText": "Consultez notre page FAQ pour des réponses aux questions courantes.",
+    "viewFAQ": "Voir FAQ"
+  },
+  "faq": {
+    "title": "Questions Fréquemment Posées",
+    "subtitle": "Tout ce que vous devez savoir sur les systèmes de douche de pluie de luxe Rainföll.",
+    "allQuestions": "Toutes les Questions",
+    "installation": "Installation",
+    "compatibility": "Compatibilité",
+    "product": "Produit",
+    "maintenance": "Maintenance",
+    "questions": {
+      "installTime": {
+        "q": "Combien de temps prend l'installation?",
+        "a": "La plupart des clients complètent l'installation en moins de 10 minutes. Le processus implique trois étapes simples: tourner la barre de tension en place, fermer les gaines de sécurité et connecter le tuyau de douche. Aucun outil ou perçage requis."
+      },
+      "toolsNeeded": {
+        "q": "Ai-je besoin d'outils pour l'installation?",
+        "a": "Aucun outil requis! Le système Rainföll utilise une conception basée sur la tension qui ne nécessite aucun perçage, vis ou outils spéciaux. Tout ce dont vous avez besoin est inclus dans la boîte."
+      },
+      "renterFriendly": {
+        "q": "Puis-je l'installer si je loue mon appartement?",
+        "a": "Absolument! Rainföll est parfait pour les locataires car il ne nécessite aucun perçage ou modification permanente. Quand vous déménagez, vous pouvez facilement le retirer sans laisser aucune trace."
+      },
+      "showerSizes": {
+        "q": "Quelles tailles de douche sont compatibles?",
+        "a": "Rainföll fonctionne dans les douches avec des murs opposés à 56-80 pouces de distance. Cela couvre la plupart des tailles de douche standard. La barre de tension est ajustable pour assurer un ajustement parfait."
+      },
+      "plumbing": {
+        "q": "Est-ce que ça fonctionne avec ma plomberie existante?",
+        "a": "Oui! Rainföll se connecte à votre plomberie de douche existante avec des raccords standard. Le tuyau inclus s'attache à votre bras de douche actuel ou à votre vanne de déviation."
+      },
+      "finishes": {
+        "q": "Quelles finitions sont disponibles?",
+        "a": "Rainföll est disponible dans quatre finitions premium: Chrome, Noir Mat, Or et Or Rose. Chaque finition est soigneusement sélectionnée pour compléter les designs de salle de bain modernes."
+      },
+      "dualHeads": {
+        "q": "Les deux pommeaux de douche peuvent-ils être utilisés simultanément?",
+        "a": "Oui! Les deux pommeaux de douche maintiennent une pression complète lorsqu'ils sont utilisés simultanément. Il n'y a pas de vanne de déviation qui compromet le flux d'eau—les deux pommeaux délivrent un flux d'eau puissant et luxueux à la fois."
+      },
+      "whatsIncluded": {
+        "q": "Qu'est-ce qui est inclus dans la boîte?",
+        "a": "Chaque système Rainföll inclut: barre de tension, deux pommeaux de douche de pluie, gaines de sécurité, tuyaux de connexion et tous les raccords nécessaires. Tout ce dont vous avez besoin pour l'installation est inclus."
+      },
+      "cleaning": {
+        "q": "Comment nettoyer les pommeaux de douche?",
+        "a": "Nettoyez simplement les pommeaux de douche avec un chiffon doux et du savon doux. Pour l'accumulation minérale, faites tremper les buses dans une solution de parties égales de vinaigre blanc et d'eau pendant 30 minutes, puis rincez soigneusement."
+      },
+      "warranty": {
+        "q": "Quelle est la garantie?",
+        "a": "Rainföll vient avec une garantie limitée de 2 ans couvrant les défauts de fabrication et la main d'œuvre. Des options de garantie étendue sont disponibles à la caisse."
+      }
+    },
+    "stillHaveQuestions": "Avez-vous encore des questions?",
+    "stillHaveQuestionsText": "Ne pouvez pas trouver la réponse que vous cherchez? Notre équipe de support client est là pour aider.",
+    "contactSupport": "Contacter le Support",
+    "dmInstagram": "DM sur Instagram"
+  },
+  "language": {
+    "changeLanguage": "Changer de Langue"
+  }
+}

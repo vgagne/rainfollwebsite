@@ -1,0 +1,213 @@
+{
+  "meta": {
+    "title": "Rainföll | Ducha de Lluvia de Lujo - Hecha para Duchas Largas",
+    "description": "Transforma tu ritual diario en puro lujo. Sistema de ducha de lluvia premium diseñado para momentos íntimos—solo o juntos. Sin herramientas requeridas."
+  },
+  "nav": {
+    "home": "Inicio",
+    "experience": "Experiencia",
+    "howItWorks": "Cómo Funciona",
+    "lifestyle": "Estilo de Vida",
+    "finishes": "Acabados",
+    "reviews": "Reseñas",
+    "faq": "FAQ",
+    "contact": "Contáctanos",
+    "shopNow": "Comprar Ahora"
+  },
+  "hero": {
+    "title": "Lujo para Todos.",
+    "subtitle": "Solo o juntos. Experiencia de ducha de lluvia sin renovación.",
+    "shopButton": "Comprar Ahora"
+  },
+  "transformation": {
+    "title": "Tu Ritual Diario, Reimaginado",
+    "subtitle": "Transforma lo mundano en magnífico. Cada ducha se convierte en una escapada.",
+    "morning": {
+      "title": "Despertar Matutino",
+      "description": "Comienza tu día envuelto en lluvia cálida. Un despertar suave y lujoso que energiza tu alma y te prepara para lo que sea que venga."
+    },
+    "evening": {
+      "title": "Relajación Vespertina",
+      "description": "Lava el estrés del día en tu santuario privado. Deja que el agua en cascada te transporte a un estado de pura tranquilidad y paz."
+    },
+    "intimate": {
+      "title": "Conexión Íntima",
+      "description": "Comparte momentos de pura felicidad juntos. Las cabezas de ducha duales crean oportunidades para conexión mientras mantienes comodidad y espacio individual."
+    }
+  },
+  "positioning": {
+    "title": "Posicionado para la Perfección",
+    "subtitle": "La cabeza de ducha de lluvia puede colocarse en cualquier lugar de tu espacio de ducha.",
+    "leftPosition": "Posición Izquierda",
+    "centerPosition": "Posición Central",
+    "rightPosition": "Posición Derecha",
+    "perfectPositioning": "Posicionamiento perfecto para tu espacio de ducha"
+  },
+  "howItWorks": {
+    "title": "Lujo en Minutos",
+    "subtitle": "Sin herramientas. Sin perforación. Solo pura indulgencia.",
+    "step1": {
+      "badge": "Paso 1",
+      "title": "Gira la Barra de Tensión en su Lugar",
+      "description": "Extiende la barra de tensión entre las paredes de tu ducha (funciona con espacios de 56-80 pulgadas de ancho) y gira hasta que esté firmemente asegurada. Sin perforación requerida."
+    },
+    "step2": {
+      "badge": "Paso 2",
+      "title": "Cierra las Vainas de Seguridad",
+      "description": "Desliza las vainas de seguridad hacia su posición para bloquear el sistema firmemente en su lugar. Esto asegura que todo se mantenga estable durante el uso."
+    },
+    "step3": {
+      "badge": "Paso 3",
+      "title": "Conecta la Manguera de Ducha",
+      "description": "Adjunta la manguera a tu plomería existente—apretado a mano, sin herramientas necesarias. Abre el agua y comienza a disfrutar de tu nueva ducha de lluvia de lujo."
+    },
+    "compatibility": "Funciona en duchas con paredes opuestas de 56–80 pulgadas de distancia"
+  },
+  "lifestyle": {
+    "title": "Diseñado para Tu Vida",
+    "subtitle": "Ya sea que alquiles o poseas, el lujo debe ser sin esfuerzo.",
+    "renters": {
+      "title": "Santuario del Inquilino",
+      "description": "Eleva tu espacio sin compromisos. Lujo que no deja rastro—perfecto para el inquilino exigente."
+    },
+    "tall": {
+      "title": "Altura Sin Restricciones",
+      "description": "Finalmente, una ducha que honra tu estatura. Lluvia auténtica desde arriba—no más comprometer tu comodidad."
+    },
+    "couples": {
+      "title": "Momentos Íntimos",
+      "description": "Diseñado para conexión. Cabezas de ducha duales con presión completa—porque los mejores rituales están hechos para ser compartidos."
+    },
+    "luxury": {
+      "title": "Indulgencia Diaria",
+      "description": "Transforma lo mundano en magnífico. Calidad de lluvia de hotel que hace que cada mañana se sienta como un retiro."
+    }
+  },
+  "finishes": {
+    "title": "Selecciona Tu Acabado",
+    "subtitle": "Cuatro acabados premium para complementar tu santuario.",
+    "chrome": "Cromo",
+    "gold": "Oro",
+    "matteBlack": "Negro Mate",
+    "roseGold": "Oro Rosa",
+    "pressureInfo": {
+      "title": "Presión Completa, Incluso Juntos",
+      "description": "Ambas cabezas de ducha mantienen presión alta y consistente cuando se usan simultáneamente. Sin compromisos de desviador—solo flujo de agua poderoso y lujoso de ambas cabezas a la vez."
+    }
+  },
+  "reviews": {
+    "title": "Amado por Inquilinos y Propietarios",
+    "subtitle": "Ve lo que dicen nuestros clientes.",
+    "featuredIn": "Presentado en",
+    "verifiedCustomer": "Cliente Verificado"
+  },
+  "cta": {
+    "title": "Transforma Tu Ducha Hoy",
+    "subtitle": "Únete a miles que han actualizado al lujo—sin renovación.",
+    "installsInMinutes": "Se Instala en Minutos",
+    "noToolsRequired": "Sin Herramientas Requeridas",
+    "shopButton": "Comprar Rainföll"
+  },
+  "footer": {
+    "tagline": "La ducha de lluvia de lujo por Rainföll. Se instala en minutos—sin herramientas, sin perforación, sin rastro.",
+    "quickLinks": "Enlaces Rápidos",
+    "support": "Soporte",
+    "followUs": "Síguenos",
+    "benefits": "Beneficios",
+    "howItWorks": "Cómo Funciona",
+    "finishes": "Acabados",
+    "reviews": "Reseñas",
+    "faq": "FAQ",
+    "contactUs": "Contáctanos",
+    "privacyPolicy": "Política de Privacidad",
+    "termsOfService": "Términos de Servicio",
+    "copyright": "© 2026 Rainföll Inc. Todos los derechos reservados."
+  },
+  "contact": {
+    "title": "Ponte en Contacto",
+    "subtitle": "¿Tienes preguntas sobre Rainföll? Estamos aquí para ayudarte a transformar tu experiencia de ducha.",
+    "sendMessage": "Envíanos un Mensaje",
+    "fullName": "Nombre Completo *",
+    "emailAddress": "Correo Electrónico *",
+    "phoneNumber": "Número de Teléfono",
+    "subject": "Asunto *",
+    "selectTopic": "Selecciona un tema",
+    "productQuestion": "Pregunta sobre Producto",
+    "installation": "Ayuda de Instalación",
+    "orderStatus": "Estado del Pedido",
+    "warranty": "Información de Garantía",
+    "partnership": "Consulta de Asociación",
+    "other": "Otro",
+    "message": "Mensaje *",
+    "messagePlaceholder": "Cuéntanos cómo podemos ayudarte...",
+    "sendButton": "Enviar Mensaje",
+    "successMessage": "¡Gracias por tu mensaje! Te responderemos dentro de 24 horas.",
+    "contactInfo": "Información de Contacto",
+    "email": "Correo",
+    "phone": "Teléfono",
+    "headquarters": "Sede Central",
+    "weRespond": "Respondemos dentro de 24 horas",
+    "businessHours": "Lun-Vie: 9am-6pm EST",
+    "quickQuestion": "¿Tienes una pregunta rápida?",
+    "quickQuestionText": "Revisa nuestra página de FAQ para respuestas a preguntas comunes.",
+    "viewFAQ": "Ver FAQ"
+  },
+  "faq": {
+    "title": "Preguntas Frecuentes",
+    "subtitle": "Todo lo que necesitas saber sobre los sistemas de ducha de lluvia de lujo Rainföll.",
+    "allQuestions": "Todas las Preguntas",
+    "installation": "Instalación",
+    "compatibility": "Compatibilidad",
+    "product": "Producto",
+    "maintenance": "Mantenimiento",
+    "questions": {
+      "installTime": {
+        "q": "¿Cuánto tiempo toma la instalación?",
+        "a": "La mayoría de los clientes completan la instalación en menos de 10 minutos. El proceso involucra tres pasos simples: girar la barra de tensión en su lugar, cerrar las vainas de seguridad y conectar la manguera de ducha. Sin herramientas o perforación requeridas."
+      },
+      "toolsNeeded": {
+        "q": "¿Necesito herramientas para la instalación?",
+        "a": "¡No se requieren herramientas! El sistema Rainföll utiliza un diseño basado en tensión que no requiere perforación, tornillos o herramientas especiales. Todo lo que necesitas está incluido en la caja."
+      },
+      "renterFriendly": {
+        "q": "¿Puedo instalarlo si alquilo mi apartamento?",
+        "a": "¡Absolutamente! Rainföll es perfecto para inquilinos porque no requiere perforación o modificaciones permanentes. Cuando te mudes, puedes removerlo fácilmente sin dejar ningún rastro."
+      },
+      "showerSizes": {
+        "q": "¿Qué tamaños de ducha son compatibles?",
+        "a": "Rainföll funciona en duchas con paredes opuestas de 56-80 pulgadas de distancia. Esto cubre la mayoría de los tamaños estándar de ducha. La barra de tensión es ajustable para asegurar un ajuste perfecto."
+      },
+      "plumbing": {
+        "q": "¿Funciona con mi plomería existente?",
+        "a": "¡Sí! Rainföll se conecta a tu plomería de ducha existente con accesorios estándar. La manguera incluida se adjunta a tu brazo de ducha actual o válvula desviadora."
+      },
+      "finishes": {
+        "q": "¿Qué acabados están disponibles?",
+        "a": "Rainföll está disponible en cuatro acabados premium: Cromo, Negro Mate, Oro y Oro Rosa. Cada acabado está cuidadosamente seleccionado para complementar diseños de baño modernos."
+      },
+      "dualHeads": {
+        "q": "¿Se pueden usar ambas cabezas de ducha simultáneamente?",
+        "a": "¡Sí! Ambas cabezas de ducha mantienen presión completa cuando se usan simultáneamente. No hay válvula desviadora que comprometa el flujo de agua—ambas cabezas entregan flujo de agua poderoso y lujoso a la vez."
+      },
+      "whatsIncluded": {
+        "q": "¿Qué viene en la caja?",
+        "a": "Cada sistema Rainföll incluye: barra de tensión, dos cabezas de ducha de lluvia, vainas de seguridad, mangueras de conexión y todos los accesorios necesarios. Todo lo que necesitas para la instalación está incluido."
+      },
+      "cleaning": {
+        "q": "¿Cómo limpio las cabezas de ducha?",
+        "a": "Simplemente limpia las cabezas de ducha con un paño suave y jabón suave. Para acumulación mineral, remoja las boquillas en una solución de partes iguales de vinagre blanco y agua por 30 minutos, luego enjuaga completamente."
+      },
+      "warranty": {
+        "q": "¿Cuál es la garantía?",
+        "a": "Rainföll viene con una garantía limitada de 2 años cubriendo defectos de fabricación y mano de obra. Opciones de garantía extendida están disponibles al momento de la compra."
+      }
+    },
+    "stillHaveQuestions": "¿Aún tienes preguntas?",
+    "stillHaveQuestionsText": "¿No puedes encontrar la respuesta que buscas? Nuestro equipo de soporte al cliente está aquí para ayudar.",
+    "contactSupport": "Contactar Soporte",
+    "dmInstagram": "DM en Instagram"
+  },
+  "language": {
+    "changeLanguage": "Cambiar Idioma"
+  }
+}

@@ -648,17 +648,27 @@
             return { key: field, label, rows };
           };
 
+          const appealBreakdown = () => {
+            const counts = {};
+            for (const s of src) {
+              const opts = Array.isArray(s.appeal) && s.appeal.length ? s.appeal : ['No answer'];
+              for (const opt of opts) counts[opt] = (counts[opt] || 0) + 1;
+            }
+            const rows = Object.entries(counts)
+              .map(([answer, count]) => ({ answer, count, pct: total ? Math.round(count / total * 100) : 0 }))
+              .sort((a, b) => b.count - a.count);
+            return { key: 'appeal', label: 'What appeals most', rows };
+          };
+
           return {
             total,
             questions: [
-              breakdown('decline_reason',      'Decline reason (free only)'),
               breakdown('price_too_expensive', 'Price: too expensive ($)'),
               breakdown('price_expensive',     'Price: expensive but okay ($)'),
               breakdown('price_bargain',       'Price: bargain ($)'),
               breakdown('price_too_cheap',     'Price: too cheap ($)'),
-              breakdown('appeal',              'What appeals most'),
+              appealBreakdown(),
               breakdown('tenure',              'Rent or own'),
-              breakdown('who_for',             'Who would it be for (free only)'),
             ],
           };
         },

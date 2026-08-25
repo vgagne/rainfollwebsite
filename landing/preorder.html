@@ -31,35 +31,6 @@
   <link rel="icon" type="image/png" sizes="32x32" href="../assets/icons/Favicon.png">
   <link rel="apple-touch-icon" sizes="180x180" href="../assets/icons/Favicon.png">
 
-  <!-- TikTok Pixel Code Start -->
-  <script>
-  !function (w, d, t) {
-    w.TiktokAnalyticsObject=t;var ttq=w[t]=w[t]||[];ttq.methods=["page","track","identify","instances","debug","on","off","once","ready","alias","group","enableCookie","disableCookie","holdConsent","revokeConsent","grantConsent"],ttq.setAndDefer=function(t,e){t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}};for(var i=0;i<ttq.methods.length;i++)ttq.setAndDefer(ttq,ttq.methods[i]);ttq.instance=function(t){for(
-  var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n]);return e},ttq.load=function(e,n){var r="https://analytics.tiktok.com/i18n/pixel/events.js",o=n&&n.partner;ttq._i=ttq._i||{},ttq._i[e]=[],ttq._i[e]._u=r,ttq._t=ttq._t||{},ttq._t[e]=+new Date,ttq._o=ttq._o||{},ttq._o[e]=n||{};n=document.createElement("script")
-  ;n.type="text/javascript",n.async=!0,n.src=r+"?sdkid="+e+"&lib="+t;e=document.getElementsByTagName("script")[0];e.parentNode.insertBefore(n,e)};
-    ttq.load('D8HHN53C77UDLID68NHG');
-    ttq.page();
-  }(window, document, 'ttq');
-  </script>
-  <!-- TikTok Pixel Code End -->
-  <!-- Meta Pixel Code -->
-  <script>
-  !function(f,b,e,v,n,t,s)
-  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-  n.queue=[];t=b.createElement(e);t.async=!0;
-  t.src=v;s=b.getElementsByTagName(e)[0];
-  s.parentNode.insertBefore(t,s)}(window, document,'script',
-  'https://connect.facebook.net/en_US/fbevents.js');
-  fbq('init', '971805995701381');
-  fbq('track', 'PageView');
-  </script>
-  <noscript><img height="1" width="1" style="display:none"
-  src="https://www.facebook.com/tr?id=971805995701381&ev=PageView&noscript=1"
-  /></noscript>
-  <!-- End Meta Pixel Code -->
-
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -85,22 +56,24 @@
     // ── UTM capture ──────────────────────────────────────────────────
     (function() {
       const p = new URLSearchParams(window.location.search);
-      const utm = p.get('utm_content') || '';
-      if (utm) sessionStorage.setItem('utm_content', utm);
+      ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content'].forEach((key) => {
+        const val = p.get(key) || '';
+        if (val) sessionStorage.setItem(key, val);
+      });
     })();
 
-    // ── Stripe Payment Link URL (swap test→live without code change) ─
-    // Set this to your Stripe Payment Link URL before going live.
-    const STRIPE_PAYMENT_LINK = 'https://buy.stripe.com/test_eVq14n9oLbGm0IB7tI1B600';
     const WORKER_URL = 'https://square-violet-0b51.vgagne11.workers.dev';
 
     document.addEventListener('alpine:init', () => {
       Alpine.data('emailForm', () => ({
         email: '',
-        step: 'form',  // 'form' | 'vip' | 'done'
+        step: 'form',  // 'form' | 'toSurvey'
         error: '',
         loading: false,
         docId: '',
+        utmSource: sessionStorage.getItem('utm_source') || '',
+        utmMedium: sessionStorage.getItem('utm_medium') || '',
+        utmCampaign: sessionStorage.getItem('utm_campaign') || '',
         utmContent: sessionStorage.getItem('utm_content') || '',
 
         validate() {
@@ -121,6 +94,9 @@
               body: JSON.stringify({
                 action: 'signup',
                 email: this.email.trim().toLowerCase(),
+                utm_source: this.utmSource,
+                utm_medium: this.utmMedium,
+                utm_campaign: this.utmCampaign,
                 utm_content: this.utmContent,
               })
             });
@@ -149,29 +125,23 @@
               if (typeof fbq !== 'undefined') fbq('track', 'Lead', { email: this.email });
             }
 
-            this.step = 'vip';
+            this.step = 'toSurvey';
           } catch (e) {
             this.loading = false;
             this.error = 'Something went wrong. Please try again.';
           }
         },
 
-        goVip() {
-          if (typeof fbq !== 'undefined') fbq('track', 'InitiateCheckout');
-          if (typeof ttq !== 'undefined') ttq.track('InitiateCheckout');
-
+        goToSurvey() {
           const email = encodeURIComponent(this.email.trim().toLowerCase());
-          const ref   = encodeURIComponent(this.docId || this.email.trim().toLowerCase());
-          window.location.href = `${STRIPE_PAYMENT_LINK}?prefilled_email=${email}&client_reference_id=${ref}`;
-        },
-
-        declineVip() {
-          if (typeof fbq !== 'undefined') fbq('trackCustom', 'VipDeclined');
-          if (typeof ttq !== 'undefined') ttq.track('ClickButton', { content_name: 'VipDeclined' });
-
-          const email = encodeURIComponent(this.email.trim().toLowerCase());
-          const utm   = encodeURIComponent(this.utmContent);
-          window.location.href = `/survey?email=${email}&utm_content=${utm}`;
+          const docId = encodeURIComponent(this.docId || '');
+          const utmParams = new URLSearchParams();
+          if (this.utmSource)   utmParams.set('utm_source', this.utmSource);
+          if (this.utmMedium)   utmParams.set('utm_medium', this.utmMedium);
+          if (this.utmCampaign) utmParams.set('utm_campaign', this.utmCampaign);
+          if (this.utmContent)  utmParams.set('utm_content', this.utmContent);
+          const utmQuery = utmParams.toString() ? `&${utmParams.toString()}` : '';
+          window.location.href = `/survey?email=${email}&docId=${docId}${utmQuery}`;
         },
       }));
     });
@@ -533,7 +503,7 @@
       <!-- ── FORM CARD ─────────────────────────────
            Manages three visual states via Alpine step.
       ─────────────────────────────────────────────── -->
-      <div class="form-card mb-6 fade-in" :class="step === 'vip' ? 'vip-active' : ''" x-data="emailForm()">
+      <div class="form-card mb-6 fade-in" :class="step === 'toSurvey' ? 'vip-active' : ''" x-data="emailForm()">
 
         <!-- ── Step: email form ── -->
         <div x-show="step === 'form'">
@@ -585,8 +555,8 @@
           </div>
         </div>
 
-        <!-- ── Step: VIP offer ── -->
-        <div x-show="step === 'vip'" x-cloak>
+        <!-- ── Step: hand off to survey ── -->
+        <div x-show="step === 'toSurvey'" x-cloak>
           <!-- Confirmed badge -->
           <div class="flex items-center gap-2 mb-5">
             <div class="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0" style="background:rgba(5,206,120,0.12); border:1px solid rgba(5,206,120,0.25);">
@@ -603,26 +573,15 @@
           <p class="text-sm text-gray-500 mb-5">We'll let you know the moment our Kickstarter goes live.</p>
 
           <h3 class="text-xl font-extrabold text-gray-900 mb-3 leading-snug">
-            Want to lock in our best launch deal?
+            One more thing.
           </h3>
           <p class="text-sm leading-relaxed mb-6 text-gray-600">
-            Become a VIP for <strong class="text-gray-900">$1</strong> and lock in the lowest price we'll ever offer on Rainföll — guaranteed best launch pricing, first to receive the product when we go live, and your $1 is credited toward your order. Fully refundable anytime.
+            Your answers directly shape what Rainföll costs at launch — it takes about a minute.
           </p>
 
-          <button type="button" class="vip-btn" @click="goVip()">
-            Become a VIP — $1
+          <button type="button" class="vip-btn" @click="goToSurvey()">
+            Help set the price →
           </button>
-
-          <div class="text-center mt-4">
-            <button
-              type="button"
-              @click="declineVip()"
-              class="text-xs font-medium text-gray-400 hover:text-gray-600 transition-colors"
-              style="text-decoration:underline; text-underline-offset:3px; background:none; border:none; cursor:pointer;"
-            >
-              No thanks, continue
-            </button>
-          </div>
         </div>
 
       </div>
