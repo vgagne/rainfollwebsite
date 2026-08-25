@@ -266,10 +266,10 @@
 
     /* ── FORM CARD ────────────────────────────────── */
     .form-card {
-      background: #1a1a1a;
+      background: #A39171;
       border-radius: 1.5rem;
       padding: 2rem;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.25), 0 0 0 1px rgba(255,255,255,0.06);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.18), 0 0 0 1px rgba(255,255,255,0.15);
       transition: background 0.3s ease, box-shadow 0.3s ease;
     }
     .form-card.vip-active {
@@ -280,21 +280,21 @@
     /* ── INPUT ────────────────────────────────────── */
     .email-input {
       width: 100%;
-      background: rgba(255,255,255,0.07);
-      border: 1.5px solid rgba(255,255,255,0.15);
+      background: rgba(0,0,0,0.08);
+      border: 1.5px solid rgba(0,0,0,0.15);
       border-radius: 0.875rem;
       padding: 0.9rem 1.1rem;
-      color: #ffffff;
+      color: #1a1a1a;
       font-size: 1rem;
       font-family: 'Inter', sans-serif;
       transition: border-color 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
       outline: none;
       -webkit-appearance: none;
     }
-    .email-input::placeholder { color: rgba(255,255,255,0.35); }
+    .email-input::placeholder { color: rgba(26,26,26,0.45); }
     .email-input:focus {
       border-color: #2A7A5C;
-      background: rgba(255,255,255,0.10);
+      background: rgba(255,255,255,0.55);
       box-shadow: 0 0 0 3px rgba(42,122,92,0.25);
     }
     .email-input.error { border-color: #f87171; }
@@ -323,38 +323,36 @@
     .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; box-shadow: none; }
 
     /* ── VIP BUTTON ──────────────────────────────── */
+    @keyframes vip-glow {
+      0%, 100% {
+        box-shadow: 0 4px 20px rgba(42,122,92,0.4), 0 0 0 0 rgba(42,122,92,0.5);
+      }
+      50% {
+        box-shadow: 0 8px 40px rgba(42,122,92,0.75), 0 0 0 16px rgba(42,122,92,0);
+      }
+    }
     .vip-btn {
       width: 100%;
-      background: #1a1a1a;
+      background: #2A7A5C;
       color: #fff;
       font-weight: 800;
-      font-size: 1.0625rem;
+      font-size: 1.25rem;
       border-radius: 0.875rem;
-      padding: 1.1rem 1.5rem;
+      padding: 1.15rem 1.5rem;
       border: none;
       cursor: pointer;
       transition: all 0.2s ease;
       font-family: 'Inter', sans-serif;
       letter-spacing: -0.01em;
-      box-shadow: 0 4px 24px rgba(0,0,0,0.22);
+      animation: vip-glow 2.2s ease-in-out infinite;
     }
     .vip-btn:hover {
-      background: #111;
+      background: #1F5E45;
       transform: translateY(-2px);
-      box-shadow: 0 8px 32px rgba(0,0,0,0.30);
+      animation-play-state: paused;
+      box-shadow: 0 8px 40px rgba(42,122,92,0.6);
     }
     .vip-btn:active { transform: scale(0.98); }
-
-    /* ── PRIVACY NOTE ────────────────────────────── */
-    .privacy-note {
-      display: flex;
-      align-items: flex-start;
-      gap: 0.5rem;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 0.75rem;
-      padding: 0.875rem 1rem;
-    }
 
     /* ── PRODUCT MINI PREVIEWS ───────────────────── */
     .mini-preview {
@@ -507,8 +505,8 @@
 
         <!-- ── Step: email form ── -->
         <div x-show="step === 'form'">
-          <h2 class="text-xl font-bold text-white mb-1">Be First to Back Us</h2>
-          <p class="text-sm mb-6" style="color:rgba(255,255,255,0.55);">One email. One moment. When our Kickstarter goes live, you'll hear it from us first — with early backer access before anyone else.</p>
+          <h2 class="text-xl font-bold mb-1" style="color:#1a1a1a;">Be First to Back Us</h2>
+          <p class="text-sm mb-6" style="color:rgba(26,26,26,0.65);">One email. One moment. When our Kickstarter goes live, you'll hear it from us first — with early backer access before anyone else.</p>
 
           <div class="space-y-3">
             <div>
@@ -542,16 +540,6 @@
                 Saving your spot…
               </span>
             </button>
-          </div>
-
-          <!-- Privacy reassurance -->
-          <div class="privacy-note mt-4">
-            <svg class="w-4 h-4 flex-shrink-0 mt-0.5" style="color:rgba(255,255,255,0.4);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
-            </svg>
-            <p class="text-xs leading-relaxed" style="color:rgba(255,255,255,0.40);">
-              <strong style="color:rgba(255,255,255,0.60);">Your email is sacred to us.</strong> You'll only hear from us when there's something worth knowing — like when our Kickstarter goes live.
-            </p>
           </div>
         </div>
 
