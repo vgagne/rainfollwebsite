@@ -5,6 +5,11 @@ const COLLECTION     = 'signups';
 const SURVEYS_COLL   = 'surveys';
 const FIRESTORE_BASE = `https://firestore.googleapis.com/v1/projects/${PROJECT_ID}/databases/(default)/documents`;
 
+const EMAIL_FROM        = 'Rainföll <info@rainfoll.ca>';
+const LOGO_URL           = 'https://rainfoll.ca/assets/images/logo/rainfoll-logo-white-noback.png';
+const META_PIXEL_ID      = '971805995701381';
+const TIKTOK_PIXEL_ID    = 'D8HHN53C77UDLID68NHG';
+
 // ── CORS ───────────────────────────────────────────────────────────────
 function corsHeaders() {
   return {
@@ -87,6 +92,9 @@ function fromDoc(doc) {
     payment_id:      f.payment_id?.stringValue      || '',
     payment_status:  f.payment_status?.stringValue  || 'none',
     created_at:      f.created_at?.stringValue      || '',
+    utm_source:      f.utm_source?.stringValue      || '',
+    utm_medium:      f.utm_medium?.stringValue      || '',
+    utm_campaign:    f.utm_campaign?.stringValue    || '',
     utm_content:     f.utm_content?.stringValue     || '',
     vipPaidAt:       f.vipPaidAt?.stringValue       || '',
     stripeSessionId: f.stripeSessionId?.stringValue || '',
@@ -278,6 +286,126 @@ async function verifyStripeSignature(rawBody, sigHeader, secret) {
   let diff = 0;
   for (let i = 0; i < computed.length; i++) diff |= computed.charCodeAt(i) ^ v1.charCodeAt(i);
   return diff === 0;
+}
+
+// ── Resend transactional email ─────────────────────────────────────────
+async function sendEmail({ to, subject, html, text }, env) {
+  try {
+    if (!env.RESEND_API_KEY) { console.error('RESEND_API_KEY not configured'); return; }
+    const res = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ from: EMAIL_FROM, to, subject, html, text }),
+    });
+    if (!res.ok) console.error('Resend send failed:', await res.text());
+  } catch (e) {
+    console.error('Resend send error:', e.message);
+  }
+}
+
+function emailShell(bodyHtml) {
+  return `<!doctype html>
+<html>
+  <body style="margin:0;padding:0;background:#f4f2ef;font-family:Georgia,'Times New Roman',serif;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f4f2ef;padding:32px 16px;">
+      <tr><td align="center">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:480px;background:#0d0d0d;border-radius:12px;overflow:hidden;">
+          <tr><td style="padding:32px 32px 16px;text-align:center;">
+            <img src="${LOGO_URL}" alt="Rainföll" width="140" style="display:inline-block;" />
+          </td></tr>
+          <tr><td style="padding:0 32px 32px;color:#d1d5db;font-size:15px;line-height:1.6;">
+            ${bodyHtml}
+          </td></tr>
+          <tr><td style="padding:16px 32px 32px;border-top:1px solid rgba(220,201,182,0.2);color:#8a8a8a;font-size:12px;text-align:center;">
+            Rainföll &middot; <a href="https://rainfoll.ca" style="color:#DCC9B6;">rainfoll.ca</a>
+          </td></tr>
+        </table>
+      </td></tr>
+    </table>
+  </body>
+</html>`;
+}
+
+function signupEmailHtml(email) {
+  return emailShell(`
+    <h1 style="color:#DCC9B6;font-size:22px;margin:0 0 16px;">You're on the list.</h1>
+    <p style="margin:0 0 16px;">Thanks for signing up for Rainföll — we'll email <strong style="color:#fff;">${email}</strong> as soon as we're ready to launch.</p>
+    <p style="margin:0;">Keep an eye on your inbox for early access.</p>
+  `);
+}
+
+function signupEmailText(email) {
+  return `You're on the list.\n\nThanks for signing up for Rainföll — we'll email ${email} as soon as we're ready to launch.\n\nrainfoll.ca`;
+}
+
+function vipReceiptEmailHtml({ email, amount }) {
+  return emailShell(`
+    <h1 style="color:#DCC9B6;font-size:22px;margin:0 0 16px;">VIP status confirmed.</h1>
+    <p style="margin:0 0 16px;">Your $${amount.toFixed(2)} deposit is in — you're officially a Rainföll VIP.</p>
+    <p style="margin:0 0 16px;">A receipt for this charge was sent separately by Stripe, our payment processor. This email is just to say: thank you, and welcome in.</p>
+    <p style="margin:0;">We'll be in touch with next steps at <strong style="color:#fff;">${email}</strong>.</p>
+  `);
+}
+
+function vipReceiptEmailText({ email, amount }) {
+  return `VIP status confirmed.\n\nYour $${amount.toFixed(2)} deposit is in — you're officially a Rainföll VIP. A Stripe receipt was sent separately. We'll be in touch with next steps at ${email}.\n\nrainfoll.ca`;
+}
+
+// ── SHA-256 hex (Meta/TikTok advanced matching) ────────────────────────
+async function sha256Hex(str) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+// ── Server-side conversion events (Meta CAPI / TikTok Events API) ──────
+async function sendMetaPurchaseEvent({ email, sessionId, amount }, env) {
+  try {
+    if (!env.META_CAPI_ACCESS_TOKEN) { console.error('META_CAPI_ACCESS_TOKEN not configured'); return; }
+    const hashedEmail = await sha256Hex(email.trim().toLowerCase());
+    const res = await fetch(`https://graph.facebook.com/v18.0/${META_PIXEL_ID}/events?access_token=${env.META_CAPI_ACCESS_TOKEN}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        data: [{
+          event_name: 'Purchase',
+          event_time: Math.floor(Date.now() / 1000),
+          event_id: sessionId,
+          action_source: 'website',
+          event_source_url: 'https://rainfoll.ca/vip-survey',
+          user_data: { em: [hashedEmail] },
+          custom_data: { currency: 'USD', value: amount },
+        }],
+      }),
+    });
+    if (!res.ok) console.error('Meta CAPI send failed:', await res.text());
+  } catch (e) {
+    console.error('Meta CAPI send error:', e.message);
+  }
+}
+
+async function sendTikTokPurchaseEvent({ email, sessionId, amount }, env) {
+  try {
+    if (!env.TIKTOK_EVENTS_API_ACCESS_TOKEN) { console.error('TIKTOK_EVENTS_API_ACCESS_TOKEN not configured'); return; }
+    const hashedEmail = await sha256Hex(email.trim().toLowerCase());
+    const res = await fetch('https://business-api.tiktok.com/open_api/v1.3/event/track/', {
+      method: 'POST',
+      headers: { 'Access-Token': env.TIKTOK_EVENTS_API_ACCESS_TOKEN, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        event_source: 'web',
+        event_source_id: TIKTOK_PIXEL_ID,
+        data: [{
+          event: 'CompletePayment',
+          event_id: sessionId,
+          event_time: Math.floor(Date.now() / 1000),
+          user: { email: hashedEmail },
+          properties: { currency: 'USD', value: amount },
+        }],
+      }),
+    });
+    if (!res.ok) console.error('TikTok Events API send failed:', await res.text());
+  } catch (e) {
+    console.error('TikTok Events API send error:', e.message);
+  }
 }
 
 // ── POST /auth/login ───────────────────────────────────────────────────
@@ -496,6 +624,8 @@ async function handleStripeWebhook(request, env) {
     signupDoc = await findByEmail(clientRef, token);
   }
 
+  let vipEmail = '';
+
   if (signupDoc) {
     // Idempotency: skip if already processed
     const existing = fromDoc(signupDoc);
@@ -511,11 +641,12 @@ async function handleStripeWebhook(request, env) {
       }),
     });
     if (!patchRes.ok) console.error('Failed to patch signup:', await patchRes.text());
+    else vipEmail = existing.email || customerEmail;
   } else {
     // No matching signup: create a vipOnly record so revenue is tracked
     const email  = customerEmail || clientRef || 'unknown';
     const docId  = crypto.randomUUID();
-    await fetch(`${FIRESTORE_BASE}/${COLLECTION}?documentId=${docId}`, {
+    const createRes = await fetch(`${FIRESTORE_BASE}/${COLLECTION}?documentId=${docId}`, {
       method: 'POST',
       headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -526,6 +657,20 @@ async function handleStripeWebhook(request, env) {
         }),
       }),
     });
+    if (createRes.ok && email.includes('@')) vipEmail = email;
+  }
+
+  if (vipEmail) {
+    await Promise.allSettled([
+      sendEmail({
+        to: vipEmail,
+        subject: 'Your Rainföll VIP status is confirmed',
+        html: vipReceiptEmailHtml({ email: vipEmail, amount: 1 }),
+        text: vipReceiptEmailText({ email: vipEmail, amount: 1 }),
+      }, env),
+      sendMetaPurchaseEvent({ email: vipEmail, sessionId, amount: 1 }, env),
+      sendTikTokPurchaseEvent({ email: vipEmail, sessionId, amount: 1 }, env),
+    ]);
   }
 
   return json({ received: true });
@@ -553,7 +698,10 @@ async function handlePost(request, env) {
     const existing = await findByEmail(email, token);
     if (existing) return json({ duplicate: true }, 409);
 
-    const utm_content = String(body.utm_content || '').slice(0, 200);
+    const utm_source   = String(body.utm_source   || '').slice(0, 200);
+    const utm_medium   = String(body.utm_medium   || '').slice(0, 200);
+    const utm_campaign = String(body.utm_campaign || '').slice(0, 200);
+    const utm_content  = String(body.utm_content  || '').slice(0, 200);
     const docId  = crypto.randomUUID();
     const putRes = await fetch(`${FIRESTORE_BASE}/${COLLECTION}?documentId=${docId}`, {
       method: 'POST',
@@ -561,11 +709,19 @@ async function handlePost(request, env) {
       body: JSON.stringify({
         fields: toFields({
           id: docId, email, is_vip: false, payment_id: '', payment_status: 'none',
-          created_at: new Date().toISOString(), utm_content,
+          created_at: new Date().toISOString(), utm_source, utm_medium, utm_campaign, utm_content,
         }),
       }),
     });
     if (!putRes.ok) return json({ error: 'Failed to save signup' }, 500);
+
+    await sendEmail({
+      to: email,
+      subject: "You're on the Rainföll list",
+      html: signupEmailHtml(email),
+      text: signupEmailText(email),
+    }, env);
+
     return json({ success: true, docId });
   }
 
@@ -605,26 +761,6 @@ export default {
     if (request.method === 'GET'  && url.searchParams.get('action') === 'list')          return handleList(request, env);
     if (request.method === 'GET'  && url.searchParams.get('action') === 'list-surveys')  return handleListSurveys(request, env);
 
-    if (request.method === 'GET' && url.searchParams.get('action') === 'debug-hash') {
-      const h     = ((await env.ADMIN_RATE_LIMIT.get('admin:password_hash')) || env.ADMIN_PASSWORD_HASH || '').trim();
-      const email = env.FIREBASE_CLIENT_EMAIL || '';
-      const key   = env.FIREBASE_PRIVATE_KEY  || '';
-      return json({
-        hash: { length: h.length, prefix: h.substring(0, 7), last4: h.slice(-4), starts_with_2b: h.startsWith('$2b$') },
-        firebase: {
-          email_set: email.length > 0,
-          email_preview: email.substring(0, 20),
-          key_set: key.length > 0,
-          key_length: key.length,
-          key_prefix: key.substring(0, 27),
-        },
-        test_email: {
-          set: !!(env.TEST_EMAIL),
-          length: (env.TEST_EMAIL || '').length,
-          preview: (env.TEST_EMAIL || '').substring(0, 4) + (env.TEST_EMAIL?.length > 4 ? '…' : ''),
-        },
-      });
-    }
     if (request.method === 'GET')  return json({ error: 'Not found' }, 404);
     if (request.method === 'POST') return handlePost(request, env);
 
