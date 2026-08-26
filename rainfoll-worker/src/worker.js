@@ -376,7 +376,7 @@ async function buildUnsubscribeUrls(email, env) {
   );
   const encoded = encodeURIComponent(token);
   return {
-    pageUrl: `${SITE_BASE_URL}/unsubscribe?token=${encoded}`,
+    pageUrl: `${SITE_BASE_URL}/unsubscribe/?token=${encoded}`,
     apiUrl: `${WORKER_BASE_URL}/api/unsubscribe?token=${encoded}`,
   };
 }
