@@ -1,0 +1,11 @@
+Welcome to the inner circle.
+
+Thank you for becoming a Rainföll VIP — your VIP status is officially confirmed.
+
+As a VIP, you'll get exclusive first access to Rainföll ahead of everyone else, before it's available to the public.
+
+Your $1 deposit is fully refundable — once you complete your purchase, the $1 will be credited back to you. A separate receipt for this charge was sent by Stripe, our payment processor.
+
+We'll be in touch at {{email}} with next steps and your early access details.
+
+rainfoll.ca

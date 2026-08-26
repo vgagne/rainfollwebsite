@@ -1,12 +1,19 @@
 import { compareSync } from 'bcryptjs';
+import signupHtmlRaw from './emails/signup.html';
+import signupTextRaw from './emails/signup.txt';
+import vipHtmlRaw from './emails/vip.html';
+import vipTextRaw from './emails/vip.txt';
 
 const PROJECT_ID     = 'rainfoll-143ef';
 const COLLECTION     = 'signups';
 const SURVEYS_COLL   = 'surveys';
-const FIRESTORE_BASE = `https://firestore.googleapis.com/v1/projects/${PROJECT_ID}/databases/(default)/documents`;
+const FIRESTORE_API_ROOT = 'https://firestore.googleapis.com/v1';
+const FIRESTORE_BASE = `${FIRESTORE_API_ROOT}/projects/${PROJECT_ID}/databases/(default)/documents`;
 
 const EMAIL_FROM        = 'Rainföll <info@rainfoll.ca>';
 const LOGO_URL           = 'https://rainfoll.ca/assets/images/logo/rainfoll-logo-white-noback.png';
+const WORKER_BASE_URL    = 'https://square-violet-0b51.vgagne11.workers.dev';
+const SITE_BASE_URL      = 'https://rainfoll.ca';
 const META_PIXEL_ID      = '971805995701381';
 const TIKTOK_PIXEL_ID    = 'D8HHN53C77UDLID68NHG';
 
@@ -102,6 +109,8 @@ function fromDoc(doc) {
     amount:          f.amount?.doubleValue          || 0,
     surveyCompleted: f.surveyCompleted?.booleanValue || false,
     vipOnly:         f.vipOnly?.booleanValue        || false,
+    unsubscribed:    f.unsubscribed?.booleanValue   || false,
+    unsubscribed_at: f.unsubscribed_at?.stringValue || '',
   };
 }
 
@@ -288,13 +297,21 @@ async function verifyStripeSignature(rawBody, sigHeader, secret) {
 }
 
 // ── Resend transactional email ─────────────────────────────────────────
-async function sendEmail({ to, subject, html, text }, env) {
+async function sendEmail({ to, subject, html, text, unsubscribeUrl }, env) {
   try {
     if (!env.RESEND_API_KEY) { console.error('RESEND_API_KEY not configured'); return; }
     const res = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: { Authorization: `Bearer ${env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ from: EMAIL_FROM, to, subject, html, text }),
+      body: JSON.stringify({
+        from: EMAIL_FROM, to, subject, html, text,
+        ...(unsubscribeUrl ? {
+          headers: {
+            'List-Unsubscribe': `<${unsubscribeUrl}>`,
+            'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
+          },
+        } : {}),
+      }),
     });
     if (!res.ok) console.error('Resend send failed:', await res.text());
   } catch (e) {
@@ -302,7 +319,7 @@ async function sendEmail({ to, subject, html, text }, env) {
   }
 }
 
-function emailShell(bodyHtml) {
+function emailShell(bodyHtml, unsubscribeUrl) {
   return `<!doctype html>
 <html>
   <body style="margin:0;padding:0;background:#f4f2ef;font-family:Georgia,'Times New Roman',serif;">
@@ -316,7 +333,8 @@ function emailShell(bodyHtml) {
             ${bodyHtml}
           </td></tr>
           <tr><td style="padding:16px 32px 32px;border-top:1px solid rgba(220,201,182,0.2);color:#8a8a8a;font-size:12px;text-align:center;">
-            Rainföll &middot; <a href="https://rainfoll.ca" style="color:#DCC9B6;">rainfoll.ca</a>
+            Rainföll &middot; <a href="https://rainfoll.ca" style="color:#DCC9B6;">rainfoll.ca</a><br/>
+            <a href="${unsubscribeUrl}" style="color:#8a8a8a;">Unsubscribe</a>
           </td></tr>
         </table>
       </td></tr>
@@ -325,29 +343,49 @@ function emailShell(bodyHtml) {
 </html>`;
 }
 
-function signupEmailHtml(email) {
-  return emailShell(`
-    <h1 style="color:#DCC9B6;font-size:22px;margin:0 0 16px;">You're on the list.</h1>
-    <p style="margin:0 0 16px;">Thanks for signing up for Rainföll — we'll email <strong style="color:#fff;">${email}</strong> as soon as we're ready to launch.</p>
-    <p style="margin:0;">Keep an eye on your inbox for early access.</p>
-  `);
+// ── Editable email content (see src/emails/*.html + *.txt) ─────────────
+function parseTemplate(raw) {
+  const m = raw.match(/^<!--\s*SUBJECT:\s*(.+?)\s*-->/);
+  return {
+    subject: m ? m[1] : '',
+    body: m ? raw.slice(m[0].length).trim() : raw.trim(),
+  };
 }
 
-function signupEmailText(email) {
-  return `You're on the list.\n\nThanks for signing up for Rainföll — we'll email ${email} as soon as we're ready to launch.\n\nrainfoll.ca`;
+function renderTemplate(str, vars) {
+  return str.replace(/\{\{(\w+)\}\}/g, (_, k) => (vars[k] ?? ''));
 }
 
-function vipReceiptEmailHtml({ email, amount }) {
-  return emailShell(`
-    <h1 style="color:#DCC9B6;font-size:22px;margin:0 0 16px;">VIP status confirmed.</h1>
-    <p style="margin:0 0 16px;">Your $${amount.toFixed(2)} deposit is in — you're officially a Rainföll VIP.</p>
-    <p style="margin:0 0 16px;">A receipt for this charge was sent separately by Stripe, our payment processor. This email is just to say: thank you, and welcome in.</p>
-    <p style="margin:0;">We'll be in touch with next steps at <strong style="color:#fff;">${email}</strong>.</p>
-  `);
+async function buildEmail(htmlRaw, textRaw, vars, env) {
+  const { subject, body } = parseTemplate(htmlRaw);
+  const { pageUrl, apiUrl } = await buildUnsubscribeUrls(vars.email, env);
+  const allVars = { ...vars, unsubscribe_url: pageUrl };
+  const html = emailShell(renderTemplate(body, allVars), pageUrl);
+  const text = `${renderTemplate(textRaw, allVars)}\n\nUnsubscribe: ${pageUrl}`;
+  return { subject: renderTemplate(subject, allVars), html, text, unsubscribeUrl: apiUrl };
 }
 
-function vipReceiptEmailText({ email, amount }) {
-  return `VIP status confirmed.\n\nYour $${amount.toFixed(2)} deposit is in — you're officially a Rainföll VIP. A Stripe receipt was sent separately. We'll be in touch with next steps at ${email}.\n\nrainfoll.ca`;
+// ── Unsubscribe tokens (HMAC-signed, reuses the session JWT helpers) ───
+// pageUrl: shown to humans in the email body/footer (rainfoll.ca — no workers.dev URL visible).
+// apiUrl: the real worker endpoint, used only for the invisible List-Unsubscribe header
+// (mail-client one-click POST targets this directly; it can't execute the page's JS).
+async function buildUnsubscribeUrls(email, env) {
+  const token = await signSessionJWT(
+    { purpose: 'unsubscribe', email, exp: Math.floor(Date.now() / 1000) + 10 * 365 * 24 * 3600 },
+    env.JWT_SECRET
+  );
+  const encoded = encodeURIComponent(token);
+  return {
+    pageUrl: `${SITE_BASE_URL}/unsubscribe?token=${encoded}`,
+    apiUrl: `${WORKER_BASE_URL}/api/unsubscribe?token=${encoded}`,
+  };
+}
+
+function htmlPage(message, status = 200) {
+  return new Response(
+    `<!doctype html><html><body style="font-family:Georgia,serif;background:#f4f2ef;padding:48px 16px;text-align:center;color:#0d0d0d;"><p>${message}</p></body></html>`,
+    { status, headers: { 'Content-Type': 'text/html; charset=utf-8' } }
+  );
 }
 
 // ── SHA-256 hex (Meta/TikTok advanced matching) ────────────────────────
@@ -553,7 +591,7 @@ async function handleSurvey(request, env) {
     try {
       const signupDoc = await findByEmail(email, token);
       if (signupDoc) {
-        await fetch(`${signupDoc.name}?updateMask.fieldPaths=surveyCompleted`, {
+        await fetch(`${FIRESTORE_API_ROOT}/${signupDoc.name}?updateMask.fieldPaths=surveyCompleted`, {
           method: 'PATCH',
           headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
           body: JSON.stringify({ fields: { surveyCompleted: { booleanValue: true } } }),
@@ -612,6 +650,7 @@ async function handleStripeWebhook(request, env) {
   }
 
   let vipEmail = '';
+  let vipUnsubscribed = false;
 
   if (signupDoc) {
     // Idempotency: skip if already processed
@@ -620,7 +659,7 @@ async function handleStripeWebhook(request, env) {
 
     const mask = ['is_vip', 'payment_status', 'vipPaidAt', 'stripeSessionId', 'amount']
       .map(f => `updateMask.fieldPaths=${f}`).join('&');
-    const patchRes = await fetch(`${signupDoc.name}?${mask}`, {
+    const patchRes = await fetch(`${FIRESTORE_API_ROOT}/${signupDoc.name}?${mask}`, {
       method: 'PATCH',
       headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -628,7 +667,10 @@ async function handleStripeWebhook(request, env) {
       }),
     });
     if (!patchRes.ok) console.error('Failed to patch signup:', await patchRes.text());
-    else vipEmail = existing.email || customerEmail;
+    else {
+      vipEmail = existing.email || customerEmail;
+      vipUnsubscribed = existing.unsubscribed;
+    }
   } else {
     // No matching signup: create a vipOnly record so revenue is tracked
     const email  = customerEmail || clientRef || 'unknown';
@@ -649,12 +691,10 @@ async function handleStripeWebhook(request, env) {
 
   if (vipEmail) {
     await Promise.allSettled([
-      sendEmail({
-        to: vipEmail,
-        subject: 'Your Rainföll VIP status is confirmed',
-        html: vipReceiptEmailHtml({ email: vipEmail, amount: 1 }),
-        text: vipReceiptEmailText({ email: vipEmail, amount: 1 }),
-      }, env),
+      vipUnsubscribed ? Promise.resolve() : (async () => {
+        const { subject, html, text, unsubscribeUrl } = await buildEmail(vipHtmlRaw, vipTextRaw, { email: vipEmail }, env);
+        await sendEmail({ to: vipEmail, subject, html, text, unsubscribeUrl }, env);
+      })(),
       sendMetaPurchaseEvent({ email: vipEmail, sessionId, amount: 1 }, env),
       sendTikTokPurchaseEvent({ email: vipEmail, sessionId, amount: 1 }, env),
       (async () => {
@@ -662,7 +702,7 @@ async function handleStripeWebhook(request, env) {
           const surveyDoc = await findLatestSurveyByEmail(vipEmail, token);
           if (!surveyDoc) return; // No survey on file for this email — nothing to update
           const mask = ['vip', 'session_id'].map(f => `updateMask.fieldPaths=${f}`).join('&');
-          await fetch(`${surveyDoc.name}?${mask}`, {
+          await fetch(`${FIRESTORE_API_ROOT}/${surveyDoc.name}?${mask}`, {
             method: 'PATCH',
             headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
             body: JSON.stringify({ fields: toFields({ vip: true, session_id: sessionId }) }),
@@ -675,6 +715,42 @@ async function handleStripeWebhook(request, env) {
   }
 
   return json({ received: true });
+}
+
+// ── GET/POST /api/unsubscribe ───────────────────────────────────────────
+async function handleUnsubscribe(request, env) {
+  const url   = new URL(request.url);
+  const token = url.searchParams.get('token') || '';
+  const isPost = request.method === 'POST';
+
+  const payload = token && await verifySessionJWT(token, env.JWT_SECRET);
+  if (!payload || payload.purpose !== 'unsubscribe' || !payload.email) {
+    return isPost ? json({ error: 'Invalid or expired link' }, 400) : htmlPage('This unsubscribe link is invalid or has expired.', 400);
+  }
+
+  let fToken;
+  try { fToken = await getFirestoreToken(env); }
+  catch (e) {
+    return isPost ? json({ error: 'Server error' }, 500) : htmlPage('Something went wrong. Please try again later.', 500);
+  }
+
+  try {
+    const doc = await findByEmail(payload.email, fToken);
+    if (doc) {
+      const mask = ['unsubscribed', 'unsubscribed_at'].map(f => `updateMask.fieldPaths=${f}`).join('&');
+      await fetch(`${FIRESTORE_API_ROOT}/${doc.name}?${mask}`, {
+        method: 'PATCH',
+        headers: { Authorization: `Bearer ${fToken}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ fields: toFields({ unsubscribed: true, unsubscribed_at: new Date().toISOString() }) }),
+      });
+    }
+  } catch (e) {
+    console.error('Failed to record unsubscribe:', e.message);
+    return isPost ? json({ error: 'Server error' }, 500) : htmlPage('Something went wrong. Please try again later.', 500);
+  }
+
+  if (isPost) return json({ success: true });
+  return htmlPage("You've been unsubscribed and won't receive further emails from Rainföll.");
 }
 
 // ── POST / ─────────────────────────────────────────────────────────────
@@ -697,7 +773,22 @@ async function handlePost(request, env) {
     }
 
     const existing = await findByEmail(email, token);
-    if (existing) return json({ duplicate: true }, 409);
+    if (existing) {
+      const existingData = fromDoc(existing);
+      if (!existingData.unsubscribed) return json({ duplicate: true }, 409);
+
+      // Previously unsubscribed: treat a fresh signup as opting back in
+      await fetch(`${FIRESTORE_API_ROOT}/${existing.name}?updateMask.fieldPaths=unsubscribed`, {
+        method: 'PATCH',
+        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ fields: { unsubscribed: { booleanValue: false } } }),
+      });
+
+      const { subject, html, text, unsubscribeUrl } = await buildEmail(signupHtmlRaw, signupTextRaw, { email }, env);
+      await sendEmail({ to: email, subject, html, text, unsubscribeUrl }, env);
+
+      return json({ success: true, docId: existingData.id, resubscribed: true });
+    }
 
     const utm_source   = String(body.utm_source   || '').slice(0, 200);
     const utm_medium   = String(body.utm_medium   || '').slice(0, 200);
@@ -716,12 +807,8 @@ async function handlePost(request, env) {
     });
     if (!putRes.ok) return json({ error: 'Failed to save signup' }, 500);
 
-    await sendEmail({
-      to: email,
-      subject: "You're on the Rainföll list",
-      html: signupEmailHtml(email),
-      text: signupEmailText(email),
-    }, env);
+    const { subject, html, text, unsubscribeUrl } = await buildEmail(signupHtmlRaw, signupTextRaw, { email }, env);
+    await sendEmail({ to: email, subject, html, text, unsubscribeUrl }, env);
 
     return json({ success: true, docId });
   }
@@ -735,7 +822,7 @@ async function handlePost(request, env) {
     const doc = await findByEmail(email, token);
     if (!doc) return json({ error: 'Email not found' }, 404);
 
-    const patchRes = await fetch(`${doc.name}?updateMask.fieldPaths=payment_status`, {
+    const patchRes = await fetch(`${FIRESTORE_API_ROOT}/${doc.name}?updateMask.fieldPaths=payment_status`, {
       method: 'PATCH',
       headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({ fields: { payment_status: { stringValue: payment_status } } }),
@@ -759,6 +846,7 @@ export default {
     if (request.method === 'POST' && url.pathname === '/auth/change-password')  return handleChangePassword(request, env);
     if (request.method === 'POST' && url.pathname === '/api/survey')            return handleSurvey(request, env);
     if (request.method === 'POST' && url.pathname === '/api/stripe-webhook')    return handleStripeWebhook(request, env);
+    if ((request.method === 'GET' || request.method === 'POST') && url.pathname === '/api/unsubscribe') return handleUnsubscribe(request, env);
     if (request.method === 'GET'  && url.searchParams.get('action') === 'list')          return handleList(request, env);
     if (request.method === 'GET'  && url.searchParams.get('action') === 'list-surveys')  return handleListSurveys(request, env);
 

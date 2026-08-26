@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Unsubscribe – Rainföll</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/png" sizes="32x32" href="../assets/icons/Favicon.png">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: { primary:'#727D71', secondary:'#DCC9B6', tertiary:'#A39171', accent1:'#6D4C3D', accent2:'#ABC4AB' }
+          },
+          fontFamily: { sans: ['Inter','system-ui','-apple-system','sans-serif'] }
+        }
+      }
+    }
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    * { -webkit-tap-highlight-color: transparent; }
+    body { background: #f8f6f3; min-height: 100vh; }
+    .content-col { max-width: 480px; margin: 0 auto; padding: 0 1.5rem 4rem; }
+    @media (min-width: 640px) { .content-col { padding: 0 2rem 4rem; } }
+    .survey-card {
+      background: #fff; border: 1px solid #e5e0d9;
+      border-radius: 1.5rem; padding: 2rem;
+      box-shadow: 0 2px 20px rgba(0,0,0,0.05);
+    }
+    .btn-primary {
+      background: #0d0d0d; color: #fff; border-radius: 9999px;
+      padding: 0.75rem 1.75rem; font-weight: 600; font-size: 0.875rem;
+      transition: opacity 0.15s;
+    }
+    .btn-primary:hover { opacity: 0.85; }
+    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+  </style>
+</head>
+
+<body class="font-sans antialiased">
+  <div class="content-col">
+
+    <header class="py-5 flex items-center">
+      <a href="/"><img src="../assets/images/logo/Rainfoll-Logo-black-noback.png" alt="Rainföll" class="h-7 w-auto opacity-70"></a>
+    </header>
+
+    <div class="py-10">
+      <div class="survey-card text-center" id="card">
+        <!-- Filled in by script below -->
+      </div>
+
+      <div class="text-center mt-8">
+        <a href="/" class="inline-flex items-center gap-2 text-sm font-medium text-brand-primary hover:text-brand-accent1 transition-colors">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+          Back to Rainföll
+        </a>
+      </div>
+    </div>
+
+    <footer class="border-t border-gray-200 pt-6 pb-4 mt-10">
+      <p class="text-xs text-gray-300">&copy; 2026 Rainföll Inc. All rights reserved.</p>
+    </footer>
+
+  </div>
+
+  <script>
+    const WORKER_URL = 'https://square-violet-0b51.vgagne11.workers.dev';
+    const card  = document.getElementById('card');
+    const token = new URLSearchParams(window.location.search).get('token') || '';
+
+    function render(html) { card.innerHTML = html; }
+
+    // Requires an explicit click before calling the worker — this keeps automated
+    // email-security link scanners (which GET every link in an inbox) from
+    // silently unsubscribing someone before they've even opened the email.
+    function showConfirm() {
+      render(`
+        <h1 class="text-xl font-bold text-gray-900 mb-2">Unsubscribe from Rainföll emails?</h1>
+        <p class="text-gray-600 text-sm leading-relaxed mb-6">You'll stop receiving emails from us at this address. You can always sign back up later.</p>
+        <button id="confirmBtn" class="btn-primary">Confirm unsubscribe</button>
+      `);
+      document.getElementById('confirmBtn').addEventListener('click', doUnsubscribe);
+    }
+
+    function showInvalid() {
+      render(`
+        <h1 class="text-xl font-bold text-gray-900 mb-2">Link invalid or expired</h1>
+        <p class="text-gray-600 text-sm leading-relaxed">This unsubscribe link isn't valid. If you still want to stop receiving emails, please contact us at <a href="mailto:info@rainfoll.ca" class="text-brand-primary underline">info@rainfoll.ca</a>.</p>
+      `);
+    }
+
+    function showError() {
+      render(`
+        <h1 class="text-xl font-bold text-gray-900 mb-2">Something went wrong</h1>
+        <p class="text-gray-600 text-sm leading-relaxed">We couldn't process your request. Please try again in a moment, or email <a href="mailto:info@rainfoll.ca" class="text-brand-primary underline">info@rainfoll.ca</a>.</p>
+      `);
+    }
+
+    function showDone() {
+      render(`
+        <h1 class="text-xl font-bold text-gray-900 mb-2">You're unsubscribed.</h1>
+        <p class="text-gray-600 text-sm leading-relaxed">You won't receive further emails from Rainföll at this address.</p>
+      `);
+    }
+
+    async function doUnsubscribe() {
+      render(`<p class="text-gray-500 text-sm">Processing&hellip;</p>`);
+      try {
+        const res = await fetch(`${WORKER_URL}/api/unsubscribe?token=${encodeURIComponent(token)}`, { method: 'POST' });
+        if (!res.ok) { showError(); return; }
+        showDone();
+      } catch (e) {
+        showError();
+      }
+    }
+
+    if (!token) showInvalid();
+    else showConfirm();
+  </script>
+</body>
+</html>
