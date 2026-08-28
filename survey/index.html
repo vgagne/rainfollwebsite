@@ -181,13 +181,10 @@
 
           const email = encodeURIComponent(this.email.trim().toLowerCase());
           const ref   = encodeURIComponent(this.docId || this.email.trim().toLowerCase());
-          const utmParams = new URLSearchParams();
-          if (this.utmSource)   utmParams.set('utm_source', this.utmSource);
-          if (this.utmMedium)   utmParams.set('utm_medium', this.utmMedium);
-          if (this.utmCampaign) utmParams.set('utm_campaign', this.utmCampaign);
-          if (this.utmContent)  utmParams.set('utm_content', this.utmContent);
-          const utmQuery = utmParams.toString() ? `&${utmParams.toString()}` : '';
-          window.location.href = `${STRIPE_PAYMENT_LINK}?prefilled_email=${email}&client_reference_id=${ref}${utmQuery}`;
+          // Stripe Payment Links don't forward arbitrary query params to the return URL,
+          // and vip-survey doesn't read any — UTM attribution already lives on the
+          // Firestore signup doc from the original signup, untouched by the VIP webhook.
+          window.location.href = `${STRIPE_PAYMENT_LINK}?prefilled_email=${email}&client_reference_id=${ref}`;
         },
       }));
     });

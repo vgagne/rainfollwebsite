@@ -78,6 +78,11 @@ async function getFirestoreToken(env) {
   return tokenRes.access_token;
 }
 
+// ── UTM normalization (case/whitespace-insensitive attribution) ────────
+function normalizeUtm(v) {
+  return String(v || '').trim().toLowerCase().slice(0, 200);
+}
+
 // ── Firestore helpers ──────────────────────────────────────────────────
 function toFields(obj) {
   const fields = {};
@@ -560,10 +565,10 @@ async function handleSurvey(request, env) {
 
   const appeal        = Array.isArray(body.appeal) ? body.appeal.map(a => String(a).slice(0, 200)).slice(0, 2) : [];
   const tenure         = String(body.tenure     || '').slice(0, 100);
-  const utm_source     = String(body.utm_source   || '').slice(0, 200);
-  const utm_medium     = String(body.utm_medium   || '').slice(0, 200);
-  const utm_campaign   = String(body.utm_campaign || '').slice(0, 200);
-  const utm_content    = String(body.utm_content  || '').slice(0, 200);
+  const utm_source     = normalizeUtm(body.utm_source);
+  const utm_medium     = normalizeUtm(body.utm_medium);
+  const utm_campaign   = normalizeUtm(body.utm_campaign);
+  const utm_content    = normalizeUtm(body.utm_content);
 
   let token;
   try { token = await getFirestoreToken(env); }
@@ -790,10 +795,10 @@ async function handlePost(request, env) {
       return json({ success: true, docId: existingData.id, resubscribed: true });
     }
 
-    const utm_source   = String(body.utm_source   || '').slice(0, 200);
-    const utm_medium   = String(body.utm_medium   || '').slice(0, 200);
-    const utm_campaign = String(body.utm_campaign || '').slice(0, 200);
-    const utm_content  = String(body.utm_content  || '').slice(0, 200);
+    const utm_source   = normalizeUtm(body.utm_source);
+    const utm_medium   = normalizeUtm(body.utm_medium);
+    const utm_campaign = normalizeUtm(body.utm_campaign);
+    const utm_content  = normalizeUtm(body.utm_content);
     const docId  = crypto.randomUUID();
     const putRes = await fetch(`${FIRESTORE_BASE}/${COLLECTION}?documentId=${docId}`, {
       method: 'POST',
