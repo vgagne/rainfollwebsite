@@ -711,16 +711,24 @@
             return { key: field, label, rows };
           };
 
+          // Multi-select: each respondent contributes a total weight of 1,
+          // split evenly across however many options they picked (so someone
+          // who picks 2 options counts as 0.5 toward each, not 1 toward both).
           const appealBreakdown = () => {
             const counts = {};
+            const weights = {};
             for (const s of src) {
               const opts = Array.isArray(s.appeal) && s.appeal.length ? s.appeal : ['No answer'];
-              for (const opt of opts) counts[opt] = (counts[opt] || 0) + 1;
+              const weight = 1 / opts.length;
+              for (const opt of opts) {
+                counts[opt] = (counts[opt] || 0) + 1;
+                weights[opt] = (weights[opt] || 0) + weight;
+              }
             }
-            const rows = Object.entries(counts)
-              .map(([answer, count]) => ({ answer, count, pct: total ? Math.round(count / total * 100) : 0 }))
-              .sort((a, b) => b.count - a.count);
-            return { key: 'appeal', label: 'What appeals most', rows };
+            const rows = Object.keys(counts)
+              .map(answer => ({ answer, count: counts[answer], pct: total ? Math.round(weights[answer] / total * 100) : 0 }))
+              .sort((a, b) => b.pct - a.pct);
+            return { key: 'appeal', label: 'What appeals most (weighted by response)', rows };
           };
 
           return {

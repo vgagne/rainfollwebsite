@@ -133,6 +133,15 @@ function parseNumericField(f) {
   return null;
 }
 
+// appeal was a single stringValue before the multi-select redesign switched
+// it to an arrayValue — older survey docs still have it as a plain string.
+function parseAppealField(f) {
+  const values = f?.arrayValue?.values;
+  if (Array.isArray(values) && values.length) return values.map(v => v.stringValue).filter(Boolean);
+  if (f?.stringValue) return [f.stringValue];
+  return [];
+}
+
 function fromSurvey(doc) {
   const f = doc.fields || {};
   return {
@@ -145,7 +154,7 @@ function fromSurvey(doc) {
     price_expensive:     parseNumericField(f.price_expensive),
     price_bargain:       parseNumericField(f.price_bargain),
     price_too_cheap:     parseNumericField(f.price_too_cheap),
-    appeal:              (f.appeal?.arrayValue?.values || []).map(v => v.stringValue),
+    appeal:              parseAppealField(f.appeal),
     tenure:              f.tenure?.stringValue              || '',
     utm_source:          f.utm_source?.stringValue          || '',
     utm_medium:          f.utm_medium?.stringValue          || '',
