@@ -119,6 +119,20 @@ function fromDoc(doc) {
   };
 }
 
+// Price fields were stored as stringValue before the v3_pre_offer schema
+// switched them to doubleValue (see git history around the flow reorder) —
+// older survey docs still have their price answers under stringValue.
+function parseNumericField(f) {
+  if (!f) return null;
+  if (f.doubleValue !== undefined) return f.doubleValue;
+  if (f.integerValue !== undefined) return Number(f.integerValue);
+  if (f.stringValue !== undefined && f.stringValue !== '') {
+    const n = Number(f.stringValue);
+    return Number.isFinite(n) ? n : null;
+  }
+  return null;
+}
+
 function fromSurvey(doc) {
   const f = doc.fields || {};
   return {
@@ -127,10 +141,10 @@ function fromSurvey(doc) {
     vip:                 f.vip?.booleanValue                || false,
     session_id:          f.session_id?.stringValue          || '',
     survey_version:      f.survey_version?.stringValue      || '',
-    price_too_expensive: f.price_too_expensive?.doubleValue ?? null,
-    price_expensive:     f.price_expensive?.doubleValue     ?? null,
-    price_bargain:       f.price_bargain?.doubleValue       ?? null,
-    price_too_cheap:     f.price_too_cheap?.doubleValue     ?? null,
+    price_too_expensive: parseNumericField(f.price_too_expensive),
+    price_expensive:     parseNumericField(f.price_expensive),
+    price_bargain:       parseNumericField(f.price_bargain),
+    price_too_cheap:     parseNumericField(f.price_too_cheap),
     appeal:              (f.appeal?.arrayValue?.values || []).map(v => v.stringValue),
     tenure:              f.tenure?.stringValue              || '',
     utm_source:          f.utm_source?.stringValue          || '',
