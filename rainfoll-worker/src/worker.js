@@ -536,6 +536,79 @@ async function handleListSurveys(request, env) {
   return json({ documents: (data.documents || []).map(fromSurvey) });
 }
 
+// ── POST /api/backfill-survey-vip ───────────────────────────────────────
+// One-time reconciliation: the survey.vip flag and the signup.surveyCompleted
+// flag were both silently failing to write (see the doc.name URL bug fix) for
+// as long as the reordered signup->survey->VIP flow has existed. This walks
+// existing records and corrects them; it's idempotent, safe to re-run.
+async function handleBackfillSurveyVip(request, env) {
+  if (!await requireAuth(request, env)) return json({ error: 'Unauthorized' }, 401);
+
+  let token;
+  try { token = await getFirestoreToken(env); }
+  catch (e) { return json({ error: 'Firestore auth failed', detail: e.message }, 500); }
+
+  const [signupsRes, surveysRes] = await Promise.all([
+    fetch(`${FIRESTORE_BASE}/${COLLECTION}?pageSize=1000`, { headers: { Authorization: `Bearer ${token}` } }),
+    fetch(`${FIRESTORE_BASE}/${SURVEYS_COLL}?pageSize=1000`, { headers: { Authorization: `Bearer ${token}` } }),
+  ]);
+  if (!signupsRes.ok || !surveysRes.ok) return json({ error: 'Failed to fetch data for reconciliation' }, 500);
+
+  const signups = ((await signupsRes.json()).documents || []).map(doc => ({ raw: doc, data: fromDoc(doc) }));
+  const surveys = ((await surveysRes.json()).documents || []).map(doc => ({ raw: doc, data: fromSurvey(doc) }));
+
+  // Latest survey per email (mirrors findLatestSurveyByEmail's ordering)
+  const latestSurveyByEmail = new Map();
+  const emailsWithSurvey = new Set();
+  for (const s of surveys) {
+    if (!s.data.email) continue;
+    emailsWithSurvey.add(s.data.email);
+    const existing = latestSurveyByEmail.get(s.data.email);
+    if (!existing || s.data.submitted_at > existing.data.submitted_at) latestSurveyByEmail.set(s.data.email, s);
+  }
+
+  let vipFixed = 0, vipSkipped = 0, vipErrors = 0;
+  let completedFixed = 0, completedSkipped = 0, completedErrors = 0;
+
+  for (const { raw, data } of signups) {
+    if (!data.email) continue;
+
+    // 1) Survey vip flag should be true for anyone who is actually a VIP now
+    if (data.is_vip) {
+      const survey = latestSurveyByEmail.get(data.email);
+      if (!survey || survey.data.vip) {
+        vipSkipped++;
+      } else {
+        const mask = ['vip', 'session_id'].map(f => `updateMask.fieldPaths=${f}`).join('&');
+        const patchRes = await fetch(`${FIRESTORE_API_ROOT}/${survey.raw.name}?${mask}`, {
+          method: 'PATCH',
+          headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ fields: toFields({ vip: true, session_id: data.stripeSessionId || survey.data.session_id || '' }) }),
+        });
+        if (patchRes.ok) { vipFixed++; survey.data.vip = true; } else vipErrors++;
+      }
+    }
+
+    // 2) surveyCompleted should be true for anyone with a survey doc on file
+    if (!data.surveyCompleted && emailsWithSurvey.has(data.email)) {
+      const patchRes = await fetch(`${FIRESTORE_API_ROOT}/${raw.name}?updateMask.fieldPaths=surveyCompleted`, {
+        method: 'PATCH',
+        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ fields: { surveyCompleted: { booleanValue: true } } }),
+      });
+      if (patchRes.ok) completedFixed++; else completedErrors++;
+    } else if (!data.surveyCompleted) {
+      completedSkipped++;
+    }
+  }
+
+  return json({
+    success: true,
+    vip: { fixed: vipFixed, skipped: vipSkipped, errors: vipErrors },
+    surveyCompleted: { fixed: completedFixed, skipped: completedSkipped, errors: completedErrors },
+  });
+}
+
 // ── POST /api/survey ───────────────────────────────────────────────────
 async function handleSurvey(request, env) {
   const ip   = request.headers.get('CF-Connecting-IP') || 'unknown';
@@ -851,6 +924,7 @@ export default {
     if (request.method === 'POST' && url.pathname === '/auth/change-password')  return handleChangePassword(request, env);
     if (request.method === 'POST' && url.pathname === '/api/survey')            return handleSurvey(request, env);
     if (request.method === 'POST' && url.pathname === '/api/stripe-webhook')    return handleStripeWebhook(request, env);
+    if (request.method === 'POST' && url.pathname === '/api/backfill-survey-vip') return handleBackfillSurveyVip(request, env);
     if ((request.method === 'GET' || request.method === 'POST') && url.pathname === '/api/unsubscribe') return handleUnsubscribe(request, env);
     if (request.method === 'GET'  && url.searchParams.get('action') === 'list')          return handleList(request, env);
     if (request.method === 'GET'  && url.searchParams.get('action') === 'list-surveys')  return handleListSurveys(request, env);

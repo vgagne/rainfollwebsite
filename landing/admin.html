@@ -203,7 +203,7 @@
 
       <!-- ── SURVEY RESULTS ───────────────────────────── -->
       <section>
-        <div class="flex items-center justify-between mb-5">
+        <div class="flex items-center justify-between mb-2">
           <h2 class="text-lg font-bold text-gray-900">Survey Results</h2>
           <div class="flex items-center gap-2">
             <select x-model="surveyVipFilter"
@@ -215,6 +215,24 @@
             <span class="text-xs text-gray-400" x-text="surveyStats.total + ' response' + (surveyStats.total !== 1 ? 's' : '')"></span>
           </div>
         </div>
+
+        <div class="flex items-center justify-between mb-5">
+          <p class="text-xs text-gray-400">VIP/Free splits were unreliable before a recent backend fix. Run once to correct existing records.</p>
+          <button @click="backfillSurveyVip()" :disabled="backfillLoading"
+            class="text-xs text-brand-primary font-medium hover:text-brand-accent1 transition flex items-center gap-1 disabled:opacity-40 disabled:cursor-not-allowed whitespace-nowrap ml-4">
+            <svg class="w-3.5 h-3.5" :class="backfillLoading ? 'animate-spin' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+            </svg>
+            <span x-text="backfillLoading ? 'Reconciling…' : 'Reconcile VIP flags'"></span>
+          </button>
+        </div>
+
+        <template x-if="backfillResult">
+          <div class="text-xs bg-green-50 border border-green-100 text-green-700 rounded-lg px-3 py-2.5 mb-5" x-text="backfillResult"></div>
+        </template>
+        <template x-if="backfillError">
+          <div class="text-xs bg-red-50 border border-red-100 text-red-600 rounded-lg px-3 py-2.5 mb-5" x-text="backfillError"></div>
+        </template>
 
         <template x-if="surveysLoading">
           <div class="text-center py-8 text-sm text-gray-400">Loading survey data…</div>
@@ -505,6 +523,9 @@
         surveys: [],
         surveysLoading: false,
         surveyVipFilter: '',
+        backfillLoading: false,
+        backfillResult: '',
+        backfillError: '',
 
         // change password
         pw: { current: '', newPw: '', confirm: '', loading: false, error: '', success: false },
@@ -613,6 +634,34 @@
             }
           } catch (_) {}
           this.surveysLoading = false;
+        },
+
+        // ── BACKFILL SURVEY VIP/COMPLETED FLAGS ─────────
+        async backfillSurveyVip() {
+          if (!confirm('This will patch existing Firestore records to correct VIP survey flags. Continue?')) return;
+          this.backfillLoading = true;
+          this.backfillError = '';
+          this.backfillResult = '';
+          try {
+            const token = sessionStorage.getItem('admin_token');
+            const res = await fetch(`${WORKER_URL}/api/backfill-survey-vip`, {
+              method: 'POST',
+              headers: { 'Authorization': `Bearer ${token}` }
+            });
+            if (res.status === 401) { this.logout(); return; }
+            const data = await res.json().catch(() => ({}));
+            if (!res.ok) {
+              this.backfillError = data.error || 'Backfill failed.';
+            } else {
+              this.backfillResult = `Fixed ${data.vip.fixed} survey VIP flag(s) and ${data.surveyCompleted.fixed} signup completion flag(s). `
+                + `${data.vip.skipped + data.surveyCompleted.skipped} already correct or no matching record.`
+                + ((data.vip.errors + data.surveyCompleted.errors) ? ` ${data.vip.errors + data.surveyCompleted.errors} error(s) — check worker logs.` : '');
+              await this.loadAll();
+            }
+          } catch (e) {
+            this.backfillError = 'Could not reach server.';
+          }
+          this.backfillLoading = false;
         },
 
         // ── STATS ──────────────────────────────────────
