@@ -3,6 +3,8 @@ import signupHtmlRaw from './emails/signup.html';
 import signupTextRaw from './emails/signup.txt';
 import vipHtmlRaw from './emails/vip.html';
 import vipTextRaw from './emails/vip.txt';
+import surveyReminderHtmlRaw from './emails/survey-reminder.html';
+import surveyReminderTextRaw from './emails/survey-reminder.txt';
 
 const PROJECT_ID     = 'rainfoll-143ef';
 const COLLECTION     = 'signups';
@@ -116,6 +118,7 @@ function fromDoc(doc) {
     vipOnly:         f.vipOnly?.booleanValue        || false,
     unsubscribed:    f.unsubscribed?.booleanValue   || false,
     unsubscribed_at: f.unsubscribed_at?.stringValue || '',
+    surveyReminderSentAt: f.surveyReminderSentAt?.stringValue || '',
   };
 }
 
@@ -632,6 +635,61 @@ async function handleBackfillSurveyVip(request, env) {
   });
 }
 
+// ── Scheduled: survey reminder (daily cron) ─────────────────────────────
+// Reminds signups who haven't completed the pricing survey once they cross
+// the one-week mark. The cron runs daily, so the window is 7-8 days old
+// (not "exactly 7 days") to guarantee everyone gets caught by some run.
+async function handleSurveyReminders(env) {
+  let token;
+  try { token = await getFirestoreToken(env); }
+  catch (e) { console.error('Survey reminder: Firestore auth failed:', e.message); return; }
+
+  const res = await fetch(`${FIRESTORE_BASE}/${COLLECTION}?pageSize=1000`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  if (!res.ok) { console.error('Survey reminder: failed to fetch signups:', await res.text()); return; }
+
+  const data = await res.json();
+  const docs = (data.documents || []);
+
+  const MS_DAY = 24 * 60 * 60 * 1000;
+  const now = Date.now();
+  const windowOld = now - 8 * MS_DAY;
+  const windowNew = now - 7 * MS_DAY;
+
+  let sent = 0, errors = 0;
+  for (const doc of docs) {
+    const signup = fromDoc(doc);
+    if (!signup.email || !signup.email.includes('@')) continue;
+    if (signup.surveyCompleted || signup.unsubscribed) continue;
+    if (signup.surveyReminderSentAt) continue;
+
+    const createdMs = Date.parse(signup.created_at);
+    if (!Number.isFinite(createdMs)) continue;
+    if (createdMs < windowOld || createdMs >= windowNew) continue;
+
+    try {
+      const survey_url = `${SITE_BASE_URL}/survey?email=${encodeURIComponent(signup.email)}`;
+      const { subject, html, text, unsubscribeUrl } = await buildEmail(
+        surveyReminderHtmlRaw, surveyReminderTextRaw, { email: signup.email, survey_url }, env
+      );
+      await sendEmail({ to: signup.email, subject, html, text, unsubscribeUrl }, env);
+
+      await fetch(`${FIRESTORE_API_ROOT}/${doc.name}?updateMask.fieldPaths=surveyReminderSentAt`, {
+        method: 'PATCH',
+        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ fields: toFields({ surveyReminderSentAt: new Date().toISOString() }) }),
+      });
+      sent++;
+    } catch (e) {
+      console.error('Survey reminder: failed to send to', signup.email, e.message);
+      errors++;
+    }
+  }
+
+  console.log(`Survey reminders: sent=${sent} errors=${errors}`);
+}
+
 // ── POST /api/survey ───────────────────────────────────────────────────
 async function handleSurvey(request, env) {
   const ip   = request.headers.get('CF-Connecting-IP') || 'unknown';
@@ -956,5 +1014,9 @@ export default {
     if (request.method === 'POST') return handlePost(request, env);
 
     return json({ error: 'Method Not Allowed' }, 405);
+  },
+
+  async scheduled(event, env, ctx) {
+    ctx.waitUntil(handleSurveyReminders(env));
   },
 };

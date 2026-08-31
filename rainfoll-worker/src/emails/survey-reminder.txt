@@ -1,0 +1,11 @@
+Help us set the price.
+
+We'd love your input — it only takes a couple of minutes, and your answers directly shape what Rainföll ends up costing.
+
+If you've already taken the survey, feel free to ignore this.
+
+Take the survey: {{survey_url}}
+
+Thanks for being part of this.
+
+rainfoll.ca
