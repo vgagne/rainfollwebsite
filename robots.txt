@@ -2,4 +2,16 @@ User-agent: *
 Allow: /
 Disallow: /landing/
 
+# Meta (Facebook/Instagram) ad review + link preview crawler
+User-agent: facebookexternalhit
+Allow: /
+
+# X/Twitter link preview crawler
+User-agent: Twitterbot
+Allow: /
+
+# TikTok ad review + link preview crawler
+User-agent: TikTokSpider
+Allow: /
+
 Sitemap: https://rainfoll.ca/sitemap.xml

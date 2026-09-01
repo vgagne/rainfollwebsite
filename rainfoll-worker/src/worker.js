@@ -12,7 +12,9 @@ const SURVEYS_COLL   = 'surveys';
 const FIRESTORE_API_ROOT = 'https://firestore.googleapis.com/v1';
 const FIRESTORE_BASE = `${FIRESTORE_API_ROOT}/projects/${PROJECT_ID}/databases/(default)/documents`;
 
-const EMAIL_FROM        = 'Rainföll <info@rainfoll.ca>';
+const EMAIL_FROM        = 'Rainföll Inc. <info@rainfoll.ca>';
+const EMAIL_REPLY_TO    = 'info@rainfoll.ca';
+const COMPANY_ADDRESS   = '1444 Hallmark Pl., Ottawa, Ontario, Canada, K1B 3X3';
 const LOGO_URL           = 'https://rainfoll.ca/assets/images/logo/rainfoll-logo-white-noback.png';
 const WORKER_BASE_URL    = 'https://square-violet-0b51.vgagne11.workers.dev';
 const SITE_BASE_URL      = 'https://rainfoll.ca';
@@ -119,7 +121,16 @@ function fromDoc(doc) {
     unsubscribed:    f.unsubscribed?.booleanValue   || false,
     unsubscribed_at: f.unsubscribed_at?.stringValue || '',
     surveyReminderSentAt: f.surveyReminderSentAt?.stringValue || '',
+    consent_state:   f.consent_state?.stringValue   || '',
   };
+}
+
+// Cookie consent state, as reported by the browser at signup time (see
+// assets/js/consent.js). Anything other than an explicit 'accepted' is
+// treated as no consent — CAPI/TikTok Events API calls are gated on this
+// (see sendMetaPurchaseEvent/sendTikTokPurchaseEvent callers).
+function normalizeConsentState(v) {
+  return v === 'accepted' || v === 'declined' ? v : 'unknown';
 }
 
 // Price fields were stored as stringValue before the v3_pre_offer schema
@@ -335,7 +346,7 @@ async function sendEmail({ to, subject, html, text, unsubscribeUrl }, env) {
       method: 'POST',
       headers: { Authorization: `Bearer ${env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        from: EMAIL_FROM, to, subject, html, text,
+        from: EMAIL_FROM, to, subject, html, text, reply_to: EMAIL_REPLY_TO,
         ...(unsubscribeUrl ? {
           headers: {
             'List-Unsubscribe': `<${unsubscribeUrl}>`,
@@ -364,8 +375,9 @@ function emailShell(bodyHtml, unsubscribeUrl) {
             ${bodyHtml}
           </td></tr>
           <tr><td style="padding:16px 32px 32px;border-top:1px solid rgba(220,201,182,0.2);color:#8a8a8a;font-size:12px;text-align:center;">
-            Rainföll &middot; <a href="https://rainfoll.ca" style="color:#DCC9B6;">rainfoll.ca</a><br/>
-            <a href="${unsubscribeUrl}" style="color:#8a8a8a;">Unsubscribe</a>
+            Rainföll Inc. &middot; <a href="https://rainfoll.ca" style="color:#DCC9B6;">rainfoll.ca</a><br/>
+            <a href="${unsubscribeUrl}" style="color:#8a8a8a;">Unsubscribe</a><br/>
+            <span style="font-size:9px;color:#5a5a5a;">${COMPANY_ADDRESS}</span>
           </td></tr>
         </table>
       </td></tr>
@@ -442,6 +454,11 @@ async function sendMetaPurchaseEvent({ email, sessionId, amount }, env) {
           event_source_url: 'https://rainfoll.ca/vip-survey',
           user_data: { em: [hashedEmail] },
           custom_data: { currency: 'USD', value: amount },
+          // Limited Data Use — country/state left at 0 so Meta geolocates the
+          // user and applies the restriction only where legally required.
+          data_processing_options: ['LDU'],
+          data_processing_options_country: 0,
+          data_processing_options_state: 0,
         }],
       }),
     });
@@ -467,6 +484,7 @@ async function sendTikTokPurchaseEvent({ email, sessionId, amount }, env) {
           event_time: Math.floor(Date.now() / 1000),
           user: { email: hashedEmail },
           properties: { currency: 'USD', value: amount },
+          limited_data_use: true,
         }],
       }),
     });
@@ -810,6 +828,10 @@ async function handleStripeWebhook(request, env) {
 
   let vipEmail = '';
   let vipUnsubscribed = false;
+  // Default-deny: only a stored 'accepted' consent state permits server-side
+  // conversion events. Records with no consent info on file (e.g. the vipOnly
+  // fallback below, which has no prior signup to read consent from) stay gated off.
+  let vipConsentAccepted = false;
 
   if (signupDoc) {
     // Idempotency: skip if already processed
@@ -829,6 +851,7 @@ async function handleStripeWebhook(request, env) {
     else {
       vipEmail = existing.email || customerEmail;
       vipUnsubscribed = existing.unsubscribed;
+      vipConsentAccepted = existing.consent_state === 'accepted';
     }
   } else {
     // No matching signup: create a vipOnly record so revenue is tracked
@@ -854,8 +877,8 @@ async function handleStripeWebhook(request, env) {
         const { subject, html, text, unsubscribeUrl } = await buildEmail(vipHtmlRaw, vipTextRaw, { email: vipEmail }, env);
         await sendEmail({ to: vipEmail, subject, html, text, unsubscribeUrl }, env);
       })(),
-      sendMetaPurchaseEvent({ email: vipEmail, sessionId, amount: 1 }, env),
-      sendTikTokPurchaseEvent({ email: vipEmail, sessionId, amount: 1 }, env),
+      vipConsentAccepted ? sendMetaPurchaseEvent({ email: vipEmail, sessionId, amount: 1 }, env) : Promise.resolve(),
+      vipConsentAccepted ? sendTikTokPurchaseEvent({ email: vipEmail, sessionId, amount: 1 }, env) : Promise.resolve(),
       (async () => {
         try {
           const surveyDoc = await findLatestSurveyByEmail(vipEmail, token);
@@ -931,16 +954,19 @@ async function handlePost(request, env) {
       return json({ success: true, docId: 'test-doc-id', test: true });
     }
 
+    const consent_state = normalizeConsentState(body.consent_state);
+
     const existing = await findByEmail(email, token);
     if (existing) {
       const existingData = fromDoc(existing);
       if (!existingData.unsubscribed) return json({ duplicate: true }, 409);
 
       // Previously unsubscribed: treat a fresh signup as opting back in
-      await fetch(`${FIRESTORE_API_ROOT}/${existing.name}?updateMask.fieldPaths=unsubscribed`, {
+      const mask = ['unsubscribed', 'consent_state'].map(f => `updateMask.fieldPaths=${f}`).join('&');
+      await fetch(`${FIRESTORE_API_ROOT}/${existing.name}?${mask}`, {
         method: 'PATCH',
         headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ fields: { unsubscribed: { booleanValue: false } } }),
+        body: JSON.stringify({ fields: toFields({ unsubscribed: false, consent_state }) }),
       });
 
       const { subject, html, text, unsubscribeUrl } = await buildEmail(signupHtmlRaw, signupTextRaw, { email }, env);
@@ -961,6 +987,7 @@ async function handlePost(request, env) {
         fields: toFields({
           id: docId, email, is_vip: false, payment_id: '', payment_status: 'none',
           created_at: new Date().toISOString(), utm_source, utm_medium, utm_campaign, utm_content,
+          consent_state,
         }),
       }),
     });

@@ -98,6 +98,7 @@
                 utm_medium: this.utmMedium,
                 utm_campaign: this.utmCampaign,
                 utm_content: this.utmContent,
+                consent_state: typeof getRainfollConsentState === 'function' ? getRainfollConsentState() : 'unknown',
               })
             });
             this.loading = false;
@@ -699,6 +700,7 @@
           <div class="flex gap-5">
             <a href="../faq.html" class="text-xs text-gray-400 hover:text-gray-600 transition-colors">FAQ</a>
             <a href="../privacy-policy.html" class="text-xs text-gray-400 hover:text-gray-600 transition-colors">Privacy Policy</a>
+            <a href="../terms.html" class="text-xs text-gray-400 hover:text-gray-600 transition-colors">Terms of Service</a>
           </div>
         </div>
         <p class="text-xs text-gray-300 mt-3">&copy; 2026 Rainföll Inc. All rights reserved.</p>

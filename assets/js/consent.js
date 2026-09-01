@@ -27,6 +27,9 @@
     t.src=v;s=b.getElementsByTagName(e)[0];
     s.parentNode.insertBefore(t,s)}(window, document,'script',
     'https://connect.facebook.net/en_US/fbevents.js');
+    // Limited Data Use — country/state left at 0 so Meta geolocates each
+    // user and applies the restriction only where legally required.
+    fbq('dataProcessingOptions', ['LDU'], 0, 0);
     fbq('init', META_PIXEL_ID);
     fbq('track', 'PageView');
   }
@@ -142,6 +145,11 @@
       .then(function (data) {
         clearTimeout(timer);
         if (data && data.country_code === 'US') {
+          // US visitors: tracking activates automatically (see Privacy Policy §6).
+          // Persisted so later page loads skip the geo lookup and so the signup/
+          // survey forms can report this consent state to the backend for CAPI/
+          // TikTok Events API gating (see Part 2.2 of the compliance remediation).
+          localStorage.setItem(STORAGE_KEY, 'accepted');
           initTracking();
         } else {
           showBanner();
@@ -152,6 +160,13 @@
         showBanner();
       });
   }
+
+  // Exposes the current consent decision ('accepted' | 'declined' | 'unknown') so
+  // other scripts (signup/survey forms) can send it to the backend and gate
+  // server-side conversion events (Meta CAPI / TikTok Events API) accordingly.
+  window.getRainfollConsentState = function () {
+    return localStorage.getItem(STORAGE_KEY) || 'unknown';
+  };
 
   // ── Entry point ──────────────────────────────────────────────
   var stored = localStorage.getItem(STORAGE_KEY);

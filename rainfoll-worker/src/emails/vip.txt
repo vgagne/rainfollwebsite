@@ -4,7 +4,7 @@ Thank you for becoming a Rainföll VIP — your VIP status is officially confirm
 
 As a VIP, you'll get exclusive first access to Rainföll ahead of everyone else, before it's available to the public.
 
-Your $1 deposit is fully refundable — once you complete your purchase, the $1 will be credited back to you. A separate receipt for this charge was sent by Stripe, our payment processor.
+Your $1 is not a deposit or a purchase — it's a promotional credit toward your order if and when you place one, and it's fully refundable on request at any time. A separate receipt for this charge was sent by Stripe, our payment processor.
 
 We'll be in touch at {{email}} with next steps and your early access details.
 
