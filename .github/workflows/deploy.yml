@@ -23,6 +23,14 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
 
+    - name: Setup Node
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+
+    - name: Build Tailwind CSS
+      run: npx --yes tailwindcss@3 -i ./assets/css/tailwind-input.css -o ./assets/css/tailwind.css --minify
+
     - name: Setup Pages
       uses: actions/configure-pages@v4
 

@@ -42,27 +42,7 @@
   <meta name="twitter:description" content="Rainföll slides to any position in your shower — no drilling, no plumber needed. Sets up in minutes with a tension bar. Perfect for renters.">
   <meta name="twitter:image" content="https://rainfoll.ca/assets/images/products/matte/Black%20-%20New/Rainfoll-Render-Black-7.png">
 
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            brand: {
-              primary: '#727D71',
-              secondary: '#DCC9B6',
-              tertiary: '#A39171',
-              accent1: '#6D4C3D',
-              accent2: '#ABC4AB'
-            }
-          },
-          fontFamily: {
-            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
-          }
-        }
-      }
-    }
-  </script>
+  <link rel="stylesheet" href="assets/css/tailwind.css">
 
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
@@ -330,7 +310,7 @@
        ============================================ -->
   <section class="lp-hero">
     <video autoplay muted loop playsinline preload="auto"
-           poster="assets/images/products/matte/Black%20-%20New/Rainfoll-Render-Black-7.png"
+           poster="assets/images/products/matte/Black%20-%20New/Rainfoll-Render-Black-7.webp"
            aria-label="Rainföll shower system in action">
       <source src="assets/images/hero/Hero-Video-Portrait-2.webm" type="video/webm" media="(max-width: 768px)">
       <source src="assets/images/hero/Hero-Video-Portrait-2.mp4" type="video/mp4" media="(max-width: 768px)">
@@ -340,7 +320,7 @@
 
     <div class="hero-content flex flex-col justify-end h-full px-5 sm:px-8 pb-16 sm:pb-20 w-full md:max-w-2xl md:ml-16 lg:ml-24">
       <div class="mb-5 sm:mb-8">
-        <img src="assets/images/logo/rainfoll-logo-white-noback.png" alt="Rainföll" class="h-8 sm:h-10 md:h-11 w-auto">
+        <img src="assets/images/logo/rainfoll-logo-white-noback.png" alt="Rainföll" width="610" height="168" class="h-8 sm:h-10 md:h-11 w-auto">
       </div>
 
       <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-white leading-tight mb-3 sm:mb-4">
@@ -376,19 +356,19 @@
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-5 stagger-children">
         <div class="demo-card aspect-[9/14] shadow-lg">
-          <video src="assets/videos/Moving Back and Forth.mp4" class="w-full h-full object-cover" autoplay muted loop playsinline></video>
+          <video class="w-full h-full object-cover lazy-video" data-src="assets/videos/Moving Back and Forth.mp4" preload="none" muted loop playsinline></video>
           <div class="absolute inset-0 flex items-end p-5 pointer-events-none">
             <p class="text-white font-semibold text-sm px-3 py-1.5 rounded-full" style="background:rgba(0,0,0,0.45);backdrop-filter:blur(6px);">Move it anywhere</p>
           </div>
         </div>
         <div class="demo-card aspect-[9/14] shadow-xl" style="outline: 2px solid #DCC9B6; outline-offset: 3px; border-radius: 1rem;">
-          <video src="assets/videos/Chrome-Water-Running-Video.mp4" class="w-full h-full object-cover" autoplay muted loop playsinline></video>
+          <video class="w-full h-full object-cover lazy-video" data-src="assets/videos/Chrome-Water-Running-Video.mp4" preload="none" muted loop playsinline></video>
           <div class="absolute inset-0 flex items-end p-5 pointer-events-none">
             <p class="text-white font-semibold text-sm px-3 py-1.5 rounded-full" style="background:rgba(0,0,0,0.45);backdrop-filter:blur(6px);">Full-body coverage</p>
           </div>
         </div>
         <div class="demo-card aspect-[9/14] shadow-lg">
-          <video src="assets/videos/Install Video.mp4" class="w-full h-full object-cover" autoplay muted loop playsinline></video>
+          <video class="w-full h-full object-cover lazy-video" data-src="assets/videos/Install Video.mp4" preload="none" muted loop playsinline></video>
           <div class="absolute inset-0 flex items-end p-5 pointer-events-none">
             <p class="text-white font-semibold text-sm px-3 py-1.5 rounded-full" style="background:rgba(0,0,0,0.45);backdrop-filter:blur(6px);">Easiest Install Ever</p>
           </div>
@@ -419,7 +399,7 @@
         <div class="flex flex-col-reverse md:flex-row items-center gap-8 fade-up">
           <div class="w-full md:w-2/5 flex-shrink-0">
             <div class="rounded-2xl overflow-hidden shadow-lg aspect-[9/14]">
-              <video src="assets/videos/Twist Into Place.mp4" class="w-full h-full object-cover" autoplay muted loop playsinline>
+              <video class="w-full h-full object-cover lazy-video" data-src="assets/videos/Twist Into Place.mp4" preload="none" muted loop playsinline></video>
             </div>
           </div>
           <div class="relative w-full md:w-3/5">
@@ -433,7 +413,7 @@
         <div class="flex flex-col-reverse md:flex-row-reverse items-center gap-8 fade-up">
           <div class="w-full md:w-2/5 flex-shrink-0">
             <div class="rounded-2xl overflow-hidden shadow-lg aspect-[9/14]">
-              <video src="assets/videos/Close The Sheaths.mp4" class="w-full h-full object-cover" autoplay muted loop playsinline>
+              <video class="w-full h-full object-cover lazy-video" data-src="assets/videos/Close The Sheaths.mp4" preload="none" muted loop playsinline></video>
             </div>
           </div>
           <div class="relative w-full md:w-3/5">
@@ -447,7 +427,7 @@
         <div class="flex flex-col-reverse md:flex-row items-center gap-8 fade-up">
           <div class="w-full md:w-2/5 flex-shrink-0">
             <div class="rounded-2xl overflow-hidden shadow-lg aspect-[9/14]">
-              <video src="assets/videos/Connect to Plumbing.mp4" class="w-full h-full object-cover" autoplay muted loop playsinline>
+              <video class="w-full h-full object-cover lazy-video" data-src="assets/videos/Connect to Plumbing.mp4" preload="none" muted loop playsinline></video>
             </div>
           </div>
           <div class="relative w-full md:w-3/5">
@@ -481,14 +461,14 @@
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 stagger-children">
         <div class="benefit-card">
           <div class="benefit-media-wrap">
-            <video src="assets/videos/See it moving.mp4" class="benefit-media" autoplay muted loop playsinline></video>
+            <video class="benefit-media lazy-video" data-src="assets/videos/See it moving.mp4" preload="none" muted loop playsinline></video>
           </div>
           <h3 class="text-xl font-bold text-gray-900 mb-2">Use Your Whole Shower</h3>
           <p class="text-gray-600">Stop being stuck in one spot. Slide the head anywhere — left, center, right. Your whole shower is now yours.</p>
         </div>
         <div class="benefit-card">
           <div class="benefit-media-wrap">
-            <video src="assets/videos/Quick Install demo - girl.mp4" class="benefit-media" autoplay muted loop playsinline></video>
+            <video class="benefit-media lazy-video" data-src="assets/videos/Quick Install demo - girl.mp4" preload="none" muted loop playsinline></video>
           </div>
           <h3 class="text-xl font-bold text-gray-900 mb-2">Install in Minutes</h3>
           <p class="text-gray-600">No power tools. No permanent changes. Twist the tension bar between your walls, connect the hose, turn it on.</p>
@@ -502,7 +482,7 @@
         </div>
         <div class="benefit-card">
           <div class="benefit-media-wrap">
-            <video src="assets/videos/Adjusts to any height.mp4" class="benefit-media" autoplay muted loop playsinline></video>
+            <video class="benefit-media lazy-video" data-src="assets/videos/Adjusts to any height.mp4" preload="none" muted loop playsinline></video>
           </div>
           <h3 class="text-xl font-bold text-gray-900 mb-2">Built for Real Comfort</h3>
           <p class="text-gray-600">Dual shower heads with full pressure. Whether you're 5'4" or 6'4" — it fits everyone.</p>
@@ -593,6 +573,7 @@
           const els = images.map((src, i) => {
             const img = document.createElement('img');
             img.src = src;
+            img.alt = ''; // decorative — rotating product renders, described by the card's own heading
             img.className = 'slideshow-img' + (i === 0 ? ' active' : '');
             img.loading = 'lazy';
             container.appendChild(img);
@@ -618,6 +599,23 @@
         });
       </script>
 
+      <!-- Lazy-load below-the-fold demo videos: only fetch each clip once it -->
+      <!-- nears the viewport, instead of downloading all of them on page load -->
+      <script>
+        const lazyVideoObserver = new IntersectionObserver((entries, observer) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+            const video = entry.target;
+            video.src = video.dataset.src;
+            video.load();
+            video.play().catch(() => {});
+            observer.unobserve(video);
+          });
+        }, { rootMargin: '200px' });
+
+        document.querySelectorAll('video.lazy-video').forEach((video) => lazyVideoObserver.observe(video));
+      </script>
+
       <!-- CTA after demo -->
       <div class="cta-strip fade-up">
         <a href="landing/preorder.html" class="cta-btn px-9 py-4 text-base" onclick="trackCTA('demo')">
@@ -639,12 +637,12 @@
 
   <footer style="background:#0d0d0d;" class="py-8 text-center">
     <div class="flex flex-col items-center gap-3">
-      <img src="assets/images/logo/rainfoll-logo-white-noback.png" alt="Rainföll" class="h-7 opacity-50">
-      <p class="text-xs text-gray-600">&copy; 2026 Rainföll Inc. All rights reserved.</p>
+      <img src="assets/images/logo/rainfoll-logo-white-noback.png" alt="Rainföll" width="610" height="168" class="h-7 w-auto opacity-50">
+      <p class="text-xs text-gray-400">&copy; 2026 Rainföll Inc. All rights reserved.</p>
       <div class="flex gap-5">
-        <a href="faq.html" class="text-xs text-gray-600 hover:text-gray-400 transition-colors">FAQ</a>
-        <a href="privacy-policy.html" class="text-xs text-gray-600 hover:text-gray-400 transition-colors">Privacy Policy</a>
-        <a href="terms.html" class="text-xs text-gray-600 hover:text-gray-400 transition-colors">Terms of Service</a>
+        <a href="faq.html" class="text-xs text-gray-400 hover:text-white transition-colors">FAQ</a>
+        <a href="privacy-policy.html" class="text-xs text-gray-400 hover:text-white transition-colors">Privacy Policy</a>
+        <a href="terms.html" class="text-xs text-gray-400 hover:text-white transition-colors">Terms of Service</a>
       </div>
     </div>
   </footer>
