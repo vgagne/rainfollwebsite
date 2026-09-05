@@ -87,6 +87,12 @@ function normalizeUtm(v) {
   return String(v || '').trim().toLowerCase().slice(0, 200);
 }
 
+// Click IDs and ad-platform cookie values are case-sensitive opaque tokens —
+// unlike UTMs, they must not be lowercased.
+function sanitizeToken(v) {
+  return String(v || '').trim().slice(0, 500);
+}
+
 // ── Firestore helpers ──────────────────────────────────────────────────
 function toFields(obj) {
   const fields = {};
@@ -113,6 +119,12 @@ function fromDoc(doc) {
     utm_medium:      f.utm_medium?.stringValue      || '',
     utm_campaign:    f.utm_campaign?.stringValue    || '',
     utm_content:     f.utm_content?.stringValue     || '',
+    utm_id:          f.utm_id?.stringValue          || '',
+    fbclid:          f.fbclid?.stringValue          || '',
+    fbc:             f.fbc?.stringValue             || '',
+    fbp:             f.fbp?.stringValue             || '',
+    ttclid:          f.ttclid?.stringValue          || '',
+    ttp:             f.ttp?.stringValue             || '',
     vipPaidAt:       f.vipPaidAt?.stringValue       || '',
     stripeSessionId: f.stripeSessionId?.stringValue || '',
     amount:          f.amount?.doubleValue          || 0,
@@ -174,6 +186,12 @@ function fromSurvey(doc) {
     utm_medium:          f.utm_medium?.stringValue          || '',
     utm_campaign:        f.utm_campaign?.stringValue        || '',
     utm_content:         f.utm_content?.stringValue         || '',
+    utm_id:              f.utm_id?.stringValue              || '',
+    fbclid:              f.fbclid?.stringValue              || '',
+    fbc:                 f.fbc?.stringValue                 || '',
+    fbp:                 f.fbp?.stringValue                 || '',
+    ttclid:              f.ttclid?.stringValue              || '',
+    ttp:                 f.ttp?.stringValue                 || '',
     submitted_at:        f.submitted_at?.stringValue        || '',
   };
 }
@@ -438,10 +456,23 @@ async function sha256Hex(str) {
 }
 
 // ── Server-side conversion events (Meta CAPI / TikTok Events API) ──────
-async function sendMetaPurchaseEvent({ email, sessionId, amount }, env) {
+// Match quality note: em (hashed email) alone is a weak match key. fbc/fbp
+// (Meta) and ttclid/ttp (TikTok) are the click-time identifiers those
+// platforms actually use to tie a server event back to the ad click, so we
+// send them whenever the signup doc captured one.
+async function sendMetaPurchaseEvent({ email, sessionId, amount, fbclid, fbc, fbp, createdAt }, env) {
   try {
     if (!env.META_CAPI_ACCESS_TOKEN) { console.error('META_CAPI_ACCESS_TOKEN not configured'); return; }
     const hashedEmail = await sha256Hex(email.trim().toLowerCase());
+    const user_data = { em: [hashedEmail] };
+    // fbc is Meta's documented format: fb.1.<click_time_ms>.<fbclid>. Prefer
+    // the _fbc cookie captured client-side; if only the raw fbclid survived
+    // (e.g. cookie blocked), synthesize it using the signup time as the
+    // click-time approximation.
+    if (fbc) user_data.fbc = fbc;
+    else if (fbclid) user_data.fbc = `fb.1.${Date.parse(createdAt) || Date.now()}.${fbclid}`;
+    if (fbp) user_data.fbp = fbp;
+
     const res = await fetch(`https://graph.facebook.com/v18.0/${META_PIXEL_ID}/events?access_token=${env.META_CAPI_ACCESS_TOKEN}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -452,7 +483,7 @@ async function sendMetaPurchaseEvent({ email, sessionId, amount }, env) {
           event_id: sessionId,
           action_source: 'website',
           event_source_url: 'https://rainfoll.ca/vip-survey',
-          user_data: { em: [hashedEmail] },
+          user_data,
           custom_data: { currency: 'USD', value: amount },
           // Limited Data Use — country/state left at 0 so Meta geolocates the
           // user and applies the restriction only where legally required.
@@ -468,10 +499,14 @@ async function sendMetaPurchaseEvent({ email, sessionId, amount }, env) {
   }
 }
 
-async function sendTikTokPurchaseEvent({ email, sessionId, amount }, env) {
+async function sendTikTokPurchaseEvent({ email, sessionId, amount, ttclid, ttp }, env) {
   try {
     if (!env.TIKTOK_EVENTS_API_ACCESS_TOKEN) { console.error('TIKTOK_EVENTS_API_ACCESS_TOKEN not configured'); return; }
     const hashedEmail = await sha256Hex(email.trim().toLowerCase());
+    const user = { email: hashedEmail };
+    if (ttclid) user.ttclid = ttclid;
+    if (ttp)    user.ttp    = ttp;
+
     const res = await fetch('https://business-api.tiktok.com/open_api/v1.3/event/track/', {
       method: 'POST',
       headers: { 'Access-Token': env.TIKTOK_EVENTS_API_ACCESS_TOKEN, 'Content-Type': 'application/json' },
@@ -482,7 +517,7 @@ async function sendTikTokPurchaseEvent({ email, sessionId, amount }, env) {
           event: 'CompletePayment',
           event_id: sessionId,
           event_time: Math.floor(Date.now() / 1000),
-          user: { email: hashedEmail },
+          user,
           properties: { currency: 'USD', value: amount },
           limited_data_use: true,
         }],
@@ -741,6 +776,12 @@ async function handleSurvey(request, env) {
   const utm_medium     = normalizeUtm(body.utm_medium);
   const utm_campaign   = normalizeUtm(body.utm_campaign);
   const utm_content    = normalizeUtm(body.utm_content);
+  const utm_id         = normalizeUtm(body.utm_id);
+  const fbclid         = sanitizeToken(body.fbclid);
+  const fbc            = sanitizeToken(body.fbc);
+  const fbp            = sanitizeToken(body.fbp);
+  const ttclid         = sanitizeToken(body.ttclid);
+  const ttp            = sanitizeToken(body.ttp);
 
   let token;
   try { token = await getFirestoreToken(env); }
@@ -755,7 +796,8 @@ async function handleSurvey(request, env) {
         id: docId, email, vip: false, session_id: '', survey_version: 'v3_pre_offer',
         price_too_expensive, price_expensive, price_bargain, price_too_cheap,
         appeal, tenure,
-        utm_source, utm_medium, utm_campaign, utm_content,
+        utm_source, utm_medium, utm_campaign, utm_content, utm_id,
+        fbclid, fbc, fbp, ttclid, ttp,
         submitted_at: new Date().toISOString(),
       }),
     }),
@@ -832,6 +874,9 @@ async function handleStripeWebhook(request, env) {
   // conversion events. Records with no consent info on file (e.g. the vipOnly
   // fallback below, which has no prior signup to read consent from) stay gated off.
   let vipConsentAccepted = false;
+  // Click-time attribution captured at signup, forwarded to Meta/TikTok below.
+  let vipFbclid = '', vipFbc = '', vipFbp = '', vipCreatedAt = '';
+  let vipTtclid = '', vipTtp = '';
 
   if (signupDoc) {
     // Idempotency: skip if already processed
@@ -852,6 +897,9 @@ async function handleStripeWebhook(request, env) {
       vipEmail = existing.email || customerEmail;
       vipUnsubscribed = existing.unsubscribed;
       vipConsentAccepted = existing.consent_state === 'accepted';
+      vipFbclid = existing.fbclid; vipFbc = existing.fbc; vipFbp = existing.fbp;
+      vipTtclid = existing.ttclid; vipTtp = existing.ttp;
+      vipCreatedAt = existing.created_at;
     }
   } else {
     // No matching signup: create a vipOnly record so revenue is tracked
@@ -877,8 +925,12 @@ async function handleStripeWebhook(request, env) {
         const { subject, html, text, unsubscribeUrl } = await buildEmail(vipHtmlRaw, vipTextRaw, { email: vipEmail }, env);
         await sendEmail({ to: vipEmail, subject, html, text, unsubscribeUrl }, env);
       })(),
-      vipConsentAccepted ? sendMetaPurchaseEvent({ email: vipEmail, sessionId, amount: 1 }, env) : Promise.resolve(),
-      vipConsentAccepted ? sendTikTokPurchaseEvent({ email: vipEmail, sessionId, amount: 1 }, env) : Promise.resolve(),
+      vipConsentAccepted
+        ? sendMetaPurchaseEvent({ email: vipEmail, sessionId, amount: 1, fbclid: vipFbclid, fbc: vipFbc, fbp: vipFbp, createdAt: vipCreatedAt }, env)
+        : Promise.resolve(),
+      vipConsentAccepted
+        ? sendTikTokPurchaseEvent({ email: vipEmail, sessionId, amount: 1, ttclid: vipTtclid, ttp: vipTtp }, env)
+        : Promise.resolve(),
       (async () => {
         try {
           const surveyDoc = await findLatestSurveyByEmail(vipEmail, token);
@@ -979,6 +1031,12 @@ async function handlePost(request, env) {
     const utm_medium   = normalizeUtm(body.utm_medium);
     const utm_campaign = normalizeUtm(body.utm_campaign);
     const utm_content  = normalizeUtm(body.utm_content);
+    const utm_id       = normalizeUtm(body.utm_id);
+    const fbclid       = sanitizeToken(body.fbclid);
+    const fbc          = sanitizeToken(body.fbc);
+    const fbp          = sanitizeToken(body.fbp);
+    const ttclid       = sanitizeToken(body.ttclid);
+    const ttp          = sanitizeToken(body.ttp);
     const docId  = crypto.randomUUID();
     const putRes = await fetch(`${FIRESTORE_BASE}/${COLLECTION}?documentId=${docId}`, {
       method: 'POST',
@@ -986,7 +1044,9 @@ async function handlePost(request, env) {
       body: JSON.stringify({
         fields: toFields({
           id: docId, email, is_vip: false, payment_id: '', payment_status: 'none',
-          created_at: new Date().toISOString(), utm_source, utm_medium, utm_campaign, utm_content,
+          created_at: new Date().toISOString(),
+          utm_source, utm_medium, utm_campaign, utm_content, utm_id,
+          fbclid, fbc, fbp, ttclid, ttp,
           consent_state,
         }),
       }),

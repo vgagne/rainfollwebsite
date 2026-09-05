@@ -40,6 +40,17 @@
     const _utmMedium   = _qp.get('utm_medium')   || sessionStorage.getItem('utm_medium')   || '';
     const _utmCampaign = _qp.get('utm_campaign') || sessionStorage.getItem('utm_campaign') || '';
     const _utmContent  = _qp.get('utm_content')  || sessionStorage.getItem('utm_content')  || '';
+    const _utmId       = _qp.get('utm_id')       || sessionStorage.getItem('utm_id')       || '';
+    const _fbclid      = _qp.get('fbclid')       || sessionStorage.getItem('fbclid')       || '';
+    const _ttclid      = _qp.get('ttclid')       || sessionStorage.getItem('ttclid')       || '';
+
+    // _fbc/_fbp (Meta Pixel) and _ttp (TikTok Pixel) are first-party cookies,
+    // not URL params — read fresh rather than caching, since the pixel sets
+    // them asynchronously on page load.
+    function getCookie(name) {
+      const m = document.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]*)'));
+      return m ? decodeURIComponent(m[1]) : '';
+    }
 
     document.addEventListener('alpine:init', () => {
       Alpine.data('surveyForm', () => ({
@@ -53,6 +64,9 @@
         utmMedium: _utmMedium,
         utmCampaign: _utmCampaign,
         utmContent: _utmContent,
+        utmId: _utmId,
+        fbclid: _fbclid,
+        ttclid: _ttclid,
 
         // Answers
         price_too_expensive: '',
@@ -148,6 +162,12 @@
                 utm_medium: this.utmMedium,
                 utm_campaign: this.utmCampaign,
                 utm_content: this.utmContent,
+                utm_id: this.utmId,
+                fbclid: this.fbclid,
+                ttclid: this.ttclid,
+                fbc: getCookie('_fbc'),
+                fbp: getCookie('_fbp'),
+                ttp: getCookie('_ttp'),
                 price_too_expensive: Number(this.price_too_expensive),
                 price_expensive:     Number(this.price_expensive),
                 price_bargain:       Number(this.price_bargain),

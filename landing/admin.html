@@ -613,6 +613,9 @@
               utm_medium:      doc.utm_medium      || '',
               utm_campaign:    doc.utm_campaign    || '',
               utm_content:     doc.utm_content     || '',
+              utm_id:          doc.utm_id          || '',
+              fbclid:          doc.fbclid          || '',
+              ttclid:          doc.ttclid          || '',
             }));
           } catch (e) {
             this.tableError = 'Could not reach server.';
@@ -803,7 +806,7 @@
             return s.includes(',') || s.includes('"') || s.includes('\n')
               ? `"${s.replace(/"/g, '""')}"` : s;
           };
-          const headers = ['Email', 'VIP', 'Survey Done', 'Payment ID', 'Payment Status', 'UTM Source', 'UTM Medium', 'UTM Campaign', 'UTM Content', 'Created At', 'VIP Paid At'];
+          const headers = ['Email', 'VIP', 'Survey Done', 'Payment ID', 'Payment Status', 'UTM Source', 'UTM Medium', 'UTM Campaign', 'UTM Content', 'UTM ID', 'fbclid', 'ttclid', 'Created At', 'VIP Paid At'];
           const rows = this.filteredSignups.map(r => [
             r.email,
             r.is_vip ? 'Yes' : 'No',
@@ -814,6 +817,9 @@
             r.utm_medium || '',
             r.utm_campaign || '',
             r.utm_content || '',
+            r.utm_id || '',
+            r.fbclid || '',
+            r.ttclid || '',
             r.created_at || '',
             r.vipPaidAt || '',
           ]);

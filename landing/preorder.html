@@ -53,14 +53,22 @@
   </script>
 
   <script>
-    // ── UTM capture ──────────────────────────────────────────────────
+    // ── UTM + click-ID capture ─────────────────────────────────────────
     (function() {
       const p = new URLSearchParams(window.location.search);
-      ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content'].forEach((key) => {
+      ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_id', 'fbclid', 'ttclid'].forEach((key) => {
         const val = p.get(key) || '';
         if (val) sessionStorage.setItem(key, val);
       });
     })();
+
+    // _fbc/_fbp (Meta Pixel) and _ttp (TikTok Pixel) are first-party cookies,
+    // not URL params — read fresh at submit time rather than caching them,
+    // since the pixel sets them asynchronously on page load.
+    function getCookie(name) {
+      const m = document.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]*)'));
+      return m ? decodeURIComponent(m[1]) : '';
+    }
 
     const WORKER_URL = 'https://square-violet-0b51.vgagne11.workers.dev';
 
@@ -75,6 +83,9 @@
         utmMedium: sessionStorage.getItem('utm_medium') || '',
         utmCampaign: sessionStorage.getItem('utm_campaign') || '',
         utmContent: sessionStorage.getItem('utm_content') || '',
+        utmId: sessionStorage.getItem('utm_id') || '',
+        fbclid: sessionStorage.getItem('fbclid') || '',
+        ttclid: sessionStorage.getItem('ttclid') || '',
 
         validate() {
           const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -98,6 +109,12 @@
                 utm_medium: this.utmMedium,
                 utm_campaign: this.utmCampaign,
                 utm_content: this.utmContent,
+                utm_id: this.utmId,
+                fbclid: this.fbclid,
+                ttclid: this.ttclid,
+                fbc: getCookie('_fbc'),
+                fbp: getCookie('_fbp'),
+                ttp: getCookie('_ttp'),
                 consent_state: typeof getRainfollConsentState === 'function' ? getRainfollConsentState() : 'unknown',
               })
             });
@@ -141,6 +158,9 @@
           if (this.utmMedium)   utmParams.set('utm_medium', this.utmMedium);
           if (this.utmCampaign) utmParams.set('utm_campaign', this.utmCampaign);
           if (this.utmContent)  utmParams.set('utm_content', this.utmContent);
+          if (this.utmId)       utmParams.set('utm_id', this.utmId);
+          if (this.fbclid)      utmParams.set('fbclid', this.fbclid);
+          if (this.ttclid)      utmParams.set('ttclid', this.ttclid);
           const utmQuery = utmParams.toString() ? `&${utmParams.toString()}` : '';
           window.location.href = `/survey?email=${email}&docId=${docId}${utmQuery}`;
         },

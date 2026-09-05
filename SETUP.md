@@ -154,11 +154,26 @@ Use Stripe test mode (your test Payment Link URL and test webhook) before going 
 
 ---
 
-## 7. UTM tracking
+## 7. UTM + attribution tracking
 
-`utm_content` is read from the URL on the signup page and stored in:
+`utm_source`, `utm_medium`, `utm_campaign`, `utm_content`, and `utm_id` are read from the URL on
+the signup and survey pages and stored in:
 - `sessionStorage` (survives navigation within the session)
 - The Firestore `signups` document (on signup)
 - The Firestore `surveys` document (on survey submit)
 
-Other UTM params are not currently captured — extend the capture block in `preorder.html` if needed.
+`utm_id` should be populated with the ad platform's stable ad-level ID (Meta's `{{ad.id}}` macro,
+TikTok's ad-level ID macro) rather than the ad name, since names get renamed/duplicated but IDs
+don't — it's the join key when the database and platform reporting disagree.
+
+Click IDs and ad-platform cookies are also captured, since they're what Meta/TikTok actually use
+server-side to match a Conversions API / Events API event back to the original ad click (matching
+on hashed email alone is materially weaker):
+- `fbclid` (URL param) and the `_fbc`/`_fbp` cookies set by the Meta Pixel
+- `ttclid` (URL param) and the `_ttp` cookie set by the TikTok Pixel
+
+These are stored on the `signups` doc and looked up by email in the Stripe webhook handler
+(`handleStripeWebhook` in `rainfoll-worker/src/worker.js`) so the server-side Purchase event sent
+to Meta CAPI / TikTok Events API includes them — see `sendMetaPurchaseEvent` /
+`sendTikTokPurchaseEvent`. Sending is still gated on stored `consent_state === 'accepted'`, same as
+before.
