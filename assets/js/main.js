@@ -1,5 +1,5 @@
 /* ============================================
-   The Rainforall - Main JavaScript
+   The Rainfoll - Main JavaScript
    Navigation, smooth scroll, lazy loading
    ============================================ */
 

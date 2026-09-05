@@ -1,5 +1,5 @@
 /* ============================================
-   The Rainforall - Scroll Animations
+   The Rainfoll - Scroll Animations
    Intersection Observer for reveal-on-scroll
    ============================================ */
 
